@@ -1,5 +1,5 @@
 from .connection import SessionLocal
-from .models import User
+from .models import User, Stock
 
 def seed():
     db = SessionLocal()
@@ -15,7 +15,13 @@ def seed():
         User(name="Test User", email="user@resto.com", password="1234"),
     ]
 
+    stocks = [
+        Stock(reference="REF001", name="Produit 1", categorie="Catégorie 1", quantity=100),
+        Stock(reference="REF002", name="Produit 2", categorie="Catégorie 2", quantity=50),
+    ]
+
     db.add_all(users)
+    db.add_all(stocks)
     db.commit()
     db.close()
     print("Seed OK ✅")
