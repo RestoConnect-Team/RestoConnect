@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
 from ..connection import Base
 
 class Stock(Base):
@@ -8,5 +9,8 @@ class Stock(Base):
     name = Column(String)
     categorie = Column(String)
     quantity = Column(Integer)
+    
+    center_id = Column(Integer, ForeignKey('center.id'))
+    center = relationship("Center")
     
 

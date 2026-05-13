@@ -5,11 +5,13 @@ from app.database.connection import Base, engine
 from app.database.seed import seed
 
 
+Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)  # crée les tables au démarrage
 with engine.connect() as co:
     print("Connexion OK ✅")
-
+print("Tables recréées")
 seed()  # Exécute le script de seed
+print("Seed terminé")
 
 
 app = FastAPI()

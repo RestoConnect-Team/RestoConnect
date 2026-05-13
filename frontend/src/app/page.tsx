@@ -18,22 +18,16 @@ export default function Home() {
     try {
       const response = await fetch('http://localhost:8000/api/login', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
       });
-
+      const data = await response.json();
       if (!response.ok) {
-        const data = await response.json();
         throw new Error(data.detail || 'Login failed');
       }
-
-      const data = await response.json();
-      
-      // Store token if needed (TODO: implement proper token storage)
-      localStorage.setItem('token', data.token);
-      
       // Redirect to dashboard
       router.push('/my_center');
     } catch (err) {
