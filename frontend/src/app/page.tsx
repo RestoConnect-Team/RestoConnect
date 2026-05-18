@@ -38,54 +38,77 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="max-w-md mx-auto pt-20 px-6 bg-white ">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Logo Section */}
         <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">RestoConnect</h1>
-          <p className="text-gray-600 text-sm leading-relaxed">
-            Connexion à vôtre espace
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[rgb(230,0,126)] to-[rgb(240,51,127)] rounded-full mb-6 shadow-lg">
+            <span className="text-2xl font-bold text-white">RC</span>
+          </div>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">RestoConnect</h1>
+          <p className="text-gray-600 text-base leading-relaxed">
+            Connexion à votre espace
           </p>
         </div>
 
-        {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-            {error}
-          </div>
-        )}
+        {/* Card */}
+        <div className="bg-white rounded-2xl shadow-xl p-8">
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm flex gap-3">
+              <span className="text-lg">⚠️</span>
+              <span>{error}</span>
+            </div>
+          )}
 
-        <form className="space-y-6" onSubmit={handleLogin}>
-          <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">Email</label>
-            <input 
-              type="email" 
-              placeholder="utilisateur@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[rgb(230,0,126)] transition-colors"
-            />
-          </div>
+          <form className="space-y-6" onSubmit={handleLogin}>
+            {/* Email Input */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-900 mb-3">Email</label>
+              <input 
+                type="email" 
+                placeholder="utilisateur@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[rgb(230,0,126)] focus:shadow-lg transition-all bg-gray-50 focus:bg-white"
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">Mot de passe</label>
-            <input 
-              type="password" 
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[rgb(230,0,126)] transition-colors"
-            />
-          </div>
+            {/* Password Input */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-900 mb-3">Mot de passe</label>
+              <input 
+                type="password" 
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[rgb(230,0,126)] focus:shadow-lg transition-all bg-gray-50 focus:bg-white"
+              />
+            </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-2 px-4 bg-[rgb(230,0,126)] text-white font-medium rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? 'Connexion...' : 'Se connecter'}
-          </button>
-        </form>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 px-4 bg-gradient-to-r from-[rgb(230,0,126)] to-[rgb(240,51,127)] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed active:scale-95"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="animate-spin">⏳</span>
+                  Connexion...
+                </span>
+              ) : (
+                'Se connecter'
+              )}
+            </button>
+          </form>
+
+          {/* Footer */}
+          <div className="mt-8 pt-6 border-t border-gray-100 text-center text-sm text-gray-500">
+            Des questions? Contactez le support
+          </div>
+        </div>
       </div>
     </div>
   );
