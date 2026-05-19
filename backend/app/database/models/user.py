@@ -11,22 +11,22 @@ class User(Base):
     password = Column(String)
     # personal information
     name = Column(String)
-    lastname = Column(String)
+    lastname = Column(String, nullable=True)
     email = Column(String, unique=True)
-    telephone = Column(String)
+    telephone = Column(String, nullable=True)
     #adresse
-    street = Column(String)
-    city = Column(String)
-    postal_code = Column(String)
+    street = Column(String, nullable=True)
+    city = Column(String, nullable=True)
+    postal_code = Column(String, nullable=True)
     #status
     status = Column(String)
     # creation date
-    created_at = Column(String)
+    created_at = Column(String, nullable=True)
     # update date
-    updated_at = Column(String)
+    updated_at = Column(String, nullable=True)
 
     # identity photo
-    photo_url = Column(String)
+    photo_url = Column(String, nullable=True)
 
     #foreign key
     center_id = Column(Integer, ForeignKey('center.id'))

@@ -4,30 +4,31 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from pydantic import BaseModel
+from typing import Optional
 
 from app.database.models import User
 
 class Profil(BaseModel):
     id : int
-    name : str
-    lastname: str
-    email : str
-    telephone : str
+    name : Optional[str] = None
+    lastname: Optional[str] = None
+    email : Optional[str] = None
+    telephone : Optional[str] = None
     #adresse
-    street : str
-    city : str
-    postal_code : str
+    street : Optional[str] = None
+    city : Optional[str] = None
+    postal_code : Optional[str] = None
     #status
-    status : str
+    status :  Optional[str] = None
     # creation date
-    created_at : str
+    created_at : Optional[str] = None
     # update date
-    updated_at : str
+    updated_at : Optional[str] = None
 
     # photo url
-    photo_url : str
+    photo_url : Optional[str] = None
     # infos du centre
-    center : str 
+    center : Optional[str] = None
 
 
 
@@ -50,8 +51,8 @@ def get_user_profil(token: str, db: Session):
         city=user.city,
         postal_code=user.postal_code,
         status=user.status,
-        created_at=user.created_at.isoformat(),
-        updated_at=user.updated_at.isoformat(),
+        created_at=user.created_at,
+        updated_at=user.updated_at,
         photo_url = f"http://localhost:8000{user.photo_url}" if user.photo_url else None,
         center=user_center.name
     )

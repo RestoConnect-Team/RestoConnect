@@ -4,11 +4,10 @@ from fastapi.staticfiles import StaticFiles
 from app.api.http_request import router
 from app.database.connection import Base, engine
 from app.database.seed import seed
-from pathlib import Path
 
-# Chemin absolu vers uploads/
-BASE_DIR = Path(__file__).resolve().parent.parent.parent  # remonte à la racine du projet
-UPLOADS_DIR = BASE_DIR / "uploads"
+from app.config import UPLOADS_DIR
+
+
 
 
 Base.metadata.drop_all(bind=engine)
