@@ -6,4 +6,6 @@ class Center(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True)
     location = Column(String)
+    notification = Column(String)
+    alerte = Column(String)
     

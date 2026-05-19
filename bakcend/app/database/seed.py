@@ -17,8 +17,8 @@ def seed():
         return
 
     users = [
-        User(name="Admin", email="admin@resto.com", password=hash_password("1234"), center_id=1),
-        User(name="Test User", email="user@resto.com", password=hash_password("1234"), center_id=2),
+        User(name="Admin", email="admin@resto.com", password=hash_password("1234"),photo_url="/uploads/avatars/user_1.png", center_id=1),
+        User(name="Test User", email="user@resto.com", password=hash_password("1234"),photo_url="/uploads/avatars/user_2.png", center_id=2),
     ]
 
     stocks = [

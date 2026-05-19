@@ -1,8 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from app.api.http_request import router
 from app.database.connection import Base, engine
 from app.database.seed import seed
+from pathlib import Path
+
+# Chemin absolu vers uploads/
+BASE_DIR = Path(__file__).resolve().parent.parent.parent  # remonte à la racine du projet
+UPLOADS_DIR = BASE_DIR / "uploads"
 
 
 Base.metadata.drop_all(bind=engine)
@@ -24,6 +30,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Servir les fichiers statiques (images)
+app.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
 
 # Include API routes
 app.include_router(router, prefix="/api")

@@ -4,8 +4,18 @@ import Navbar from "@/components/navbar/navbar";
 import { useEffect, useState } from 'react';
 
 export default function Equipement() {
+  // Définis l'interface
+  interface Equipement {
+      id: number;
+      reference: string;
+      name: string;
+      categorie: string;
+      quantity: number;
+  }
 
-  const [equipementList, setEquipementList] = useState([]);
+  // Typage du useState
+  const [equipementList, setEquipementList] = useState<Equipement[]>([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
