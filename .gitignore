@@ -9,6 +9,9 @@ venv/
 dist/
 build/
 
+# uploads
+uploads/
+
 # Alembic
 alembic/versions/*.pyc
 
@@ -30,3 +33,4 @@ dist/
 build/
 .env.local
 .env.production
+
