@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: "RestoConnect",
   description: "RestoConnect app for center management",
   icons : {
-    icon: "/logo_restoconnect.png"
+    icon: "/logo_restoConnect.ico"
   }
 };
 
