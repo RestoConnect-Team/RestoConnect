@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 
 from .connection_function import login, LoginRequest, LoginResponse
 from .equipement_liste_function import get_user_equipement_liste_from_his_center, Equipement
-from .profil_function import get_user_profil
+from .profil_function import get_user_profil, Profil
+from .center_list_function import get_list_centers, CenterResponse
 
 from app.database.connection import get_db
 
@@ -17,6 +18,10 @@ def login_endpoint(credentials: LoginRequest, response: Response, db: Session = 
 def stock_list_endpoint(token: str = Cookie(default=None), db: Session = Depends(get_db)):
     return get_user_equipement_liste_from_his_center(token, db)
 
-@router.get("/profil", response_model=None)
+@router.get("/profil", response_model=Profil)
 def profil_endpoint(token: str = Cookie(default=None), db: Session = Depends(get_db)):
     return get_user_profil(token, db)
+
+@router.get("/list_centers", response_model=list[CenterResponse])
+def list_centers_endpoint(token: str = Cookie(default=None), db: Session = Depends(get_db)):
+    return get_list_centers(token, db)

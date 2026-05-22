@@ -1,6 +1,11 @@
+"use client"; 
+
 import Navbar from "@/components/navbar/navbar";
+import { useEffect, useState } from 'react';
 
 export default function MyCenter() {
+  
+
   return (
     <div className="main">
       <Navbar />

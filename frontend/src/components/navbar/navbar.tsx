@@ -17,8 +17,8 @@ export default function Navbar() {
           Mon centre 
         </Link>
         <Link
-          href="/association_center"
-          className={`text-sm font-medium transition-colors pb-2 ${isActive('/association_center')}`}
+          href="/all_centers"
+          className={`text-sm font-medium transition-colors pb-2 ${isActive('/all_centers')}`}
         >
           Les centres
         </Link>
@@ -27,6 +27,12 @@ export default function Navbar() {
           className={`text-sm font-medium transition-colors pb-2 ${isActive('/equipement')}`}
         >
           Liste du matériel
+        </Link>
+        <Link
+          href="/vehicule"
+          className={`text-sm font-medium transition-colors pb-2 ${isActive('/vehicule')}`}
+        >
+          Liste des véhicules
         </Link>
         <Link
           href="/profil"

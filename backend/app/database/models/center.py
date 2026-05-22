@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, ForeignKey
 from ..connection import Base
 
 class Center(Base):
@@ -8,4 +8,6 @@ class Center(Base):
     location = Column(String)
     notification = Column(String)
     alerte = Column(String)
+    schedule = Column(String)
+
     

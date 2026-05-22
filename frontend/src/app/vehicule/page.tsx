@@ -1,12 +1,12 @@
 import Navbar from "@/components/navbar/navbar";
 
-export default function AssociationCenter() {
+export default function Vehicule() {
   return (
     <div className="main">
       <Navbar />
       <div className="title">
-        <h1>Liste des centres</h1>
-        Trouvez un centre d'accueil près de chez vous
+        <h1>Liste des véhicules du centre</h1>
+        Tableau de bord et aperçu général
       </div>
       <div className="nb-benevol">
       </div>
