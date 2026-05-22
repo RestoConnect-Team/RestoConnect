@@ -31,7 +31,7 @@ def get_list_centers(token: str, db: Session):
     query_center = (select(Center, User).join(User, User.center_id == Center.id).where(User.status == "responsable de centre"))
 
     centers = db.execute(query_center).all()
-    print(centers)
+  
     centersList = []
 
     for center, responsable in centers:
@@ -47,6 +47,6 @@ def get_list_centers(token: str, db: Session):
         )
         centersList.append(center_data)
     
-    print(centersList)
+
         
     return centersList
