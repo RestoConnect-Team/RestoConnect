@@ -6,6 +6,7 @@ from .equipement_liste_function import get_user_equipement_liste_from_his_center
 from .profil_function import get_user_profil, Profil
 from .center_list_function import get_list_centers, CenterResponse
 from .my_center_function import get_my_center_info, MyCenter
+from .vehicules_function import get_list_vehicules, VehiculeListResponse
 
 from app.database.connection import get_db
 
@@ -30,3 +31,7 @@ def list_centers_endpoint(token: str = Cookie(default=None), db: Session = Depen
 @router.get("/my_center",response_model=MyCenter)
 def get_my_center_info_endpoint(token: str = Cookie(default=None), db: Session = Depends(get_db)):
     return(get_my_center_info(token,db))
+
+@router.get("/list_vehicules", response_model=dict[str, list[VehiculeListResponse]])
+def list_vehicules_endpoint(token: str = Cookie(default=None), db: Session = Depends(get_db)):
+    return get_list_vehicules(token, db)
