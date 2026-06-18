@@ -1,79 +1,35 @@
 "use client"; 
 
+import { useFetchData } from '@/hooks/useFetchData';
+import { fetchCentersList, Center } from '@/lib/api/centers_list_info';
+
 import Navbar from "@/components/navbar/navbar";
-import { useEffect, useState } from 'react';
+import Title from "@/components/title/title";
+import PageError from "@/components/page_error/page_error";
+import Loading from "@/components/loading/loading";
 
 export default function AllCenters() {
-  // Définis l'interface
-  interface Center {
-    id: number;
-    name: string;
-    location: string;
-    alerte: string;
-    schedule: string;
-    responsable_name: string;
-    responsable_email: string;
-    responsable_number: string;
-  }
-
-  // Typage du useState
-  const [centersList, setCentersList] = useState<Center[]>([]);
-
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const fetchCentersList = async () => {
-      try {
-        const response = await fetch('http://localhost:8000/api/list_centers', {
-          method: 'GET',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-        });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.detail || 'Failed to fetch');
-        setCentersList(data);
-        console.log('Centers List:', data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Une erreur est survenue');
-        console.error('Error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCentersList();
-  }, []);
+  const { data, loading, error } = useFetchData<Center[]>(fetchCentersList);
+  const centersList = data ?? [];
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* Header Section */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Liste des centres</h1>
-          <p className="text-gray-600 text-lg">Trouvez un centre d'accueil près de chez vous</p>
-          <div className="h-1 w-20 bg-gradient-to-r from-[rgb(230,0,126)] to-[rgb(240,51,127)] rounded-full mt-4"></div>
-        </div>
+        <Title 
+          title="Liste des centres" 
+          subtitle="Trouvez un centre d'accueil près de chez vous"
+        />
 
         {/* Error State */}
         {error && (
-          <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 flex gap-3">
-            <span className="text-lg">⚠️</span>
-            <span>{error}</span>
-          </div>
+          <PageError page_error={error} />
         )}
 
         {/* Loading State */}
         {loading && (
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <div className="inline-block animate-spin mb-4">
-                <div className="w-12 h-12 border-4 border-gray-200 border-t-[rgb(230,0,126)] rounded-full"></div>
-              </div>
-              <p className="text-gray-600">Chargement des centres...</p>
-            </div>
-          </div>
+          <Loading loading_sentence="Chargement des centres..." />
         )}
 
         {/* Content State */}

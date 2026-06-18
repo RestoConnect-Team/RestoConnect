@@ -1,78 +1,37 @@
 "use client"; 
 
+
+import { useFetchData } from '@/hooks/useFetchData';
+import { fetchCenterInfo, Center } from "@/lib/api/my_center_info";
+
 import Navbar from "@/components/navbar/navbar";
-import { useEffect, useState } from 'react';
+
+import Title from "@/components/title/title";
+import PageError from "@/components/page_error/page_error";
+import Loading from "@/components/loading/loading";
+
 
 export default function MyCenter() {
-  interface MyCenter {
-    id: number;
-    name: string;
-    location: string;
-    alerte: string;
-    schedule: string;
-    responsable_name: string;
-    responsable_email: string;
-    responsable_number: string;
-  }
 
-  const [center, setCenter] = useState<MyCenter | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const fetchCenterInfo = async () => {
-      try {
-        const response = await fetch('http://localhost:8000/api/my_center', {
-          method: 'GET',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-        });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.detail || 'Failed to fetch');
-        setCenter(data);
-        console.log('My Center:', data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Une erreur est survenue');
-        console.error('Error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCenterInfo();
-  }, []);
+  const { data: center, loading, error } = useFetchData<Center>(fetchCenterInfo);
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Header Section */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Mon Centre d'accueil</h1>
-          <p className="text-gray-600 text-lg">Tableau de bord et informations de gestion</p>
-          <div className="h-1 w-20 bg-gradient-to-r from-[rgb(230,0,126)] to-[rgb(240,51,127)] rounded-full mt-4"></div>
-        </div>
+        <Title title="Mon Centre d'accueil" subtitle="Tableau de bord et informations de gestion" />
 
         {/* Error State */}
         {error && (
-          <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 flex gap-3">
-            <span className="text-lg">⚠️</span>
-            <span>{error}</span>
-          </div>
+          <PageError page_error={error} />
         )}
 
         {/* Loading State */}
         {loading && (
-          <div className="flex items-center justify-center py-16">
-            <div className="text-center">
-              <div className="inline-block animate-spin mb-4">
-                <div className="w-12 h-12 border-4 border-gray-200 border-t-[rgb(230,0,126)] rounded-full"></div>
-              </div>
-              <p className="text-gray-600">Chargement des informations...</p>
-            </div>
-          </div>
+          <Loading loading_sentence="Chargement des informations du centre..."/>
         )}
-
+        
         {/* Content State */}
         {!loading && center && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

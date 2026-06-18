@@ -1,76 +1,32 @@
 "use client"; 
 
+import { useFetchData } from '@/hooks/useFetchData';
+import { fetchEquipementList, EquipementItem } from '@/lib/api/equipements_list_info';
+
 import Navbar from "@/components/navbar/navbar";
-import { useEffect, useState } from 'react';
+import Title from "@/components/title/title";
+import PageError from "@/components/page_error/page_error";
+import Loading from "@/components/loading/loading";
 
 export default function Equipement() {
-  // Définis l'interface
-  interface Equipement {
-      id: number;
-      reference: string;
-      name: string;
-      categorie: string;
-      quantity: number;
-  }
-
-  // Typage du useState
-  const [equipementList, setEquipementList] = useState<Equipement[]>([]);
-
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-      const fetchEquipementList = async () => {
-          try {
-              const response = await fetch('http://localhost:8000/api/stock_list', {
-                  method: 'GET',
-                  credentials: 'include', 
-                  headers: { 'Content-Type': 'application/json' },
-              });
-              const data = await response.json();
-              if (!response.ok) throw new Error(data.detail || 'Failed to fetch');
-              setEquipementList(data);
-              console.log('Equipement List:', data, 'equipementListdelapage:', equipementList);
-          } catch (err) {
-              setError(err instanceof Error ? err.message : 'Une erreur est survenue');
-              console.error('Error:', err);
-          } finally {
-              setLoading(false);
-          }
-      };
-
-      fetchEquipementList();
-  }, []);
+  const { data, loading, error } = useFetchData<EquipementItem[]>(fetchEquipementList);
+  const equipementList = data ?? [];
   
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* Header Section */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Gestion du matériel</h1>
-          <p className="text-gray-600 text-lg">Inventaire des consommables et équipements</p>
-          <div className="h-1 w-20 bg-gradient-to-r from-[rgb(230,0,126)] to-[rgb(240,51,127)] rounded-full mt-4"></div>
-        </div>
+        <Title title="Gestion du matériel" subtitle="Inventaire des consommables et équipements" />
 
         {/* Error State */}
         {error && (
-          <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 flex gap-3">
-            <span className="text-lg">⚠️</span>
-            <span>{error}</span>
-          </div>
+          <PageError page_error={error} />
         )}
 
         {/* Loading State */}
         {loading && (
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <div className="inline-block animate-spin mb-4">
-                <div className="w-12 h-12 border-4 border-gray-200 border-t-[rgb(230,0,126)] rounded-full"></div>
-              </div>
-              <p className="text-gray-600">Chargement des équipements...</p>
-            </div>
-          </div>
+          <Loading loading_sentence="Chargement des équipements..." />
         )}
 
         {/* Content State */}

@@ -1,56 +1,68 @@
 "use client";
 
+import { useMemo, useState } from 'react';
+
+import { useFetchData } from '@/hooks/useFetchData';
+import { fetchVehiculeList, VehiculeItem, VehiculeData } from '@/lib/api/vehicules_list_info';
+
 import Navbar from "@/components/navbar/navbar";
-import { useEffect, useState } from 'react';
+import Title from "@/components/title/title";
+import PageError from "@/components/page_error/page_error";
+import Loading from "@/components/loading/loading";
+import SearchBar, { FilterOption } from "@/components/searchbar/searchbar";
 
 export default function Vehicule() {
-  // Définis l'interface
-  interface VehiculeItem {
-    id: number;
-    name: string;
-    location: string;
-    center_name: string;
-    responsable_name: string;
-    responsable_email: string;
-    has_documents: boolean;
-  }
+  const { data, loading, error } = useFetchData<VehiculeData>(fetchVehiculeList);
+  const vehiculesData = data ?? { vehicules_center: [], vehicules_other: [] };
 
-  interface VehiculeData {
-    vehicules_center: VehiculeItem[];
-    vehicules_other: VehiculeItem[];
-  }
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilters, setActiveFilters] = useState<Record<string, any>>({});
 
-  // Typage du useState
-  const [vehiculesData, setVehiculesData] = useState<VehiculeData>({
-    vehicules_center: [],
-    vehicules_other: []
-  });
+  // id 'category' pour matcher le vrai champ de VehiculeItem
+  // (ton ancien 'type' ne correspondait à rien dans tes données)
+  const filters: FilterOption[] = [
+    {
+      id: 'category',
+      label: 'Type de véhicule',
+      type: 'checkbox',
+      options: [
+        { value: 'Catégorie 1', label: 'Catégorie 1' },
+        { value: 'Catégorie 2', label: 'Catégorie 2' },
+        { value: 'Catégorie 3', label: 'Catégorie 3' },
+      ],
+    },
+  ];
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const handleSearch = (query: string, selectedFilters: Record<string, any>) => {
+    setSearchQuery(query);
+    setActiveFilters(selectedFilters);
+  };
 
-  useEffect(() => {
-    const fetchVehicules = async () => {
-      try {
-        const response = await fetch('http://localhost:8000/api/list_vehicules', {
-          method: 'GET',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-        });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.detail || 'Failed to fetch');
-        setVehiculesData(data);
-        console.log('Vehicules List:', data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Une erreur est survenue');
-        console.error('Error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Filtrage appliqué à un tableau de véhicules
+  const filterVehicules = (list: VehiculeItem[]) =>
+    list.filter((v) => {
+      const matchesQuery =
+        !searchQuery ||
+        v.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        v.center_name.toLowerCase().includes(searchQuery.toLowerCase());
 
-    fetchVehicules();
-  }, []);
+      const matchesCategory =
+        !activeFilters.category?.length ||
+        activeFilters.category.includes(v.category);
+
+      return matchesQuery && matchesCategory;
+    });
+
+  // Recalculées seulement quand les données, la recherche ou les filtres changent
+  const filteredCenter = useMemo(
+    () => filterVehicules(vehiculesData.vehicules_center),
+    [vehiculesData.vehicules_center, searchQuery, activeFilters]
+  );
+
+  const filteredOther = useMemo(
+    () => filterVehicules(vehiculesData.vehicules_other),
+    [vehiculesData.vehicules_other, searchQuery, activeFilters]
+  );
 
   const VehiculeCard = ({ vehicule, isCenterVehicule }: { vehicule: VehiculeItem; isCenterVehicule: boolean }) => (
     <div
@@ -138,41 +150,34 @@ export default function Vehicule() {
       <Navbar />
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* Header Section */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Liste des véhicules</h1>
-          <p className="text-gray-600 text-lg">Gérez les véhicules de votre centre</p>
-          <div className="h-1 w-20 bg-gradient-to-r from-[rgb(230,0,126)] to-[rgb(240,51,127)] rounded-full mt-4"></div>
-        </div>
-
+        <Title 
+          title="Liste des véhicules" 
+          subtitle="Gérez les véhicules de votre centre"
+        />
         {/* Error State */}
         {error && (
-          <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 flex gap-3">
-            <span className="text-lg">⚠️</span>
-            <span>{error}</span>
-          </div>
+          <PageError page_error={error} />
         )}
-
         {/* Loading State */}
         {loading && (
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <div className="inline-block animate-spin mb-4">
-                <div className="w-12 h-12 border-4 border-gray-200 border-t-[rgb(230,0,126)] rounded-full"></div>
-              </div>
-              <p className="text-gray-600">Chargement des véhicules...</p>
-            </div>
-          </div>
+          <Loading loading_sentence="Chargement des véhicules..." />
         )}
+        {/* Search Bar */}
+        <SearchBar
+          placeholder="Chercher un véhicule..."
+          filters={filters}
+          onSearch={handleSearch}
+        />
 
         {/* Vehicules de mon centre */}
-        {!loading && vehiculesData.vehicules_center.length > 0 && (
+        {!loading && filteredCenter.length > 0 && (
           <div className="mb-12">
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">🎯 Véhicules de mon centre</h2>
               <p className="text-gray-600">Les véhicules assignés à votre centre</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {vehiculesData.vehicules_center.map((vehicule) => (
+              {filteredCenter.map((vehicule) => (
                 <VehiculeCard key={vehicule.id} vehicule={vehicule} isCenterVehicule={true} />
               ))}
             </div>
@@ -180,14 +185,14 @@ export default function Vehicule() {
         )}
 
         {/* Autres véhicules */}
-        {!loading && vehiculesData.vehicules_other.length > 0 && (
+        {!loading && filteredOther.length > 0 && (
           <div className="mb-12">
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-2">📦 Autres véhicules</h2>
               <p className="text-gray-600">Les véhicules d'autres centres</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {vehiculesData.vehicules_other.map((vehicule) => (
+              {filteredOther.map((vehicule) => (
                 <VehiculeCard key={vehicule.id} vehicule={vehicule} isCenterVehicule={false} />
               ))}
             </div>
@@ -195,7 +200,7 @@ export default function Vehicule() {
         )}
 
         {/* Empty State */}
-        {!loading && vehiculesData.vehicules_center.length === 0 && vehiculesData.vehicules_other.length === 0 && !error && (
+        {!loading && filteredCenter.length === 0 && filteredOther.length === 0 && !error && (
           <div className="text-center py-16">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
               <span className="text-3xl">🚗</span>
@@ -210,18 +215,18 @@ export default function Vehicule() {
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-[rgb(230,0,126)]">
               <p className="text-gray-600 text-sm font-medium mb-2">Véhicules du centre</p>
-              <p className="text-3xl font-bold text-gray-900">{vehiculesData.vehicules_center.length}</p>
+              <p className="text-3xl font-bold text-gray-900">{filteredCenter.length}</p>
             </div>
             <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-[rgb(240,51,127)]">
               <p className="text-gray-600 text-sm font-medium mb-2">Avec documents</p>
               <p className="text-3xl font-bold text-gray-900">
-                {vehiculesData.vehicules_center.filter(v => v.has_documents).length}
+                {filteredCenter.filter(v => v.has_documents).length}
               </p>
             </div>
             <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-[rgb(200,0,100)]">
               <p className="text-gray-600 text-sm font-medium mb-2">Autres véhicules</p>
               <p className="text-3xl font-bold text-gray-900">
-                {vehiculesData.vehicules_other.length}
+                {filteredOther.length}
               </p>
             </div>
           </div>

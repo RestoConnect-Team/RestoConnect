@@ -38,11 +38,11 @@ def seed():
     ]
 
     vehicules = [
-        Vehicule(name="Véhicule 1", location="Location Véhicule 1", alerte="Alerte 1", center_id=1, user_id=3),
-        Vehicule(name="Véhicule 2", location="Location Véhicule 2", alerte="Alerte 2", center_id=1, user_id=5),
-        Vehicule(name="Véhicule 3", location="Location Véhicule 3", alerte="Alerte 3", center_id=2, user_id=4),
-        Vehicule(name="Véhicule 4", location="Location Véhicule 4", alerte="Alerte 4", center_id=2, user_id=None),
-        Vehicule(name="Véhicule 5", location="Location Véhicule 5", alerte="Alerte 5", center_id=1, user_id=None)
+        Vehicule(name="Véhicule 1", location="Location Véhicule 1", alerte="Alerte 1", category="Catégorie 1", center_id=1, user_id=3),
+        Vehicule(name="Véhicule 2", location="Location Véhicule 2", alerte="Alerte 2", category="Catégorie 2", center_id=1, user_id=5),
+        Vehicule(name="Véhicule 3", location="Location Véhicule 3", alerte="Alerte 3", category="Catégorie 1", center_id=2, user_id=4),
+        Vehicule(name="Véhicule 4", location="Location Véhicule 4", alerte="Alerte 4", category="Catégorie 3", center_id=2, user_id=None),
+        Vehicule(name="Véhicule 5", location="Location Véhicule 5", alerte="Alerte 5", category="Catégorie 2", center_id=1, user_id=None)
     ]
 
     vehicule_documents = [

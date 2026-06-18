@@ -10,6 +10,8 @@ class Vehicule(Base):
     name = Column(String)
     location = Column(String)
     alerte = Column(String)
+    category = Column(String)
+
 
     center_id = Column(Integer, ForeignKey('center.id'))
     center = relationship("Center")
