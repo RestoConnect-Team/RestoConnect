@@ -4,21 +4,29 @@
 import { useFetchData } from '@/hooks/useFetchData';
 import { fetchProfilInfo, Profile } from "@/lib/api/my_profil_info";
 
-
+import { 
+  Button, buttonVariants
+} from "@/components/figma_imports/button";
 
 import Navbar from "@/components/navbar/navbar";
 import Title from "@/components/title/title";
 import PageError from "@/components/page_error/page_error";
 import Loading from "@/components/loading/loading";
+import WhiteButton from "@/components/button/white_button";
+import PinkButton from "@/components/button/pink_button";
 
 export default function Profil() {
 
   const { data: profil, loading, error } = useFetchData<Profile>(fetchProfilInfo);
 
+  
+
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
+
+      
 
       <div className="max-w-7xl mx-auto px-4 py-12">
 
@@ -40,6 +48,8 @@ export default function Profil() {
 
         {/* Content State */}
         {!loading && profil && (
+
+          /*Créer moi un bouton ici avec le fichier Button */
           <div className="space-y-8">
             {/* Profile Header Card */}
             <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
@@ -72,12 +82,7 @@ export default function Profil() {
 
                   {/* Action Buttons */}
                   <div className="flex flex-col gap-3 w-full md:w-auto">
-                    <button className="w-full md:w-40 py-2 px-4 bg-[rgb(230,0,126)] text-white font-medium rounded-lg hover:opacity-90 transition-opacity">
-                      Modifier
-                    </button>
-                    <button className="w-full md:w-40 py-2 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">
-                      Paramètres
-                    </button>
+                    <PinkButton text="Modifier" />
                   </div>
                 </div>
               </div>
