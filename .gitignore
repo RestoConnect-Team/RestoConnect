@@ -8,6 +8,8 @@ venv/
 *.egg-info/
 dist/
 build/
+.venv/
+__venv__/
 
 # uploads
 uploads/

@@ -4,8 +4,6 @@
 import { useFetchData } from '@/hooks/useFetchData';
 import { fetchCenterInfo, Center } from "@/lib/api/my_center_info";
 
-import Navbar from "@/components/navbar/navbar";
-
 import Title from "@/components/title/title";
 import PageError from "@/components/page_error/page_error";
 import Loading from "@/components/loading/loading";
@@ -17,7 +15,6 @@ export default function MyCenter() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Header Section */}
         <Title title="Mon Centre d'accueil" subtitle="Tableau de bord et informations de gestion" />
