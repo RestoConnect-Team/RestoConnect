@@ -46,6 +46,8 @@ export default function Profil() {
           <Loading loading_sentence="Chargement du profil..."/>
         )}
 
+        
+
         {/* Content State */}
         {!loading && profil && (
 
@@ -83,6 +85,7 @@ export default function Profil() {
                   {/* Action Buttons */}
                   <div className="flex flex-col gap-3 w-full md:w-auto">
                     <PinkButton text="Modifier" />
+                    <Button />
                   </div>
                 </div>
               </div>

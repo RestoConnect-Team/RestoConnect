@@ -1,11 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from app.api.http_request import router
+
+from app.api.router import api_router
+
 from app.database.connection import Base, engine
 from app.database.seed import seed
 
-from app.config import UPLOADS_DIR, DATABASE_URL
+from app.core.config import UPLOADS_DIR, DATABASE_URL
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine.url import make_url
@@ -75,7 +77,7 @@ app.add_middleware(
 app.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
 
 # Include API routes
-app.include_router(router, prefix="/api")
+app.include_router(api_router, prefix="/api")
 
 @app.get("/")
 def root():

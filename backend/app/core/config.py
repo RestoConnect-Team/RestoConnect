@@ -9,10 +9,13 @@ load_dotenv()
 # ------------------------
 # Racine du projet
 # ------------------------
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 # Chemin absolu vers uploads/
-REAL_BASE_DIR = Path(__file__).resolve().parent.parent.parent  # remonte à la racine du projet
+REAL_BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent  # remonte à la racine du projet
 UPLOADS_DIR = REAL_BASE_DIR / "uploads"
+
+# Chemin vers ...
+BASE_URL = "http://localhost:8000"
