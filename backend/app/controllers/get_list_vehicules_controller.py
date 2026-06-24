@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from app.services import get_user_by_token, get_list_vehicules_service
-from app.schemas import VehiculeSchema, VehiculeListGrouped
+from app.schemas import OneVehiculeFromList, VehiculeListGrouped
 
 
 def get_list_vehicules(token: str, db: Session) -> VehiculeListGrouped:
@@ -12,18 +12,17 @@ def get_list_vehicules(token: str, db: Session) -> VehiculeListGrouped:
 
     results = get_list_vehicules_service(db)
 
-    vehicules_center: list[VehiculeSchema] = []
-    vehicules_other: list[VehiculeSchema] = []
+    vehicules_center: list[OneVehiculeFromList] = []
+    vehicules_other: list[OneVehiculeFromList] = []
 
     for vehicule, document_count in results:
-        vehicule_data = VehiculeSchema(
+        vehicule_data = OneVehiculeFromList(
             id=vehicule.id,
             name=vehicule.name,
-            location=vehicule.location,
+            immatriculation=vehicule.immatriculation,
             center_name=vehicule.center.name if vehicule.center else None,
-            responsable_name=vehicule.user.name if vehicule.user else None,
-            responsable_email=vehicule.user.email if vehicule.user else None,
-            has_documents=document_count > 0,
+            category=vehicule.category,
+            status=vehicule.status
         )
 
         if vehicule.center_id == user.center_id:
