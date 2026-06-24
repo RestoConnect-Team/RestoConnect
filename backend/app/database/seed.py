@@ -1,5 +1,8 @@
+from datetime import date
+
 from .connection import SessionLocal
 from .models import User, Stock, Center, Vehicule, VehiculeDocument
+from app.enums import VehiculeCategory, VehiculeStatus
 
 #crypt context for password hashing
 import bcrypt
@@ -38,11 +41,71 @@ def seed():
     ]
 
     vehicules = [
-        Vehicule(name="Véhicule 1", location="Location Véhicule 1", alerte="Alerte 1", category="Catégorie 1", center_id=1, user_id=3),
-        Vehicule(name="Véhicule 2", location="Location Véhicule 2", alerte="Alerte 2", category="Catégorie 2", center_id=1, user_id=5),
-        Vehicule(name="Véhicule 3", location="Location Véhicule 3", alerte="Alerte 3", category="Catégorie 1", center_id=2, user_id=4),
-        Vehicule(name="Véhicule 4", location="Location Véhicule 4", alerte="Alerte 4", category="Catégorie 3", center_id=2, user_id=None),
-        Vehicule(name="Véhicule 5", location="Location Véhicule 5", alerte="Alerte 5", category="Catégorie 2", center_id=1, user_id=None)
+        Vehicule(
+        name="Véhicule 1",
+        immatriculation="AA-123-AA",
+        category=VehiculeCategory.VOITURE,
+        status=VehiculeStatus.IN_SERVICE,
+        nb_km=120000,
+        last_technical_inspection_date=date(2025, 6, 1),
+        next_technical_inspection_date=date(2026, 6, 1),
+        last_service_date=date(2025, 3, 10),
+        next_service_date=date(2025, 9, 10),
+        center_id=1,
+        user_id=3
+        ),
+        Vehicule(
+        name="Véhicule 2",
+        immatriculation="BB-456-BB",
+        category=VehiculeCategory.CAMION,
+        status=VehiculeStatus.IN_MAINTENANCE,
+        nb_km=150000,
+        last_technical_inspection_date=date(2025, 6, 1),
+        next_technical_inspection_date=date(2026, 6, 1),
+        last_service_date=date(2025, 3, 10),
+        next_service_date=date(2025, 9, 10),
+        center_id=1,
+        user_id=5
+        ),
+        Vehicule(
+        name="Véhicule 3",
+        immatriculation="CC-789-CC",
+        category=VehiculeCategory.VOITURE,
+        status=VehiculeStatus.IN_SERVICE,
+        nb_km=90000,
+        last_technical_inspection_date=date(2025, 6, 1),
+        next_technical_inspection_date=date(2026, 6, 1),
+        last_service_date=date(2025, 3, 10),
+        next_service_date=date(2025, 9, 10),
+        center_id=2,
+        user_id=4
+        ),
+        Vehicule(
+        name="Véhicule 4",
+        immatriculation="DD-012-DD",
+        category=VehiculeCategory.UTILITAIRE,
+        status=VehiculeStatus.OUT_OF_SERVICE,
+        nb_km=200000,
+        last_technical_inspection_date=date(2025, 6, 1),
+        next_technical_inspection_date=date(2026, 6, 1),
+        last_service_date=date(2025, 3, 10),
+        next_service_date=date(2025, 9, 10),
+        center_id=2,
+        user_id=None
+        ),
+        Vehicule(
+        name="Véhicule 5",
+        immatriculation="EE-345-EE",
+        category=VehiculeCategory.FOURGON,
+        status=VehiculeStatus.UNDER_REPAIR,
+        nb_km=10000,
+        last_technical_inspection_date=date(2025, 6, 1),
+        next_technical_inspection_date=date(2026, 6, 1),
+        last_service_date=date(2025, 3, 10),
+        next_service_date=date(2025, 9, 10),
+        center_id=1,
+        user_id=FileNotFoundError
+        )
     ]
 
     vehicule_documents = [

@@ -1,7 +1,10 @@
 
-from sqlalchemy import Column, Integer, String, ForeignKey, Date
+from sqlalchemy import Column, Integer, String, ForeignKey, Date, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from ..connection import Base
+from app.enums import VehiculeCategory, VehiculeStatus
+
+
 
 
 
@@ -12,8 +15,8 @@ class Vehicule(Base):
 
     name = Column(String)
     immatriculation = Column(String, unique=True)
-    category = Column(String) # à choisir parmis frigorifique, plateau, fourgon, voiture, camion, utilitaire, benne, citerne, remorque, semi-remorque
-    status = Column(String) # à choisir parmis en service, en maintenance, en réparation, hors service
+    category = Column(SQLEnum(VehiculeCategory))
+    status = Column(SQLEnum(VehiculeStatus))
 
     nb_km = Column(Integer)
     # Pour le contrôle technique
