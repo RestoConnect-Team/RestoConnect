@@ -1,38 +1,22 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { ClientLayout } from "@/components/layout";
 
 export const metadata: Metadata = {
   title: "RestoConnect",
   description: "RestoConnect app for center management",
-  icons : {
-    icon: "/logo_restoConnect.ico"
-  }
+  icons: {
+    icon: "/logo_restoConnect.ico",
+  },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">
-        {children}
+    <html lang="en" className="h-full antialiased">
+      <body className="min-h-screen">
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );
