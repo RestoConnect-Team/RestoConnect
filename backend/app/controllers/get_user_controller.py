@@ -1,26 +1,17 @@
 from fastapi import HTTPException
-
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.services import get_user_by_token
+from app.schemas import UserProfile
+from app.core.config import BASE_URL
 
 
-
-from app.database.models import User
-
-
-
-
-def get_user_profil(token: str, db: Session):
-    user = db.scalar(
-        select(User).where(User.token == token)
-    )
+def get_user_profile(token: str, db: Session) -> UserProfile:
+    user = get_user_by_token(db, token)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")
-    
-    user_center = user.center
 
-    profil = Profil(
+    return UserProfile(
         id=user.id,
         name=user.name,
         lastname=user.lastname,
@@ -32,8 +23,6 @@ def get_user_profil(token: str, db: Session):
         status=user.status,
         created_at=user.created_at,
         updated_at=user.updated_at,
-        photo_url = f"http://localhost:8000{user.photo_url}" if user.photo_url else None,
-        center=user_center.name
+        photo_url=f"{BASE_URL}{user.photo_url}" if user.photo_url else None,
+        center=user.center.name,
     )
-
-    return(profil)
