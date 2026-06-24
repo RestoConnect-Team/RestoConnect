@@ -32,6 +32,6 @@ def list_centers_endpoint(token: str = Cookie(default=None), db: Session = Depen
 def get_my_center_info_endpoint(token: str = Cookie(default=None), db: Session = Depends(get_db)):
     return(get_my_center_info(token,db))
 
-@router.get("/list_vehicules", response_model=dict[str, list[VehiculeListResponse]])
-def list_vehicules_endpoint(token: str = Cookie(default=None), db: Session = Depends(get_db)):
-    return get_list_vehicules(token, db)
+# @router.get("/list_vehicules", response_model=dict[str, list[VehiculeListResponse]])
+# def list_vehicules_endpoint(token: str = Cookie(default=None), db: Session = Depends(get_db)):
+#     return get_list_vehicules(token, db)
