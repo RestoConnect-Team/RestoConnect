@@ -7,7 +7,7 @@ RestoConnect is a web application designed to help manage the different centers 
 The application aims to centralize and simplify the management of association centers by providing the following features:
 
 - Maintain and track inventory across different centers  
-- Manage association vehicles  
+- Manage association Vehicules  
 - Allow centers to request new equipment  
 - Share and consult news from each center  
 - Monitor and view information about other centers  

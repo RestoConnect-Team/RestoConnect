@@ -1,6 +1,6 @@
 from enum import Enum
 
-class VehicleCategory(str, Enum):
+class VehiculeCategory(str, Enum):
     FRIGORIFIQUE = "frigorifique"
     PLATEAU = "plateau"
     FOURGON = "fourgon"

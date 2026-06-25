@@ -21,7 +21,7 @@ class Vehicule(Base):
     nb_km = Column(Integer)
     # Pour le contrôle technique
     last_technical_inspection_date = Column(Date)
-    next_technical_inspection_date = Column(Date, nullable=True)
+    next_technical_inspection_date = Column(Date)
     # Pour la révision
     last_service_date = Column(Date, nullable=True)
     next_service_date = Column(Date, nullable=True)
