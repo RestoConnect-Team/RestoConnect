@@ -104,16 +104,53 @@ def seed():
         last_service_date=date(2025, 3, 10),
         next_service_date=date(2025, 9, 10),
         center_id=1,
-        user_id=FileNotFoundError
+        user_id=None
         )
     ]
 
     vehicule_documents = [
-        VehiculeDocument(filename="document1.pdf", file_url="/uploads/vehicule_documents/document1.pdf", vehicule_id=1),
-        VehiculeDocument(filename="document2.pdf", file_url="/uploads/vehicule_documents/document2.pdf", vehicule_id=1),
-        VehiculeDocument(filename="document3.pdf", file_url="/uploads/vehicule_documents/document3.pdf", vehicule_id=2),
-        VehiculeDocument(filename="document4.pdf", file_url="/uploads/vehicule_documents/document4.pdf", vehicule_id=3),
-        VehiculeDocument(filename="document5.pdf", file_url="/uploads/vehicule_documents/document5.pdf", vehicule_id=5)
+        VehiculeDocument(
+            file_name="document1.pdf",
+            description="Description du document 1",
+            upload_date="2026-01-01",
+            file_date = "2026-01-01",
+            expiration_date="2027-01-01",
+            file_url="/uploads/vehicule_documents/document1.pdf",
+            vehicule_id=1
+            ),
+        VehiculeDocument(
+            file_name="document2.pdf",
+            description="Description du document 2",
+            upload_date="2025-08-01",
+            file_date = "2025-01-01",
+            expiration_date="2026-01-01",
+            file_url="/uploads/vehicule_documents/document2.pdf",
+            vehicule_id=1
+            ),
+        VehiculeDocument(
+            file_name="document3.pdf",
+            description="",
+            upload_date="2026-01-01",
+            file_date = "2026-01-01",
+            expiration_date="2027-01-01",
+            file_url="/uploads/vehicule_documents/document3.pdf", 
+            vehicule_id=2),
+        VehiculeDocument(
+            file_name="document4.pdf",
+            description="Description du document 4",
+            upload_date="2026-01-01",
+            file_date = "2026-01-01",
+            expiration_date="2026-08-01",
+            file_url="/uploads/vehicule_documents/document4.pdf",
+            vehicule_id=3),
+        VehiculeDocument(
+            file_name="document5.pdf",
+            description="Description du document 5",
+            upload_date="2026-01-01",
+            file_date = "2026-01-01",
+            expiration_date="2027-01-01",
+            file_url="/uploads/vehicule_documents/document5.pdf",
+            vehicule_id=5)
     ]
 
     db.add_all(users)

@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from backend.app.schemas import VehiculeAlert, VehiculeInfos
+from app.schemas import VehiculeAlert, VehiculeInfos
 from pydantic import BaseModel
 
 
