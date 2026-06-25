@@ -28,7 +28,7 @@ export function Header({
   const initials = getInitials(profile);
 
   return (
-    <header className="bg-[var(--card)] border-b border-[var(--border)] px-4 lg:px-6 h-14 flex items-center gap-3 sticky top-0 z-30">
+    <header className="bg-[var(--card)]/95 backdrop-blur border-b border-[var(--border)] px-4 lg:px-6 h-14 flex items-center gap-3 sticky top-0 z-30 shrink-0">
       <button
         onClick={onMenuOpen}
         className="lg:hidden p-2 -ml-2 rounded-lg hover:bg-[var(--muted)]"

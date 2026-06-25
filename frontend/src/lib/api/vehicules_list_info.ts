@@ -1,13 +1,11 @@
 export interface VehiculeItem {
-    id: number;
-    name: string;
-    location: string;
-    center_name: string;
-    category: string;
-    responsable_name: string;
-    responsable_email: string;
-    has_documents: boolean;
-  }
+  id: number;
+  name: string;
+  immatriculation: string | null;
+  center_name: string | null;
+  category: string | null;
+  status: string | null;
+}
 
 export interface VehiculeData {
   vehicules_center: VehiculeItem[];
@@ -15,16 +13,16 @@ export interface VehiculeData {
 }
 
 export const fetchVehiculeList = async (): Promise<VehiculeData> => {
-    const response = await fetch('http://localhost:8000/api/list_vehicules', {
-        method: 'GET',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-    });
-    const data = await response.json();
+  const response = await fetch("http://localhost:8000/api/list_vehicules", {
+    method: "GET",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+  });
+  const data = await response.json();
 
-    if (!response.ok) {
-        throw new Error(data.detail || 'Failed to fetch vehicules');
-    }
+  if (!response.ok) {
+    throw new Error(data.detail || "Failed to fetch vehicules");
+  }
 
-    return data as VehiculeData;
+  return data as VehiculeData;
 };
