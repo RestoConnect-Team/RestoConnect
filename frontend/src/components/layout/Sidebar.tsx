@@ -36,7 +36,7 @@ export function Sidebar({ unread = 0 }: { unread?: number }) {
   const initials = getInitials(profile);
 
   return (
-    <aside className="flex flex-col w-64 shrink-0 bg-[var(--sidebar)] border-r border-[var(--sidebar-border)] h-screen sticky top-0 overflow-y-auto">
+    <aside className="flex flex-col w-64 shrink-0 bg-[var(--sidebar)] border-r border-[var(--sidebar-border)] h-full overflow-hidden">
       {/* Logo */}
       <div className="px-4 py-3 border-b border-[var(--sidebar-border)]">
         <Image

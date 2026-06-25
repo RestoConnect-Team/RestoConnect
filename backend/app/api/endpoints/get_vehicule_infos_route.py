@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.controllers import get_vehicule_infos_controller
+from app.controllers.get_vehicule_infos_controller import get_vehicule_infos_controller
 from app.schemas import VehiculeDetailResponse
 
 from app.database.connection import get_db

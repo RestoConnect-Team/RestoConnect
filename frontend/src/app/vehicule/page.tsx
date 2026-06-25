@@ -1,18 +1,45 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
+import { CheckCircle2, CircleAlert, Eye, Search } from "lucide-react";
 
 import { useFetchData } from "@/hooks/useFetchData";
 import {
   fetchVehiculeList,
-  VehiculeItem,
   VehiculeData,
+  VehiculeItem,
 } from "@/lib/api/vehicules_list_info";
 
-import Title from "@/components/title/title";
 import PageError from "@/components/page_error/page_error";
 import Loading from "@/components/loading/loading";
-import SearchBar, { FilterOption } from "@/components/searchbar/searchbar";
+
+type VehiculeRow = VehiculeItem & {
+  source: "center" | "other";
+  immatriculationLabel: string;
+  statusLabel: string;
+};
+
+function getStatusLabel(status: string | null): VehiculeRow["statusLabel"] {
+  if (!status) return "Non défini";
+  return status.charAt(0).toUpperCase() + status.slice(1);
+}
+
+function getStatusBadge(status: string | null) {
+  if (status === "en service") {
+    return {
+      className:
+        "inline-flex items-center gap-1.5 rounded-md border border-green-200 bg-green-50 px-3 py-1 text-green-700 font-medium",
+      Icon: CheckCircle2,
+    };
+  }
+
+  return {
+    className:
+      "inline-flex items-center gap-1.5 rounded-md border border-amber-300 bg-amber-50 px-3 py-1 text-amber-800 font-medium",
+    Icon: CircleAlert,
+  };
+}
 
 export default function Vehicule() {
   const { data, loading, error } =
@@ -20,270 +47,133 @@ export default function Vehicule() {
   const vehiculesData = data ?? { vehicules_center: [], vehicules_other: [] };
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilters, setActiveFilters] = useState<Record<string, any>>({});
 
-  // id 'category' pour matcher le vrai champ de VehiculeItem
-  // (ton ancien 'type' ne correspondait à rien dans tes données)
-  const filters: FilterOption[] = [
-    {
-      id: "category",
-      label: "Type de véhicule",
-      type: "checkbox",
-      options: [
-        { value: "Catégorie 1", label: "Catégorie 1" },
-        { value: "Catégorie 2", label: "Catégorie 2" },
-        { value: "Catégorie 3", label: "Catégorie 3" },
-      ],
-    },
-  ];
+  const rows = useMemo<VehiculeRow[]>(() => {
+    const centerRows = vehiculesData.vehicules_center.map((vehicule) => ({
+      ...vehicule,
+      source: "center" as const,
+      immatriculationLabel: vehicule.immatriculation || "Non renseignée",
+      statusLabel: getStatusLabel(vehicule.status),
+    }));
 
-  const handleSearch = (
-    query: string,
-    selectedFilters: Record<string, any>,
-  ) => {
-    setSearchQuery(query);
-    setActiveFilters(selectedFilters);
-  };
+    const otherRows = vehiculesData.vehicules_other.map((vehicule) => ({
+      ...vehicule,
+      source: "other" as const,
+      immatriculationLabel: vehicule.immatriculation || "Non renseignée",
+      statusLabel: getStatusLabel(vehicule.status),
+    }));
 
-  // Filtrage appliqué à un tableau de véhicules
-  const filterVehicules = (list: VehiculeItem[]) =>
-    list.filter((v) => {
-      const matchesQuery =
-        !searchQuery ||
-        v.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        v.center_name.toLowerCase().includes(searchQuery.toLowerCase());
+    return [...centerRows, ...otherRows];
+  }, [vehiculesData]);
 
-      const matchesCategory =
-        !activeFilters.category?.length ||
-        activeFilters.category.includes(v.category);
+  const filteredRows = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return rows;
 
-      return matchesQuery && matchesCategory;
+    return rows.filter((vehicule) => {
+      return (
+        vehicule.name.toLowerCase().includes(q) ||
+        vehicule.immatriculationLabel.toLowerCase().includes(q) ||
+        (vehicule.center_name || "").toLowerCase().includes(q) ||
+        (vehicule.category || "").toLowerCase().includes(q)
+      );
     });
-
-  // Recalculées seulement quand les données, la recherche ou les filtres changent
-  const filteredCenter = useMemo(
-    () => filterVehicules(vehiculesData.vehicules_center),
-    [vehiculesData.vehicules_center, searchQuery, activeFilters],
-  );
-
-  const filteredOther = useMemo(
-    () => filterVehicules(vehiculesData.vehicules_other),
-    [vehiculesData.vehicules_other, searchQuery, activeFilters],
-  );
-
-  const VehiculeCard = ({
-    vehicule,
-    isCenterVehicule,
-  }: {
-    vehicule: VehiculeItem;
-    isCenterVehicule: boolean;
-  }) => (
-    <div
-      className={`bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border ${
-        isCenterVehicule
-          ? "border-[rgb(230,0,126)] hover:border-[rgb(240,51,127)]"
-          : "border-gray-100 hover:border-[rgb(230,0,126)]"
-      }`}
-    >
-      {/* Card Header */}
-      <div
-        className={`h-2 ${
-          isCenterVehicule
-            ? "bg-gradient-to-r from-[rgb(230,0,126)] to-[rgb(240,51,127)]"
-            : "bg-gradient-to-r from-gray-300 to-gray-400"
-        }`}
-      ></div>
-
-      {/* Card Content */}
-      <div className="p-6">
-        <div className="flex items-start justify-between mb-4">
-          <h3 className="text-lg font-bold text-gray-900 line-clamp-2 flex-1">
-            {vehicule.name}
-          </h3>
-          {isCenterVehicule && (
-            <span className="ml-2 inline-block text-xs font-semibold px-3 py-1 rounded-full bg-[rgb(230,0,126)] text-white whitespace-nowrap">
-              Mon centre
-            </span>
-          )}
-        </div>
-
-        <div className="space-y-3">
-          <div className="flex items-start gap-3">
-            <span className="text-sm font-medium text-gray-500 w-24">
-              📍 Localisation:
-            </span>
-            <span className="text-sm text-gray-700">
-              {vehicule.location || "Non spécifiée"}
-            </span>
-          </div>
-
-          <div className="flex items-start gap-3">
-            <span className="text-sm font-medium text-gray-500 w-24">
-              🏢 Centre:
-            </span>
-            <span className="text-sm text-gray-700">
-              {vehicule.center_name || "Non assigné"}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-gray-500 w-24">
-              📄 Documents:
-            </span>
-            <span
-              className={`inline-block text-xs font-semibold px-3 py-1 rounded-full ${
-                vehicule.has_documents
-                  ? "bg-green-100 text-green-700"
-                  : "bg-gray-100 text-gray-600"
-              }`}
-            >
-              {vehicule.has_documents ? "✓ Oui" : "✗ Non"}
-            </span>
-          </div>
-        </div>
-
-        <hr className="my-4 border-gray-200" />
-
-        <div className="space-y-2 text-sm">
-          <p className="font-semibold text-gray-900">Responsable</p>
-          <p className="text-gray-700">
-            <strong>Nom:</strong> {vehicule.responsable_name || "Non assigné"}
-          </p>
-          <p className="text-gray-700">
-            <strong>Email:</strong>{" "}
-            {vehicule.responsable_email ? (
-              <a
-                href={`mailto:${vehicule.responsable_email}`}
-                className="text-[rgb(230,0,126)] hover:underline"
-              >
-                {vehicule.responsable_email}
-              </a>
-            ) : (
-              "Non assigné"
-            )}
-          </p>
-        </div>
-      </div>
-
-      {/* Card Footer */}
-      <div className="bg-gray-50 px-6 py-3 flex gap-3">
-        <button className="flex-1 py-2 px-3 bg-[rgb(230,0,126)] text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity">
-          Détails
-        </button>
-        <button className="flex-1 py-2 px-3 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-100 transition-colors">
-          Documents
-        </button>
-      </div>
-    </div>
-  );
+  }, [rows, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Header Section */}
-        <Title
-          title="Liste des véhicules"
-          subtitle="Gérez les véhicules de votre centre"
-        />
-        {/* Error State */}
+    <div className="min-h-screen bg-gray-100">
+      <div className="mx-auto w-full max-w-5xl px-4 py-10">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900 mb-5">
+          Véhicules
+        </h1>
+
         {error && <PageError page_error={error} />}
-        {/* Loading State */}
         {loading && <Loading loading_sentence="Chargement des véhicules..." />}
-        {/* Search Bar */}
-        <SearchBar
-          placeholder="Chercher un véhicule..."
-          filters={filters}
-          onSearch={handleSearch}
-        />
 
-        {/* Vehicules de mon centre */}
-        {!loading && filteredCenter.length > 0 && (
-          <div className="mb-12">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                🎯 Véhicules de mon centre
-              </h2>
-              <p className="text-gray-600">
-                Les véhicules assignés à votre centre
-              </p>
+        {!loading && !error && (
+          <>
+            <div className="relative mb-4">
+              <Search
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Rechercher par nom, immatriculation..."
+                className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[rgb(230,0,126)]/25"
+              />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredCenter.map((vehicule) => (
-                <VehiculeCard
-                  key={vehicule.id}
-                  vehicule={vehicule}
-                  isCenterVehicule={true}
-                />
-              ))}
-            </div>
-          </div>
-        )}
 
-        {/* Autres véhicules */}
-        {!loading && filteredOther.length > 0 && (
-          <div className="mb-12">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                📦 Autres véhicules
-              </h2>
-              <p className="text-gray-600">Les véhicules d'autres centres</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredOther.map((vehicule) => (
-                <VehiculeCard
-                  key={vehicule.id}
-                  vehicule={vehicule}
-                  isCenterVehicule={false}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Empty State */}
-        {!loading &&
-          filteredCenter.length === 0 &&
-          filteredOther.length === 0 &&
-          !error && (
-            <div className="text-center py-16">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-                <span className="text-3xl">🚗</span>
+            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[860px] text-sm">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wide text-xs">
+                      <th className="text-left px-4 py-3 font-semibold">Véhicule</th>
+                      <th className="text-left px-4 py-3 font-semibold">Immatriculation</th>
+                      <th className="text-left px-4 py-3 font-semibold">Type</th>
+                      <th className="text-left px-4 py-3 font-semibold">Centre</th>
+                      <th className="text-left px-4 py-3 font-semibold">Statut</th>
+                      <th className="text-left px-4 py-3 font-semibold">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredRows.map((vehicule) => (
+                      <tr
+                        key={`${vehicule.source}-${vehicule.id}`}
+                        className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50/70"
+                      >
+                        <td className="px-4 py-4 font-semibold text-slate-900">
+                          {vehicule.name}
+                        </td>
+                        <td className="px-4 py-4 text-slate-600">
+                          {vehicule.immatriculationLabel}
+                        </td>
+                        <td className="px-4 py-4 text-slate-600">
+                          {vehicule.category || "Non défini"}
+                        </td>
+                        <td
+                          className="px-4 py-4 text-slate-600 max-w-[180px] truncate"
+                          title={vehicule.center_name || "Non assigné"}
+                        >
+                          {vehicule.center_name || "Non assigné"}
+                        </td>
+                        <td className="px-4 py-4">
+                          {(() => {
+                            const badge = getStatusBadge(vehicule.status);
+                            const Icon = badge.Icon;
+                            return (
+                              <span className={badge.className}>
+                                <Icon size={14} />
+                                {vehicule.statusLabel}
+                              </span>
+                            );
+                          })()}
+                        </td>
+                        <td className="px-4 py-4">
+                          <Link
+                            href={`/vehicule/${vehicule.id}`}
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                            aria-label={`Voir ${vehicule.name}`}
+                          >
+                            <Eye size={16} />
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <p className="text-gray-600 text-lg">Aucun véhicule trouvé</p>
-              <p className="text-gray-500 text-sm mt-2">
-                Aucun véhicule disponible pour le moment
-              </p>
             </div>
-          )}
 
-        {/* Stats Section */}
-        {!loading && (
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-[rgb(230,0,126)]">
-              <p className="text-gray-600 text-sm font-medium mb-2">
-                Véhicules du centre
-              </p>
-              <p className="text-3xl font-bold text-gray-900">
-                {filteredCenter.length}
-              </p>
-            </div>
-            <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-[rgb(240,51,127)]">
-              <p className="text-gray-600 text-sm font-medium mb-2">
-                Avec documents
-              </p>
-              <p className="text-3xl font-bold text-gray-900">
-                {filteredCenter.filter((v) => v.has_documents).length}
-              </p>
-            </div>
-            <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-[rgb(200,0,100)]">
-              <p className="text-gray-600 text-sm font-medium mb-2">
-                Autres véhicules
-              </p>
-              <p className="text-3xl font-bold text-gray-900">
-                {filteredOther.length}
-              </p>
-            </div>
-          </div>
+            {filteredRows.length === 0 && (
+              <div className="text-center py-10 text-slate-500 text-sm">
+                Aucun véhicule trouvé pour cette recherche.
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
