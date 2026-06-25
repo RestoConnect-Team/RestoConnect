@@ -28,11 +28,56 @@ def seed():
     ]
 
     stocks = [
-        Stock(reference="REF001_c1", name="Produit 1", categorie="Catégorie 1", quantity=100, center_id=1),
-        Stock(reference="REF002_c1", name="Produit 2", categorie="Catégorie 2", quantity=50, center_id=1),
-        Stock(reference="REF001_c2", name="Produit 1", categorie="Catégorie 2", quantity=50, center_id=2),
-        Stock(reference="REF002_c2", name="Produit 2", categorie="Catégorie 2", quantity=50, center_id=2),
-        Stock(reference="REF003_c2", name="Produit 3", categorie="Catégorie 3", quantity=75, center_id=2)
+        Stock(
+            reference="REF001_c1",
+            name="Pc",
+            category="Informatique",
+            status = "Disponible",
+            qr_code = "",
+            creation_date = date(2025,1,1),
+            last_scan_date = date(2026,6,1),
+            center_id=1
+            ),
+        Stock(
+            reference="REF002_c1",
+            name="Frigo",
+            category="Réfrigéré",
+            status = "Disponible",
+            qr_code = "",
+            creation_date = date(2025,6,1),
+            last_scan_date = date(2026,6,1),
+            center_id=1
+            ),
+        Stock(
+            reference="REF001_c2",
+            name="Pc",
+            category="Informatique",
+            status = "Perdu",
+            qr_code = "",
+            creation_date = date(2025,1,1),
+            last_scan_date = date(2026,3,1),
+            center_id=2
+            ),
+        Stock(
+            reference="REF002_c2",
+            name="Frigo",
+            category="Réfrigéré",
+            status = "Disponible",
+            qr_code = "",
+            creation_date = date(2025,9,1),
+            last_scan_date = date(2026,4,1),
+            center_id=2
+            ),
+        Stock(
+            reference="REF003_c2",
+            name="Table",
+            category="Bureau",
+            status = "Disponible",
+            qr_code = "",
+            creation_date = date(2025,1,1),
+            last_scan_date = date(2026,6,1),
+            center_id=2
+            )
     ]
 
     centers = [

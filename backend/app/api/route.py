@@ -16,9 +16,9 @@ router = APIRouter()
 def login_endpoint(credentials: LoginRequest, response: Response, db: Session = Depends(get_db)):
     return login(credentials, response, db)
 
-@router.get("/stock_list", response_model=list[Equipement])
-def stock_list_endpoint(token: str = Cookie(default=None), db: Session = Depends(get_db)):
-    return get_user_equipement_liste_from_his_center(token, db)
+# @router.get("/stock_list", response_model=list[Equipement])
+# def stock_list_endpoint(token: str = Cookie(default=None), db: Session = Depends(get_db)):
+#     return get_user_equipement_liste_from_his_center(token, db)
 
 
 @router.get("/list_centers", response_model=list[CenterResponse])

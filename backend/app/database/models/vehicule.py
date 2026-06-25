@@ -2,6 +2,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Date, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from ..connection import Base
+
 from app.enums import VehiculeCategory, VehiculeStatus
 
 
