@@ -9,6 +9,7 @@ class UserProfile(BaseModel):
     name: str
     lastname: str
     email: str
+    street_number : int
     telephone: Optional[str] = None
     street: Optional[str] = None
     city: Optional[str] = None

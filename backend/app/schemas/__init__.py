@@ -5,6 +5,8 @@ from .vehicule_document_infos import VehiculeDocumentInfos
 from .vehicule_alert import VehiculeAlert
 from .vehicule_infos_detail_response import VehiculeDetailResponse
 from .equipement_list_schema import OneEquipementFromList 
+from .center_schedule_schema import TimeSlot, WeeklySchedule
+from .center_infos_schema import CenterInfos
 
 __all__ = [
     "UserProfile",
@@ -14,5 +16,8 @@ __all__ = [
     "VehiculeInfos",
     "VehiculeDocumentInfos",
     "VehiculeAlert",
-    "OneEquipementFromList"
+    "OneEquipementFromList",
+    "TimeSlot",
+    "WeeklySchedule",
+    "CenterInfos"
     ]

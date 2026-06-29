@@ -11,3 +11,4 @@ class VehiculeCategory(str, Enum):
     CITERNE = "citerne"
     REMORQUE = "remorque"
     SEMI_REMORQUE = "semi-remorque"
+    

@@ -1,6 +1,8 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey,Date, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from ..connection import Base
+
+from app.enums import UserStatus
 
 class User(Base):
     __tablename__ = "user"
@@ -15,15 +17,16 @@ class User(Base):
     email = Column(String, unique=True)
     telephone = Column(String, nullable=True)
     #adresse
+    street_number = Column(Integer, nullable=True)
     street = Column(String, nullable=True)
     city = Column(String, nullable=True)
     postal_code = Column(String, nullable=True)
     #status
-    status = Column(String)
+    status = Column(SQLEnum(UserStatus))
     # creation date
-    created_at = Column(String, nullable=True)
+    created_at = Column(Date, nullable=True)
     # update date
-    updated_at = Column(String, nullable=True)
+    updated_at = Column(Date, nullable=True)
 
     # identity photo
     photo_url = Column(String, nullable=True)
