@@ -7,7 +7,7 @@ from app.schemas import WeeklySchedule, OneEquipementFromList
 
 
 class WarehouseInfos(BaseModel):
-    center_id: int
+    warehouse_id: int
     name: str
     # adresse
     street_number: Optional[int] = None

@@ -78,7 +78,7 @@ def seed():
             postal_code="67890", created_at=date(2026, 4, 1), updated_at=date(2026, 4, 1),
         ),
         User(
-            name="Paul", lastname="Fontaine", email="user1@resto.com",
+            name="Paul", lastname="Fontaine", email="user@resto.com",
             password=hash_password("1234"), photo_url=None,
             center_id=1, status=UserStatus.User,
             telephone="0123456789", street="321 Elm St", city="Cityville",

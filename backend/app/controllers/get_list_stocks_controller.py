@@ -5,7 +5,7 @@ from app.services import get_user_by_token_service, get_user_center_stocks_list_
 from app.schemas import OneEquipementFromList
 
 
-def get_list_vehicules(token: str, db: Session) -> list[OneEquipementFromList]:
+def get_list_stocks_controller(token: str, db: Session) -> list[OneEquipementFromList]:
     user = get_user_by_token_service(db, token)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")

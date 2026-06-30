@@ -1,13 +1,14 @@
 from pydantic import BaseModel
+from typing import Optional
 
 from app.enums import CenterStatus
 from app.schemas import WeeklySchedule
 
 class CenterInfos(BaseModel):
-    center_id : str
+    center_id : int
     name : str
     #adresse
-    street_number : int
+    street_number : Optional[int] = None
     street : str 
     city : str
     postal_code : str 
