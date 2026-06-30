@@ -10,7 +10,7 @@ class OneEquipementFromList(BaseModel):
     status : StockStatus
     qr_code : str
 
-    # center_name : str
+
     
     class Config:
         from_attributes = True

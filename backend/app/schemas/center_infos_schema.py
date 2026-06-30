@@ -1,5 +1,3 @@
-import datetime
-from typing import Dict, List
 from pydantic import BaseModel
 
 from app.enums import CenterStatus

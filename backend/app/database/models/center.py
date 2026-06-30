@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Enum as SQLEnum
+from sqlalchemy import Column, Integer, String, Boolean, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from ..connection import Base
 
@@ -19,8 +19,9 @@ class Center(Base):
     # Description centre
     description = Column(String, nullable=True)
     activities = Column(String, nullable=True)
-    
-    
+
+    # If the center is a warehouse
+    is_warehouse = Column(Boolean, default=False, nullable=False)
 
     schedules = relationship(
         "CenterSchedule",

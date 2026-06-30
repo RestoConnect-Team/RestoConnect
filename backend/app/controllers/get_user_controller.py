@@ -1,13 +1,13 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from app.services import get_user_by_token
+from app.services import get_user_by_token_service
 from app.schemas import UserProfile
 from app.core.config import BASE_URL
 
 
 def get_user_profile(token: str, db: Session) -> UserProfile:
-    user = get_user_by_token(db, token)
+    user = get_user_by_token_service(db, token)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")
 

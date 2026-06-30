@@ -1,22 +1,23 @@
+from app.services import get_my_center_service
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from app.services import get_user_by_token, get_my_center_infos_service, schedule_to_dict, get_center_admin
+from app.services import get_user_by_token_service, get_center_schedule_service, get_center_admin_service
 from app.schemas import OneEquipementFromList, CenterInfos
 
 
-def get_my_center_infos_controller(token: str, db: Session) -> list[OneEquipementFromList]:
-    user = get_user_by_token(db, token)
+def get_my_center_service_infos_controller(token: str, db: Session) -> list[OneEquipementFromList]:
+    user = get_user_by_token_service(db, token)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")
 
-    my_center = get_my_center_infos_service(user, db)
+    my_center = get_my_center_service(user, db)
 
     if not my_center :
             raise HTTPException(status_code=401, detail="User has no my_center")
     
-    schedule = schedule_to_dict(my_center) 
-    center_admin = get_center_admin(my_center, db)
+    schedule = get_center_schedule_service(my_center) 
+    center_admin = get_center_admin_service(my_center, db)
 
     return CenterInfos(
             id = my_center.id,

@@ -1,12 +1,12 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from app.services import get_user_by_token, get_list_vehicules_service
+from app.services import get_user_by_token_service, get_list_vehicules_service
 from app.schemas import OneVehiculeFromList, VehiculeListGrouped
 
 
 def get_list_vehicules(token: str, db: Session) -> VehiculeListGrouped:
-    user = get_user_by_token(db, token)
+    user = get_user_by_token_service(db, token)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")
 
