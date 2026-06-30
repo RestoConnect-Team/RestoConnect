@@ -25,7 +25,7 @@ def login_endpoint(credentials: LoginRequest, response: Response, db: Session = 
 def list_centers_endpoint(token: str = Cookie(default=None), db: Session = Depends(get_db)):
     return get_list_centers(token, db)
 
-@router.get("/my_center",response_model=MyCenter)
-def get_my_center_info_endpoint(token: str = Cookie(default=None), db: Session = Depends(get_db)):
-    return(get_my_center_info(token,db))
+# @router.get("/my_center",response_model=MyCenter)
+# def get_my_center_info_endpoint(token: str = Cookie(default=None), db: Session = Depends(get_db)):
+#     return(get_my_center_info(token,db))
 
