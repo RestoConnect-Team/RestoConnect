@@ -25,7 +25,9 @@ def schedule_to_dict(center: Center) -> WeeklySchedule:
 
     return WeeklySchedule (schedule=result)
 
-def get_center_admin(center : Center, db : Session) -> User :
-    center_admin = select(User).where(User.center_id = center.id and User.status = UserStatus.CENTER_ADMIN)
+def get_center_admin(center: Center, db: Session) -> User | None:
+    stmt = select(User).where(
+        (User.center_id == center.id) & (User.status == UserStatus.CENTER_ADMIN)
+    )
 
-    return db.scalar(center_admin)
+    return db.scalar(stmt)

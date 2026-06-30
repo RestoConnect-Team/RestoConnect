@@ -1,7 +1,7 @@
-import enum as Enum
+from enum import Enum
 
 class UserStatus(str, Enum):
-    SUPER_ADMIN = 'Super administrateur'
+    SUPER_ADMIN = "Super administrateur"
     ADMIN = "Administrateur"
     CENTER_ADMIN = "Responsable de centre"
     VEHICULE_ADMIN = "Responsable des véhicules"

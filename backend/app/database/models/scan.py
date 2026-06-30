@@ -2,11 +2,13 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from ..connection import Base
 
-class StockScanHistoric (Base):
-    __tablename__="stock_scan_historic"
+class Scan (Base):
+    __tablename__="scan"
     id = Column(Integer, primary_key=True)
 
     scan_date = Column(Date)
+    description = Column(String)
+    rating = Column(String)
 
     stock_id = Column(Integer, ForeignKey('stock.id'))
     stock = relationship("Stock")

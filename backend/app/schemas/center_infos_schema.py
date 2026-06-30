@@ -17,10 +17,11 @@ class CenterInfos(BaseModel):
     status : CenterStatus
 
     description : str
+    activities : str
     
     center_headmaster_name : str
     center_headmaster_lastname : str
     center_headmaster_email : str
-    center_headmaster_number : str
+    center_headmaster_telephone : str
 
     center_schedule : WeeklySchedule

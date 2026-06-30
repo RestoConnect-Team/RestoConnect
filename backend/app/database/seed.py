@@ -1,8 +1,8 @@
-from datetime import date
+from datetime import date, time
 
 from .connection import SessionLocal
-from .models import User, Stock, Center, Vehicule, VehiculeDocument
-from app.enums import VehiculeCategory, VehiculeStatus
+from .models import User, Stock, Center, Vehicule, VehiculeDocument, CenterSchedule
+from app.enums import VehiculeCategory, VehiculeStatus, UserStatus, CenterStatus, WeekDays, StockStatus, StockCategory
 
 #crypt context for password hashing
 import bcrypt
@@ -19,20 +19,86 @@ def seed():
         db.close()
         return
 
+ 
     users = [
-        User(name="Admin",lastname="super", email="admin@resto.com", password=hash_password("1234"),photo_url="/uploads/avatars/user_1.png", center_id=1, status="admin", telephone="0123456789", street="123 Main St", city="Cityville", postal_code="12345",created_at="2026-01-01", updated_at="2026-01-01"),
-        User(name="Test User", lastname="Test", email="user@resto.com", password=hash_password("1234"),photo_url="/uploads/avatars/user_2.png", center_id=2, status="user", telephone="0123456789", street="456 Oak Ave", city="Townsville", postal_code="67890",created_at="2026-02-01", updated_at="2026-02-01"),
-        User(name="Responsable Centre 1", lastname="Resp1", email="resp1@resto.com", password=hash_password("1234"),photo_url="/uploads/avatars/user_3.png", center_id=1, status="responsable de centre", telephone="0123456789", street="789 Pine St", city="Villagetown", postal_code="54321",created_at="2026-03-01", updated_at="2026-03-01"),
-        User(name="Responsable Centre 2", lastname="Resp2", email="resp2@resto.com", password=hash_password("1234"),photo_url="/uploads/avatars/user_4.png", center_id=2, status="responsable de centre", telephone="0123456789", street="012 Pine St", city="Villagetown", postal_code="54321",created_at="2026-03-01", updated_at="2026-03-01"),
-        User(name="Utilisateur 1", lastname="User1", email="user1@resto.com", password=hash_password("1234"),photo_url="/uploads/avatars/user_5.png", center_id=1, status="user", telephone="0123456789", street="321 Elm St", city="Cityville", postal_code="12345",created_at="2026-04-01", updated_at="2026-04-01")
+        User(
+            name="Antoine", lastname="Lefebvre", email="superadmin@resto.com",
+            password=hash_password("1234"),photo_url="/uploads/avatars/user_1.png",
+            center_id=1, status=UserStatus.SUPER_ADMIN,
+            telephone="0123456789", street="123 Main St", city="Cityville",
+            postal_code="12345", created_at=date(2026, 1, 1), updated_at=date(2026, 1, 1),
+        ),
+        User(
+            name="Julie", lastname="Moreau", email="admin@resto.com",
+            password=hash_password("1234"), photo_url="/uploads/avatars/user_2.png",
+            center_id=1, status=UserStatus.ADMIN,
+            telephone="0123456789", street="456 Oak Ave", city="Townsville",
+            postal_code="67890", created_at=date(2026, 1, 5), updated_at=date(2026, 1, 5),
+        ),
+        User(
+            name="Marc", lastname="Dubois", email="resp1@resto.com",
+            password=hash_password("1234"), photo_url="/uploads/avatars/user_3.png",
+            center_id=1, status=UserStatus.CENTER_ADMIN,
+            telephone="0123456789", street="789 Pine St", city="Villagetown",
+            postal_code="54321", created_at=date(2026, 2, 1), updated_at=date(2026, 2, 1),
+        ),
+        User(
+            name="Sophie", lastname="Bernard", email="resp2@resto.com",
+            password=hash_password("1234"), photo_url="/uploads/avatars/user_4.png",
+            center_id=2, status=UserStatus.CENTER_ADMIN,
+            telephone="0123456789", street="012 Pine St", city="Villagetown",
+            postal_code="54321", created_at=date(2026, 2, 5), updated_at=date(2026, 2, 5),
+        ),
+        User(
+            name="Karim", lastname="Benali", email="vehicule1@resto.com",
+            password=hash_password("1234"), photo_url="/uploads/avatars/user_5.png",
+            center_id=1, status=UserStatus.VEHICULE_ADMIN,
+            telephone="0123456789", street="654 Maple St", city="Cityville",
+            postal_code="12345", created_at=date(2026, 3, 1), updated_at=date(2026, 3, 1),
+        ),
+        User(
+            name="Léa", lastname="Girard", email="vehicule2@resto.com",
+            password=hash_password("1234"), photo_url=None,
+            center_id=2, status=UserStatus.VEHICULE_ADMIN,
+            telephone="0123456789", street="741 Spruce St", city="Townsville",
+            postal_code="67890", created_at=date(2026, 3, 5), updated_at=date(2026, 3, 5),
+        ),
+        User(
+            name="Hugo", lastname="Petit", email="stock1@resto.com",
+            password=hash_password("1234"), photo_url=None,
+            center_id=1, status=UserStatus.STOCK_ADMIN,
+            telephone="0123456789", street="987 Birch St", city="Cityville",
+            postal_code="12345", created_at=date(2026, 3, 10), updated_at=date(2026, 3, 10),
+        ),
+        User(
+            name="Nina", lastname="Roux", email="stock2@resto.com",
+            password=hash_password("1234"), photo_url=None,
+            center_id=2, status=UserStatus.STOCK_ADMIN,
+            telephone="0123456789", street="258 Walnut St", city="Townsville",
+            postal_code="67890", created_at=date(2026, 4, 1), updated_at=date(2026, 4, 1),
+        ),
+        User(
+            name="Paul", lastname="Fontaine", email="user1@resto.com",
+            password=hash_password("1234"), photo_url=None,
+            center_id=1, status=UserStatus.User,
+            telephone="0123456789", street="321 Elm St", city="Cityville",
+            postal_code="12345", created_at=date(2026, 4, 5), updated_at=date(2026, 4, 5),
+        ),
+        User(
+            name="Emma", lastname="Chevalier", email="user2@resto.com",
+            password=hash_password("1234"), photo_url=None,
+            center_id=2, status=UserStatus.User,
+            telephone="0123456789", street="159 Cedar St", city="Townsville",
+            postal_code="67890", created_at=date(2026, 5, 1), updated_at=date(2026, 5, 1),
+        ),
     ]
 
     stocks = [
         Stock(
             reference="REF001_c1",
             name="Pc",
-            category="Informatique",
-            status = "Disponible",
+            category=StockCategory.INFORMATIQUE,
+            status = StockStatus.LOST,
             qr_code = "",
             creation_date = date(2025,1,1),
             last_scan_date = date(2026,6,1),
@@ -41,8 +107,8 @@ def seed():
         Stock(
             reference="REF002_c1",
             name="Frigo",
-            category="Réfrigéré",
-            status = "Disponible",
+            category=StockCategory.REFRIGIRE,
+            status = StockStatus.DISPONIBLE,
             qr_code = "",
             creation_date = date(2025,6,1),
             last_scan_date = date(2026,6,1),
@@ -51,8 +117,8 @@ def seed():
         Stock(
             reference="REF001_c2",
             name="Pc",
-            category="Informatique",
-            status = "Perdu",
+            category=StockCategory.INFORMATIQUE,
+            status = StockStatus.LOST,
             qr_code = "",
             creation_date = date(2025,1,1),
             last_scan_date = date(2026,3,1),
@@ -61,8 +127,8 @@ def seed():
         Stock(
             reference="REF002_c2",
             name="Frigo",
-            category="Réfrigéré",
-            status = "Disponible",
+            category=StockCategory.REFRIGIRE,
+            status = StockStatus.DISPONIBLE,
             qr_code = "",
             creation_date = date(2025,9,1),
             last_scan_date = date(2026,4,1),
@@ -71,8 +137,8 @@ def seed():
         Stock(
             reference="REF003_c2",
             name="Table",
-            category="Bureau",
-            status = "Disponible",
+            category=StockCategory.BUREAU,
+            status = StockStatus.DISPONIBLE,
             qr_code = "",
             creation_date = date(2025,1,1),
             last_scan_date = date(2026,6,1),
@@ -81,8 +147,91 @@ def seed():
     ]
 
     centers = [
-        Center(name="Centre 1", location="Location 1"),
-        Center(name="Centre 2", location="Location 2"),
+        Center(
+            name="Centre Lyon Part-Dieu",
+            street_number=17,
+            street="Rue Servient",
+            city="Lyon",
+            postal_code="69003",
+            status=CenterStatus.OPEN,
+            description="Centre principal situé au cœur du quartier d'affaires de Lyon.",
+            activities="Restauration rapide, livraison",
+        ),
+        Center(
+            name="Centre Lyon Croix-Rousse",
+            street_number=42,
+            street="Boulevard de la Croix-Rousse",
+            city="Lyon",
+            postal_code="69004",
+            status=CenterStatus.OPEN,
+            description="Centre situé sur les pentes de la Croix-Rousse.",
+            activities="Restauration sur place, traiteur",
+        ),
+        Center(
+            name="Centre Villeurbanne",
+            street_number=8,
+            street="Avenue Henri Barbusse",
+            city="Villeurbanne",
+            postal_code="69100",
+            status=CenterStatus.TEMPORARY_CLOSE,
+            description="Centre fermé temporairement pour travaux.",
+            activities="Restauration rapide",
+        ),
+        Center(
+            name="Centre Bron",
+            street_number=23,
+            street="Avenue Franklin Roosevelt",
+            city="Bron",
+            postal_code="69500",
+            status=CenterStatus.OPEN,
+            description="Centre desservant le secteur est de l'agglomération.",
+            activities="Livraison, traiteur événementiel",
+        ),
+        Center(
+            name="Centre Vénissieux",
+            street_number=5,
+            street="Rue Marcel Cachin",
+            city="Vénissieux",
+            postal_code="69200",
+            status=CenterStatus.CLOSE,
+            description="Centre actuellement fermé.",
+            activities="Restauration rapide",
+        ),
+    ]
+
+    center_schedules = [
+        # Centre 1
+        CenterSchedule(center_id=1, day_of_week=WeekDays.MONDAY, opening_time=time(9, 0), closing_time=time(19, 0)),
+        CenterSchedule(center_id=1, day_of_week=WeekDays.TUESDAY, opening_time=time(9, 0), closing_time=time(19, 0)),
+        CenterSchedule(center_id=1, day_of_week=WeekDays.WEDNESDAY, opening_time=time(9, 0), closing_time=time(19, 0)),
+        CenterSchedule(center_id=1, day_of_week=WeekDays.THURSDAY, opening_time=time(9, 0), closing_time=time(19, 0)),
+        CenterSchedule(center_id=1, day_of_week=WeekDays.FRIDAY, opening_time=time(9, 0), closing_time=time(19, 0)),
+        CenterSchedule(center_id=1, day_of_week=WeekDays.SATURDAY, opening_time=time(10, 0), closing_time=time(17, 0)),
+
+        # Centre 2
+        CenterSchedule(center_id=2, day_of_week=WeekDays.MONDAY, opening_time=time(8, 30), closing_time=time(18, 30)),
+        CenterSchedule(center_id=2, day_of_week=WeekDays.TUESDAY, opening_time=time(8, 30), closing_time=time(18, 30)),
+        CenterSchedule(center_id=2, day_of_week=WeekDays.WEDNESDAY, opening_time=time(8, 30), closing_time=time(18, 30)),
+        CenterSchedule(center_id=2, day_of_week=WeekDays.THURSDAY, opening_time=time(8, 30), closing_time=time(18, 30)),
+        CenterSchedule(center_id=2, day_of_week=WeekDays.FRIDAY, opening_time=time(8, 30), closing_time=time(18, 30)),
+        CenterSchedule(center_id=2, day_of_week=WeekDays.SATURDAY, opening_time=time(9, 0), closing_time=time(16, 0)),
+
+        # Centre 3 (fermé temporairement, mais on garde des horaires de référence)
+        CenterSchedule(center_id=3, day_of_week=WeekDays.MONDAY, opening_time=time(9, 0), closing_time=time(18, 0)),
+        CenterSchedule(center_id=3, day_of_week=WeekDays.TUESDAY, opening_time=time(9, 0), closing_time=time(18, 0)),
+        CenterSchedule(center_id=3, day_of_week=WeekDays.WEDNESDAY, opening_time=time(9, 0), closing_time=time(18, 0)),
+        CenterSchedule(center_id=3, day_of_week=WeekDays.THURSDAY, opening_time=time(9, 0), closing_time=time(18, 0)),
+        CenterSchedule(center_id=3, day_of_week=WeekDays.FRIDAY, opening_time=time(9, 0), closing_time=time(18, 0)),
+
+        # Centre 4
+        CenterSchedule(center_id=4, day_of_week=WeekDays.MONDAY, opening_time=time(9, 0), closing_time=time(19, 30)),
+        CenterSchedule(center_id=4, day_of_week=WeekDays.TUESDAY, opening_time=time(9, 0), closing_time=time(19, 30)),
+        CenterSchedule(center_id=4, day_of_week=WeekDays.WEDNESDAY, opening_time=time(9, 0), closing_time=time(19, 30)),
+        CenterSchedule(center_id=4, day_of_week=WeekDays.THURSDAY, opening_time=time(9, 0), closing_time=time(19, 30)),
+        CenterSchedule(center_id=4, day_of_week=WeekDays.FRIDAY, opening_time=time(9, 0), closing_time=time(19, 30)),
+        CenterSchedule(center_id=4, day_of_week=WeekDays.SATURDAY, opening_time=time(10, 0), closing_time=time(18, 0)),
+
+        # Centre 5 (fermé, pas d'horaires actuels)
     ]
 
     vehicules = [
@@ -204,6 +353,7 @@ def seed():
     db.add_all(users)
     db.add_all(stocks)
     db.add_all(centers)
+    db.add_all(center_schedules)
     db.add_all(vehicules)
     db.add_all(vehicule_documents)
     db.commit()
