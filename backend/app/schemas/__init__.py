@@ -8,6 +8,7 @@ from .equipement_list_schema import OneEquipementFromList
 from .center_schedule_schema import TimeSlot, WeeklySchedule
 from .center_infos_schema import CenterInfos
 from .warehouse_infos_schema import WarehouseInfos
+from .product_reference_scan import ProductScanResponse, ProductStatusUpdate
 from .get_list_centers_response_schema import ListCentersResponse
 
 __all__ = [
@@ -23,5 +24,7 @@ __all__ = [
     "WeeklySchedule",
     "CenterInfos",
     "WarehouseInfos",
-    "ListCentersResponse"
+    "ListCentersResponse",
+    "ProductScanResponse",
+    "ProductStatusUpdate"
     ]
