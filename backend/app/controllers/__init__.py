@@ -3,7 +3,10 @@ from .get_list_vehicules_controller import get_list_vehicules
 from .get_vehicule_infos_controller import get_vehicule_infos_controller
 from .get_list_centers_controller import get_list_centers_controller
 from .get_my_center_infos_controller import get_my_center_infos_controller
+from .get_center_infos_controller import get_center_infos_controller
+from .get_warehouse_infos_controller import get_warehouse_infos_controller
 from .get_list_stocks_controller import get_list_stocks_controller
+
 
 __all__=[
     "get_user_profile",
@@ -11,5 +14,7 @@ __all__=[
     "get_vehicule_infos_controller",
     "get_list_centers_controller",
     "get_my_center_infos_controller",
+    "get_center_infos_controller",
+    "get_warehouse_infos_controller",
     "get_list_stocks_controller"
     ]
