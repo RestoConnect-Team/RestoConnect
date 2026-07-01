@@ -7,7 +7,7 @@ import { fetchCenterInfo, Center } from "@/lib/api/my_center_info";
 import Title from "@/components/title/title";
 import PageError from "@/components/page_error/page_error";
 import Loading from "@/components/loading/loading";
-
+import Link from "next/link";
 
 export default function MyCenter() {
 
@@ -122,22 +122,6 @@ export default function MyCenter() {
               <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-[rgb(240,51,127)]">
                 <p className="text-gray-600 text-sm font-medium mb-3">🔑 Identifiant</p>
                 <p className="text-2xl font-bold text-gray-900">#{center.id}</p>
-              </div>
-
-              {/* Quick Actions */}
-              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-md p-6 border border-purple-100">
-                <p className="text-gray-900 font-bold mb-4">Actions rapides</p>
-                <div className="space-y-3">
-                  <button className="w-full py-3 px-4 bg-[rgb(230,0,126)] text-white font-medium rounded-lg hover:opacity-90 transition-opacity">
-                    📊 Voir statistiques
-                  </button>
-                  <button className="w-full py-3 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">
-                    ⚙️ Paramètres
-                  </button>
-                  <button className="w-full py-3 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors">
-                    📝 Rapports
-                  </button>
-                </div>
               </div>
             </div>
           </div>
