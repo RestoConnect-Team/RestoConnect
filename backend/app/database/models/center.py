@@ -13,6 +13,9 @@ class Center(Base):
     street = Column(String, nullable=True)
     city = Column(String, nullable=True)
     postal_code = Column(String, nullable=True)
+    # contact
+    telephone = Column(String, nullable=True)
+    email = Column(String, nullable=True)
     #status Ouvert / fermer / arrêt saisonier
     status = Column(SQLEnum(CenterStatus))
 
@@ -25,6 +28,11 @@ class Center(Base):
 
     schedules = relationship(
         "CenterSchedule",
+        back_populates="center",
+        cascade="all, delete-orphan"
+    )
+    closing_periods = relationship(
+        "ClosingPeriod",
         back_populates="center",
         cascade="all, delete-orphan"
     )
