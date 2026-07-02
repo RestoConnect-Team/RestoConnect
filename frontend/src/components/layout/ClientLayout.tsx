@@ -14,9 +14,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     setMobileOpen(false);
   }, [pathname]);
 
-  if (pathname === "/") {
-    return <>{children}</>;
-  }
+  if (pathname === "/") return <>{children}</>;
 
   return (
     <>
@@ -31,6 +29,9 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
         <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
           <Header onMenuOpen={() => setMobileOpen(true)} />
           <main className="flex-1 overflow-y-auto">{children}</main>
+          {pathname === "/scan" && (
+            <div className="fixed inset-0 z-50">{children}</div>
+          )}
         </div>
       </div>
     </>
