@@ -18,7 +18,7 @@ To run the application, you need to start both the frontend and backend servers.
 
 Please follow the setup instructions provided in the respective directories:
 
-- `frontend/README.md`
-- `backend/README.md`
+- [frontend/README.md](frontend/README.md)
+- [backend/README.md](backend/README.md)
 
-Each README contains the required steps to install dependencies and launch the services correctly.
+Each README contains the required steps to install dependencies and launch the services correctly
