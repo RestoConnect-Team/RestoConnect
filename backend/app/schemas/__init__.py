@@ -5,6 +5,7 @@ from .vehicule_document_infos import VehiculeDocumentInfos
 from .vehicule_alert import VehiculeAlert
 from .vehicule_infos_detail_response import VehiculeDetailResponse
 from .equipement_list_schema import OneEquipementFromList 
+from .one_center_from_list_schema import OneCenterFromList
 from .center_schedule_schema import TimeSlot, WeeklySchedule
 from .center_infos_schema import CenterInfos
 from .warehouse_infos_schema import WarehouseInfos
@@ -20,6 +21,7 @@ __all__ = [
     "VehiculeDocumentInfos",
     "VehiculeAlert",
     "OneEquipementFromList",
+    "OneCenterFromList",
     "TimeSlot",
     "WeeklySchedule",
     "CenterInfos",
