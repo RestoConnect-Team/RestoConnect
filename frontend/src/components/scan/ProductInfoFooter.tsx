@@ -1,4 +1,4 @@
-import { Monitor, CircleCheckBig, MapPin, Eye, CircleAlert } from 'lucide-react';
+import { Monitor, CircleCheckBig, MapPin, Eye, CircleAlert, Send } from 'lucide-react';
 import { StockStatus } from '@/app/scan/stock_status_enum';
 import { Button } from '@/components/ui/button';
 
@@ -34,6 +34,7 @@ export function ProductInfoFooter({ product, onNewScan, onViewDetails }: Product
             Scanner autre
           </Button>
           <Button onClick={() => console.log("Signaler un problème")}>
+            <Send size={14}/>
             Signaler
           </Button>
         </div>
