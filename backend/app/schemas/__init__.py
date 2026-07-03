@@ -1,3 +1,6 @@
+from .login_request_schema import LoginRequest
+from .login_response_schema import LoginResponse
+
 from .user_profil import UserProfile
 from .vehicule_list_schema import OneVehiculeFromList, VehiculeListGrouped
 from .vehicule_infos import VehiculeInfos
@@ -13,14 +16,20 @@ from .product_reference_scan import ProductScanResponse, ProductStatusUpdate
 from .get_list_centers_response_schema import ListCentersResponse
 
 __all__ = [
+    "LoginRequest",
+    "LoginResponse",
+    
     "UserProfile",
+
     "OneVehiculeFromList",
     "VehiculeListGrouped",
     "VehiculeDetailResponse",
     "VehiculeInfos",
     "VehiculeDocumentInfos",
     "VehiculeAlert",
+
     "OneEquipementFromList",
+    
     "OneCenterFromList",
     "TimeSlot",
     "WeeklySchedule",

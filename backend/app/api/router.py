@@ -1,6 +1,8 @@
 from fastapi import APIRouter
 
 from app.api.endpoints import (
+    get_login_connection_route,
+
     get_user_route,
     get_list_vehicules_route,
     get_vehicule_infos_route,
@@ -10,13 +12,14 @@ from app.api.endpoints import (
     get_center_infos_route,
     get_warehouse_infos_route,
     get_stock_by_scan,
-    update_product_status
+    update_product_status,
 )
 
-from app.api import route
 api_router = APIRouter()
 
-api_router.include_router(route.router)
+
+
+api_router.include_router(get_login_connection_route.router) #, prefix="/login", tags=["Login"])
 
 api_router.include_router(get_user_route.router)
 api_router.include_router(get_user_route.router, prefix="/user", tags=["User"])
