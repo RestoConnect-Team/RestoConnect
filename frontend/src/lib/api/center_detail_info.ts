@@ -66,6 +66,17 @@ export const fetchCenterDetail = (id: number) => async (): Promise<CenterDetail>
   return data as CenterDetail;
 };
 
+export const fetchMyCenterDetail = async (): Promise<CenterDetail> => {
+  const response = await fetch('http://localhost:8000/api/my_center', {
+    method: 'GET',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.detail || 'Failed to fetch my center details');
+  return data as CenterDetail;
+};
+
 export interface UpdateCenterPayload {
   telephone?: string;
   email?: string;

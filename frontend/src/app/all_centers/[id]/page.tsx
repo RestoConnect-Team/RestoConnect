@@ -3,10 +3,24 @@
 import { use } from "react";
 import Link from "next/link";
 import { useFetchData } from "@/hooks/useFetchData";
-import { fetchCenterDetail, CenterDetail, ContactInfo, CenterAlert } from "@/lib/api/center_detail_info";
+import {
+  fetchCenterDetail,
+  CenterDetail,
+  ContactInfo,
+  CenterAlert,
+} from "@/lib/api/center_detail_info";
 import PageError from "@/components/page_error/page_error";
 import Loading from "@/components/loading/loading";
-import { Home, Package, AlertTriangle, ClipboardList, MapPin, Phone, Mail, ChevronRight } from "lucide-react";
+import {
+  Home,
+  Package,
+  AlertTriangle,
+  ClipboardList,
+  MapPin,
+  Phone,
+  Mail,
+  ChevronRight,
+} from "lucide-react";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -22,8 +36,12 @@ function formatTime(t: string) {
 
 function getInitialsBg(idx: number) {
   const colors = [
-    "bg-pink-500", "bg-purple-500", "bg-blue-500",
-    "bg-green-500", "bg-amber-500", "bg-teal-500",
+    "bg-pink-500",
+    "bg-purple-500",
+    "bg-blue-500",
+    "bg-green-500",
+    "bg-amber-500",
+    "bg-teal-500",
   ];
   return colors[idx % colors.length];
 }
@@ -45,8 +63,8 @@ function StatCard({
     accent === "pink"
       ? "text-[rgb(230,0,126)]"
       : accent === "amber"
-      ? "text-amber-500"
-      : "text-gray-900";
+        ? "text-amber-500"
+        : "text-gray-900";
   return (
     <div className="bg-white rounded-xl border border-gray-200 px-5 py-4 flex-1 min-w-0">
       <p className={`text-2xl font-bold ${valueColor}`}>{value}</p>
@@ -85,7 +103,9 @@ function ContactRow({
   const bg = getInitialsBg(idx);
   const online = idx % 2 === 0; // simple visual indicator
   return (
-    <div className={`${isHead ? "" : "border-t border-gray-100"} pt-3 mt-3 first:pt-0 first:mt-0 first:border-0`}>
+    <div
+      className={`${isHead ? "" : "border-t border-gray-100"} pt-3 mt-3 first:pt-0 first:mt-0 first:border-0`}
+    >
       <div className="flex items-start gap-3">
         <div
           className={`w-9 h-9 rounded-full ${bg} text-white text-[12px] font-bold flex items-center justify-center shrink-0`}
@@ -103,7 +123,9 @@ function ContactRow({
           </div>
           {isHead && (
             <p className="text-[11px] text-gray-500">
-              <span className="text-[rgb(230,0,126)] font-medium">{contact.status}</span>
+              <span className="text-[rgb(230,0,126)] font-medium">
+                {contact.status}
+              </span>
             </p>
           )}
           {!isHead && (
@@ -127,12 +149,16 @@ function AlertRow({ alert, idx }: { alert: CenterAlert; idx: number }) {
   };
   const icon = icons[alert.alert_type] ?? icons.info;
   return (
-    <div className={`flex items-start gap-3 py-3 ${idx > 0 ? "border-t border-gray-100" : ""}`}>
+    <div
+      className={`flex items-start gap-3 py-3 ${idx > 0 ? "border-t border-gray-100" : ""}`}
+    >
       <div className="w-7 h-7 rounded-full bg-pink-50 flex items-center justify-center shrink-0 mt-0.5">
         {icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-[13px] text-gray-800 leading-snug">{alert.message}</p>
+        <p className="text-[13px] text-gray-800 leading-snug">
+          {alert.message}
+        </p>
         <p className="text-[11px] text-gray-400 mt-0.5">{alert.time_ago}</p>
       </div>
       <span className="w-2 h-2 rounded-full bg-[rgb(230,0,126)] shrink-0 mt-1.5" />
@@ -148,9 +174,11 @@ export default function CenterDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const { data: center, loading, error } = useFetchData<CenterDetail>(
-    fetchCenterDetail(Number(id))
-  );
+  const {
+    data: center,
+    loading,
+    error,
+  } = useFetchData<CenterDetail>(fetchCenterDetail(Number(id)));
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -169,26 +197,26 @@ function CenterDetailView({ center }: { center: CenterDetail }) {
     center.street_number,
     center.street,
     center.postal_code,
-    center.city.toUpperCase(),
+    center?.city?.toUpperCase(),
   ]
     .filter(Boolean)
     .join(" ");
 
-  const activityTags = center.activities
-    .split(",")
-    .map((a) => a.trim())
-    .filter(Boolean);
+  const activityTags = center?.activities
+    ?.split(",")
+    ?.map((a) => a.trim())
+    ?.filter(Boolean);
 
-  const scheduleEntries = Object.entries(center.center_schedule.schedule).filter(
-    ([, slots]) => slots.length > 0
-  );
+  const scheduleEntries = Object.entries(
+    center?.center_schedule?.schedule || {},
+  ).filter(([, slots]) => slots.length > 0);
 
   const headmaster: ContactInfo = {
     id: 0,
-    name: center.center_headmaster_name,
-    lastname: center.center_headmaster_lastname,
-    email: center.center_headmaster_email,
-    telephone: center.center_headmaster_telephone,
+    name: center?.center_headmaster_name,
+    lastname: center?.center_headmaster_lastname,
+    email: center?.center_headmaster_email,
+    telephone: center?.center_headmaster_telephone,
     status: "Responsable",
     photo_url: null,
   };
@@ -209,7 +237,11 @@ function CenterDetailView({ center }: { center: CenterDetail }) {
           accent="pink"
         />
         <StatCard
-          value={center.days_since_last_inventory != null ? `${center.days_since_last_inventory} j.` : "—"}
+          value={
+            center.days_since_last_inventory != null
+              ? `${center.days_since_last_inventory} j.`
+              : "—"
+          }
           label="Inventaire"
           sub="depuis le dernier"
           accent="amber"
@@ -223,7 +255,9 @@ function CenterDetailView({ center }: { center: CenterDetail }) {
             Mon centre
           </p>
         )}
-        <h1 className="text-[22px] font-bold text-white leading-tight">{center.name}</h1>
+        <h1 className="text-[22px] font-bold text-white leading-tight">
+          {center.name}
+        </h1>
         <div className="flex items-center gap-1 mt-1 text-white/80 text-[13px]">
           <MapPin size={12} />
           <span>{center.city}</span>
@@ -254,14 +288,15 @@ function CenterDetailView({ center }: { center: CenterDetail }) {
         <h2 className="text-[15px] font-bold text-gray-900 mb-3">Activités</h2>
         <Row label="Description" value={center.activities} />
         <div className="flex flex-wrap gap-2 mt-3">
-          {activityTags.map((tag) => (
-            <span
-              key={tag}
-              className="px-3 py-1 rounded-full border border-gray-300 text-[12px] text-gray-700 bg-gray-50"
-            >
-              {tag}
-            </span>
-          ))}
+          {activityTags &&
+            activityTags.map((tag) => (
+              <span
+                key={tag}
+                className="px-3 py-1 rounded-full border border-gray-300 text-[12px] text-gray-700 bg-gray-50"
+              >
+                {tag}
+              </span>
+            ))}
         </div>
       </SectionCard>
 
@@ -274,9 +309,10 @@ function CenterDetailView({ center }: { center: CenterDetail }) {
             {scheduleEntries.map(([day, slots]) =>
               slots.map((slot, i) => (
                 <p key={`${day}-${i}`}>
-                  {day}, {formatTime(slot.opening_time)} à {formatTime(slot.closing_time)}
+                  {day}, {formatTime(slot.opening_time)} à{" "}
+                  {formatTime(slot.closing_time)}
                 </p>
-              ))
+              )),
             )}
           </div>
         </div>
@@ -313,7 +349,9 @@ function CenterDetailView({ center }: { center: CenterDetail }) {
       {center.alerts.length > 0 && (
         <SectionCard>
           <div className="flex items-center justify-between mb-1">
-            <h2 className="text-[15px] font-bold text-gray-900">Dernières alertes</h2>
+            <h2 className="text-[15px] font-bold text-gray-900">
+              Dernières alertes
+            </h2>
             <button className="text-[12px] text-[rgb(230,0,126)] hover:underline">
               Voir tout
             </button>

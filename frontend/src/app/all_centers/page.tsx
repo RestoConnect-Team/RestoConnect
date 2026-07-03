@@ -105,8 +105,7 @@ export default function AllCenters() {
             />
             <Section
               title="Centres"
-              items={[data.user_center, ...data.centers_list]}
-              userCenterId={data.user_center.center_id}
+              items={data.centers_list}
               loadMoreLabel="Charger plus de centres"
             />
           </>
