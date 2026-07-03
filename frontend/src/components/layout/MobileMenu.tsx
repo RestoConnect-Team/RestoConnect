@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { X, LayoutDashboard, Package, Truck, ClipboardList, Building2, Users, Bell, User } from "lucide-react";
+import { X, LayoutDashboard, Package, Truck, ClipboardList, Building2, Users, Bell, User, ScanLine } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useFetchData } from "@/hooks/useFetchData";
 import { fetchProfilInfo, Profile } from "@/lib/api/my_profil_info";
@@ -72,6 +72,19 @@ export function MobileMenu({ open, onClose, unread = 0 }: MobileMenuProps) {
             );
           })}
         </nav>
+
+        {/* Scan Button */}
+        <div className="px-3 py-3 mt-auto">
+            <Link
+                href="/scan"
+                onClick={onClose}
+                className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[rgb(230,0,126)] text-white font-semibold rounded-2xl hover:opacity-90 transition-opacity text-center shadow-md"
+            >
+                <ScanLine size={18} />
+                <span>Scanner</span>
+            </Link>
+        </div>
+
         <div className="px-4 py-3 border-t border-[var(--sidebar-border)]">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-[var(--sidebar-accent)] flex items-center justify-center shrink-0">

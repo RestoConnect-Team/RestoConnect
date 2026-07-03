@@ -50,12 +50,17 @@ temp_engine.dispose()
 # DATABASE INITIALIZATION
 # =========================================================
 
-Base.metadata.drop_all(bind=engine)
-Base.metadata.create_all(bind=engine)  # crée les tables au démarrage
+with engine.connect() as conn:
+    conn.execute(text("DROP SCHEMA public CASCADE"))
+    conn.execute(text("CREATE SCHEMA public"))
+    conn.commit()
+
+Base.metadata.create_all(bind=engine)
+
 with engine.connect() as co:
     print("Connexion OK ✅")
 print("Tables recréées")
-seed()  # Exécute le script de seed
+seed()
 print("Seed terminé")
 
 # =========================================================

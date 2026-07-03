@@ -207,6 +207,17 @@ def seed():
             description="Centre actuellement fermé.",
             activities="Restauration rapide",
         ),
+        Center(
+            name="Entrepôt Vaulx-en-Velin",
+            street_number=15,
+            street="Avenue de la République",
+            city="Vaulx-en-Velin",
+            postal_code="69800",
+            status=CenterStatus.OPEN,
+            description="Entrepôt situé dans le quartier de la République.",
+            activities="Stockage, livraison",
+            is_warehouse=True
+        )
     ]
 
     center_schedules = [
