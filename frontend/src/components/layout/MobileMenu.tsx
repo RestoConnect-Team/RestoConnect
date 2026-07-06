@@ -85,56 +85,8 @@ export function MobileMenu({ open, onClose, unread = 0 }: MobileMenuProps) {
               <X size={18} className="text-[var(--muted-foreground)]" />
             </button>
           </div>
-          <nav className="flex-1 px-3 py-3 overflow-y-auto space-y-0.5">
-            {NAV_ITEMS.map(({ href, label, Icon, badge }) => {
-              const active = pathname === href;
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  onClick={onClose}
-                  className={`flex items-center gap-3 px-3 py-3 rounded-lg text-[15px] font-medium transition-colors ${active ? "bg-[var(--sidebar-accent)] text-[var(--sidebar-accent-foreground)]" : "text-[var(--muted-foreground)] hover:bg-[var(--muted)]"}`}
-                >
-                  <Icon
-                    size={20}
-                    className={
-                      active
-                        ? "text-[var(--sidebar-primary)]"
-                        : "text-[var(--muted-foreground)]"
-                    }
-                  />
-                  <span className="flex-1">{label}</span>
-                  {badge && unread > 0 && (
-                    <span className="ml-auto min-w-[20px] h-5 rounded-full bg-[var(--primary)] text-white text-[11px] font-bold flex items-center justify-center px-1.5">
-                      {unread}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
 
-          <div className="px-3 py-3 mt-auto">
-            <Link
-              href="/scan"
-              onClick={onClose}
-              className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[rgb(230,0,126)] text-white font-semibold rounded-2xl hover:opacity-90 transition-opacity text-center shadow-md"
-            >
-              <ScanLine size={18} />
-              <span>Scanner</span>
-            </Link>
-          </div>
-
-          <div className="px-4 py-3 border-t border-[var(--sidebar-border)]">
-            <div className="flex items-center gap-3">
-              <ProfilePicture profile={profile} size={"sm"} onClick={onClose} />
-              <button
-                onClick={onClose}
-                className="p-1.5 rounded-lg hover:bg-[var(--muted)]"
-              >
-                <X size={18} className="text-[var(--muted-foreground)]" />
-              </button>
-            </div>
+          <div className="px-4 py-3 flex flex-col h-full border-t border-[var(--sidebar-border)]">
             <nav className="flex-1 px-3 py-3 overflow-y-auto space-y-0.5">
               {NAV_ITEMS.map(({ href, label, Icon, badge }) => {
                 const active = pathname === href;
@@ -162,6 +114,16 @@ export function MobileMenu({ open, onClose, unread = 0 }: MobileMenuProps) {
                   </Link>
                 );
               })}
+              <div className="py-3 mt-auto">
+                <Link
+                  href="/scan"
+                  onClick={onClose}
+                  className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[rgb(230,0,126)] text-white font-semibold rounded-2xl hover:opacity-90 transition-opacity text-center shadow-md"
+                >
+                  <ScanLine size={18} />
+                  <span>Scanner</span>
+                </Link>
+              </div>
             </nav>
             <div className="px-4 py-3 border-t border-[var(--sidebar-border)]">
               <div className="flex items-center gap-3">
