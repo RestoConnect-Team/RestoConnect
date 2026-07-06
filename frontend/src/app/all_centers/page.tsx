@@ -3,10 +3,15 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useFetchData } from "@/hooks/useFetchData";
-import { fetchCentersList, Center, ListCentersResponse } from "@/lib/api/centers_list_info";
+import {
+  fetchCentersList,
+  Center,
+  ListCentersResponse,
+} from "@/lib/api/centers_list_info";
 import PageError from "@/components/page_error/page_error";
 import Loading from "@/components/loading/loading";
 import { Building2, MapPin, Package, Users } from "lucide-react";
+import { PageLayout } from "@/components/layout/PageLayout";
 
 const INITIAL_VISIBLE = 4;
 
@@ -18,7 +23,10 @@ function CenterCard({
   isUserCenter?: boolean;
 }) {
   return (
-    <Link href={`/all_centers/${center.center_id}`} className="block bg-white rounded-xl border border-gray-200 p-4 relative hover:shadow-md hover:border-[rgb(230,0,126)] transition-all">
+    <Link
+      href={`/all_centers/${center.center_id}`}
+      className="block bg-white rounded-xl border border-gray-200 p-4 relative hover:shadow-md hover:border-[rgb(230,0,126)] transition-all"
+    >
       {isUserCenter && (
         <span className="absolute top-3 right-3 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[rgb(230,0,126)] text-white">
           Mon centre
@@ -41,7 +49,8 @@ function CenterCard({
         </span>
         <span className="flex items-center gap-1">
           <Users size={12} />
-          {center.contacts_count} contact{center.contacts_count !== 1 ? "s" : ""}
+          {center.contacts_count} contact
+          {center.contacts_count !== 1 ? "s" : ""}
         </span>
       </div>
     </Link>
@@ -64,7 +73,7 @@ function Section({
   const hasMore = visibleCount < items.length;
 
   return (
-    <section className="mb-8">
+    <section>
       <h2 className="text-[18px] font-bold text-gray-900 mb-4">{title}</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {visible.map((center) => (
@@ -78,7 +87,7 @@ function Section({
       {hasMore && (
         <button
           onClick={() => setVisibleCount((v) => v + INITIAL_VISIBLE)}
-          className="mt-4 w-full text-center text-[13px] text-gray-500 hover:text-[rgb(230,0,126)] transition-colors py-1"
+          className="mt-4 w-full text-center text-[13px] text-gray-500 hover:text-[rgb(230,0,126)] transition-colors py-1 cursor-pointer"
         >
           ... {loadMoreLabel} ...
         </button>
@@ -88,11 +97,12 @@ function Section({
 }
 
 export default function AllCenters() {
-  const { data, loading, error } = useFetchData<ListCentersResponse>(fetchCentersList);
+  const { data, loading, error } =
+    useFetchData<ListCentersResponse>(fetchCentersList);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto px-6 py-8">
+    <PageLayout>
+      <div className="p-6 flex flex-col gap-6">
         {error && <PageError page_error={error} />}
         {loading && <Loading loading_sentence="Chargement des centres..." />}
 
@@ -111,6 +121,6 @@ export default function AllCenters() {
           </>
         )}
       </div>
-    </div>
+    </PageLayout>
   );
 }
