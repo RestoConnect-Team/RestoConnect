@@ -1,14 +1,10 @@
 ﻿"use client";
 
-import { Search, MapPin, WifiOff, Bell, Menu } from "lucide-react";
+import { MapPin, WifiOff, Bell, Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useFetchData } from "@/hooks/useFetchData";
 import { fetchProfilInfo, Profile } from "@/lib/api/my_profil_info";
-
-function getInitials(p: Profile | null) {
-  if (!p) return "?";
-  return `${p.name?.[0] ?? ""}${p.lastname?.[0] ?? ""}`.toUpperCase();
-}
+import { ProfilePicture } from "./ProfilePicture";
 
 interface HeaderProps {
   isOffline?: boolean;
@@ -25,7 +21,6 @@ export function Header({
   const { data: profile } = useFetchData<Profile>(fetchProfilInfo);
 
   const centerName = profile?.center ?? "Mon centre";
-  const initials = getInitials(profile);
 
   return (
     <header className="bg-[var(--card)]/95 backdrop-blur border-b border-[var(--border)] px-4 lg:px-6 h-14 flex items-center gap-3 sticky top-0 z-30 shrink-0">
@@ -61,14 +56,11 @@ export function Header({
             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[var(--primary)]" />
           )}
         </button>
-        <button
+        <ProfilePicture
+          profile={profile ?? null}
+          size="sm"
           onClick={() => router.push("/profil")}
-          className="w-9 h-9 rounded-full bg-[var(--accent)] flex items-center justify-center"
-        >
-          <span className="text-[var(--accent-foreground)] font-semibold text-sm">
-            {initials}
-          </span>
-        </button>
+        />
       </div>
     </header>
   );

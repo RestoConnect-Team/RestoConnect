@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "../styles/index.css";
 import { ClientLayout } from "@/components/layout";
 
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang="fr" className="h-full antialiased">
       <body className="min-h-screen">
         <ClientLayout>{children}</ClientLayout>
       </body>
