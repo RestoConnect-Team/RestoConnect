@@ -10,7 +10,7 @@ from .vehicule_infos_detail_response import VehiculeDetailResponse
 from .equipement_list_schema import OneEquipementFromList 
 from .one_center_from_list_schema import OneCenterFromList
 from .center_schedule_schema import TimeSlot, WeeklySchedule
-from .center_infos_schema import CenterInfos
+from .center_infos_schema import CenterInfos, ContactInfo, CenterAlert, ClosingPeriodSchema, UpdateCenterRequest, TimeSlotInput
 from .warehouse_infos_schema import WarehouseInfos
 from .product_reference_scan import ProductScanResponse, ProductStatusUpdate
 from .get_list_centers_response_schema import ListCentersResponse
@@ -34,6 +34,11 @@ __all__ = [
     "TimeSlot",
     "WeeklySchedule",
     "CenterInfos",
+    "ContactInfo",
+    "CenterAlert",
+    "ClosingPeriodSchema",
+    "UpdateCenterRequest",
+    "TimeSlotInput",
     "WarehouseInfos",
     "ListCentersResponse",
     "ProductScanResponse",

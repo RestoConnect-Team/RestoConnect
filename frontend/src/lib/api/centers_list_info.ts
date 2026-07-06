@@ -1,15 +1,19 @@
 export interface Center {
-    id: number;
+    center_id: number;
     name: string;
-    location: string;
-    alerte: string;
-    schedule: string;
-    responsable_name: string;
-    responsable_email: string;
-    responsable_number: string;
-  }
+    city: string;
+    status: string;
+    materials_count: number;
+    contacts_count: number;
+}
 
-export const fetchCentersList = async (): Promise<Center[]> => {
+export interface ListCentersResponse {
+    user_center: Center;
+    centers_list: Center[];
+    warehouses_list: Center[];
+}
+
+export const fetchCentersList = async (): Promise<ListCentersResponse> => {
     const response = await fetch('http://localhost:8000/api/list_centers', {
         method: 'GET',
         credentials: 'include',
@@ -19,8 +23,8 @@ export const fetchCentersList = async (): Promise<Center[]> => {
     const data = await response.json();
     
     if (!response.ok) {
-        throw new Error(data.detail || 'Failed to fetch center info');
+        throw new Error(data.detail || 'Failed to fetch centers list');
     }
     
-    return data as Center[];
+    return data as ListCentersResponse;
 };

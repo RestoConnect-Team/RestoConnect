@@ -1,7 +1,7 @@
 from datetime import date, time
 
 from .connection import SessionLocal
-from .models import User, Stock, Center, Vehicule, VehiculeDocument, CenterSchedule
+from .models import User, Stock, Center, Vehicule, VehiculeDocument, CenterSchedule, ClosingPeriod
 from app.enums import VehiculeCategory, VehiculeStatus, UserStatus, CenterStatus, WeekDays, StockStatus, StockCategory
 
 #crypt context for password hashing
@@ -153,6 +153,8 @@ def seed():
             street="Rue Servient",
             city="Lyon",
             postal_code="69003",
+            telephone="04 72 00 11 22",
+            email="partdieu@restosducoeur.org",
             status=CenterStatus.OPEN,
             description="Centre principal situé au cœur du quartier d'affaires de Lyon.",
             activities="Restauration rapide, livraison",
@@ -163,6 +165,8 @@ def seed():
             street="Boulevard de la Croix-Rousse",
             city="Lyon",
             postal_code="69004",
+            telephone="04 72 00 22 33",
+            email="croixrousse@restosducoeur.org",
             status=CenterStatus.OPEN,
             description="Centre situé sur les pentes de la Croix-Rousse.",
             activities="Restauration sur place, traiteur",
@@ -173,6 +177,8 @@ def seed():
             street="Avenue Henri Barbusse",
             city="Villeurbanne",
             postal_code="69100",
+            telephone="04 72 00 33 44",
+            email="villeurbanne@restosducoeur.org",
             status=CenterStatus.TEMPORARY_CLOSE,
             description="Centre fermé temporairement pour travaux.",
             activities="Restauration rapide",
@@ -183,6 +189,8 @@ def seed():
             street="Avenue Franklin Roosevelt",
             city="Bron",
             postal_code="69500",
+            telephone="04 72 00 44 55",
+            email="bron@restosducoeur.org",
             status=CenterStatus.OPEN,
             description="Centre desservant le secteur est de l'agglomération.",
             activities="Livraison, traiteur événementiel",
@@ -193,6 +201,8 @@ def seed():
             street="Rue Marcel Cachin",
             city="Vénissieux",
             postal_code="69200",
+            telephone="04 72 00 55 66",
+            email="venissieux@restosducoeur.org",
             status=CenterStatus.CLOSE,
             description="Centre actuellement fermé.",
             activities="Restauration rapide",
@@ -361,12 +371,20 @@ def seed():
         ),
     ]
 
+    closing_periods = [
+        ClosingPeriod(center_id=1, start_date=date(2026, 7, 13), end_date=date(2026, 7, 30)),
+        ClosingPeriod(center_id=1, start_date=date(2026, 8, 10), end_date=date(2026, 8, 23)),
+        ClosingPeriod(center_id=2, start_date=date(2026, 7, 20), end_date=date(2026, 8, 15)),
+    ]
+
     db.add_all(users)
     db.add_all(stocks)
     db.add_all(centers)
     db.add_all(center_schedules)
     db.add_all(vehicules)
     db.add_all(vehicule_documents)
+    db.commit()
+    db.add_all(closing_periods)
     db.commit()
     db.close()
     print("Seed OK ✅")

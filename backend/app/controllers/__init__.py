@@ -8,6 +8,7 @@ from .get_my_center_infos_controller import get_my_center_infos_controller
 from .get_center_infos_controller import get_center_infos_controller
 from .get_warehouse_infos_controller import get_warehouse_infos_controller
 from .get_list_stocks_controller import get_list_stocks_controller
+from .update_center_controller import update_center_controller
 
 
 __all__=[
