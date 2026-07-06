@@ -1,4 +1,5 @@
 from .login_connection_controller import login_connection_controller
+from .deconnection_controller import deconnect_user_controller
 
 from .get_user_controller import get_user_profile
 from .get_list_vehicules_controller import get_list_vehicules
@@ -13,6 +14,7 @@ from .update_center_controller import update_center_controller
 
 __all__=[
     "login_connection_controller",
+    "deconnect_user_controller",
     
     "get_user_profile",
     "get_list_vehicules",

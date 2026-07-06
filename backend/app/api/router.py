@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 from app.api.endpoints import (
     get_login_connection_route,
+    deconnect_route,
 
     get_user_route,
     get_list_vehicules_route,
@@ -20,6 +21,7 @@ api_router = APIRouter()
 
 
 api_router.include_router(get_login_connection_route.router) #, prefix="/login", tags=["Login"])
+api_router.include_router(deconnect_route.router) #, prefix="/deconnection", tags=["Deconnection"])
 
 api_router.include_router(get_user_route.router)
 api_router.include_router(get_user_route.router, prefix="/user", tags=["User"])

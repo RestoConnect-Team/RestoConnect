@@ -91,6 +91,34 @@ def seed():
             telephone="0123456789", street="159 Cedar St", city="Townsville",
             postal_code="67890", created_at=date(2026, 5, 1), updated_at=date(2026, 5, 1),
         ),
+        User(
+            name="Thomas", lastname="Girard", email="resp3@resto.com",
+            password=hash_password("1234"), photo_url=None,
+            center_id=3, status=UserStatus.CENTER_ADMIN,
+            telephone="0123456789", street="10 Avenue Henri Barbusse", city="Villeurbanne",
+            postal_code="69100", created_at=date(2026, 5, 5), updated_at=date(2026, 5, 5),
+        ),
+        User(
+            name="Camille", lastname="Lambert", email="resp4@resto.com",
+            password=hash_password("1234"), photo_url=None,
+            center_id=4, status=UserStatus.CENTER_ADMIN,
+            telephone="0123456789", street="25 Avenue Franklin Roosevelt", city="Bron",
+            postal_code="69500", created_at=date(2026, 5, 10), updated_at=date(2026, 5, 10),
+        ),
+        User(
+            name="Yanis", lastname="Da Silva", email="resp5@resto.com",
+            password=hash_password("1234"), photo_url=None,
+            center_id=5, status=UserStatus.CENTER_ADMIN,
+            telephone="0123456789", street="7 Rue Marcel Cachin", city="Vénissieux",
+            postal_code="69200", created_at=date(2026, 5, 15), updated_at=date(2026, 5, 15),
+        ),
+        User(
+            name="Chloé", lastname="Perrin", email="resp6@resto.com",
+            password=hash_password("1234"), photo_url=None,
+            center_id=6, status=UserStatus.CENTER_ADMIN,
+            telephone="0123456789", street="15 Avenue de la République", city="Vaulx-en-Velin",
+            postal_code="69800", created_at=date(2026, 5, 20), updated_at=date(2026, 5, 20),
+        )
     ]
 
     stocks = [

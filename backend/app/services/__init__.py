@@ -3,6 +3,7 @@ from .hash_password_service import hash_password_service
 from .verify_password_service import verify_password_service
 from .get_user_service import get_user_by_token_service
 from .get_user_by_email_service import get_user_by_email_service
+from .deconncet_user_service import deconnect_user_service
 
 from .get_list_vehicules_service import get_list_vehicules_service
 from .get_vehicule_infos_service import get_vehicule_infos_service
@@ -23,6 +24,7 @@ __all__ = [
     "verify_password_service",
     "get_user_by_email_service",
     "get_user_by_token_service",
+    "deconnect_user_service",
 
     "get_list_vehicules_service",
     "get_vehicule_infos_service",
