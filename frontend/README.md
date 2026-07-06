@@ -4,7 +4,7 @@
 ## node.js installation if needed
 
 - Node.js (v18+)
-- npm ou yarn
+- npm ou yarn (v11+)
 
 ### Installation on Windows
 

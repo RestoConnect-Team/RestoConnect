@@ -4,14 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard,
-  Package,
-  Truck,
-  ClipboardList,
-  Building2,
-  Users,
-  Bell,
-  User,
+LayoutDashboard, Package, Truck, ClipboardList, ScanLine,
+  Building2, Users, Bell, User,
 } from "lucide-react";
 import { useFetchData } from "@/hooks/useFetchData";
 import { fetchProfilInfo, Profile } from "@/lib/api/my_profil_info";
@@ -19,14 +13,14 @@ import { ProfilePicture } from "./ProfilePicture";
 import { useRouter } from "next/navigation";
 
 const NAV_ITEMS = [
-  { href: "/my_center", label: "Mon tableau de bord", Icon: LayoutDashboard },
-  { href: "/equipement", label: "Matériels", Icon: Package },
-  { href: "/vehicule", label: "Véhicules", Icon: Truck },
-  { href: "/inventaires", label: "Inventaires", Icon: ClipboardList },
-  { href: "/all_centers", label: "Centres", Icon: Building2 },
-  { href: "/equipe", label: "Équipe", Icon: Users },
-  { href: "/notifications", label: "Notifications", Icon: Bell, badge: true },
-  { href: "/profil", label: "Mon profil", Icon: User },
+  { href: "/my_center",     label: "Mon tableau de bord", Icon: LayoutDashboard },
+  { href: "/equipement",    label: "Matériels",           Icon: Package         },
+  { href: "/inventaires",   label: "Inventaires",         Icon: ClipboardList   },
+  { href: "/vehicule",      label: "Véhicules",           Icon: Truck           },
+  { href: "/all_centers",   label: "Centres",             Icon: Building2       },
+  { href: "/equipe",        label: "Équipe",              Icon: Users           },
+  { href: "/notifications", label: "Notifications",       Icon: Bell, badge: true },
+  { href: "/profil",        label: "Mon profil",          Icon: User            },
 ];
 
 export function Sidebar({ unread = 0 }: { unread?: number }) {
@@ -92,6 +86,17 @@ export function Sidebar({ unread = 0 }: { unread?: number }) {
           );
         })}
       </nav>
+
+      {/* Scan Button */}
+      <div className="px-3 py-3 mt-auto">
+        <Link
+          href="/scan"
+          className="flex items-center justify-center gap-2 w-full px-4 py-2.5 bg-[rgb(230,0,126)] text-white font-semibold rounded-2xl hover:opacity-90 transition-opacity text-center shadow-md hover:shadow-lg"
+        >
+          <ScanLine size={18} />
+          <span>Scanner</span>
+        </Link>
+      </div>
 
       {/* User */}
       <div className="px-4 py-3 border-t border-[var(--sidebar-border)]">
