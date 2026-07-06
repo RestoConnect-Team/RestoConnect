@@ -3,25 +3,6 @@ button:focus {
   box-shadow: 0 0 0 3px rgba(230, 0, 126, 0.1);
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--gray-100);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-dark);
-}
-
 /* Animation for loading spinner */
 @keyframes spin {
   from {

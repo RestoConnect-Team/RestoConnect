@@ -13,6 +13,7 @@ import {
 
 import PageError from "@/components/page_error/page_error";
 import Loading from "@/components/loading/loading";
+import { PageLayout } from "@/components/layout/PageLayout";
 
 type VehiculeRow = VehiculeItem & {
   source: "center" | "other";
@@ -81,12 +82,8 @@ export default function Vehicule() {
   }, [rows, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="mx-auto w-full max-w-5xl px-4 py-10">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 mb-5">
-          Véhicules
-        </h1>
-
+    <PageLayout title="Véhicules">
+      <div className="p-6">
         {error && <PageError page_error={error} />}
         {loading && <Loading loading_sentence="Chargement des véhicules..." />}
 
@@ -111,12 +108,24 @@ export default function Vehicule() {
                 <table className="w-full min-w-[860px] text-sm">
                   <thead>
                     <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wide text-xs">
-                      <th className="text-left px-4 py-3 font-semibold">Véhicule</th>
-                      <th className="text-left px-4 py-3 font-semibold">Immatriculation</th>
-                      <th className="text-left px-4 py-3 font-semibold">Type</th>
-                      <th className="text-left px-4 py-3 font-semibold">Centre</th>
-                      <th className="text-left px-4 py-3 font-semibold">Statut</th>
-                      <th className="text-left px-4 py-3 font-semibold">Actions</th>
+                      <th className="text-left px-4 py-3 font-semibold">
+                        Véhicule
+                      </th>
+                      <th className="text-left px-4 py-3 font-semibold">
+                        Immatriculation
+                      </th>
+                      <th className="text-left px-4 py-3 font-semibold">
+                        Type
+                      </th>
+                      <th className="text-left px-4 py-3 font-semibold">
+                        Centre
+                      </th>
+                      <th className="text-left px-4 py-3 font-semibold">
+                        Statut
+                      </th>
+                      <th className="text-left px-4 py-3 font-semibold">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -176,6 +185,6 @@ export default function Vehicule() {
           </>
         )}
       </div>
-    </div>
+    </PageLayout>
   );
 }

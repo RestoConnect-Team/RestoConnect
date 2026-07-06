@@ -9,6 +9,7 @@ import {
 import Title from "@/components/title/title";
 import PageError from "@/components/page_error/page_error";
 import Loading from "@/components/loading/loading";
+import { PageLayout } from "@/components/layout/PageLayout";
 
 export default function Equipement() {
   const { data, loading, error } =
@@ -16,14 +17,8 @@ export default function Equipement() {
   const equipementList = data ?? [];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Header Section */}
-        <Title
-          title="Gestion du matériel"
-          subtitle="Inventaire des consommables et équipements"
-        />
-
+    <PageLayout title="Matériels" onClick={() => {}} buttonLabel="Ajouter">
+      <div className="p-6">
         {/* Error State */}
         {error && <PageError page_error={error} />}
 
@@ -137,6 +132,6 @@ export default function Equipement() {
           </div>
         </div>
       </div>
-    </div>
+    </PageLayout>
   );
 }
