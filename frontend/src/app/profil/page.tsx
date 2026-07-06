@@ -25,7 +25,7 @@ export default function Profil() {
 
       {/* Content State */}
       {!loading && profil && (
-        <div className="space-y-6 h-full ">
+        <div className="space-y-6 p-6 h-full ">
           {/* Profile Header Card */}
           <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
             <div className="flex flex-col gap-6 p-8">
