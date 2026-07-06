@@ -75,7 +75,7 @@ function StatCard({
 
 function SectionCard({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 mb-4">
+    <div className="bg-white rounded-xl border border-gray-200 p-5">
       {children}
     </div>
   );
@@ -215,8 +215,8 @@ function CenterDetailView({ center }: { center: CenterDetail }) {
   };
 
   return (
-    <div className="p-6">
-      <div className="rounded-xl bg-gradient-to-r from-[rgb(230,0,126)] to-[rgb(200,0,100)] p-5 mb-4 relative overflow-hidden">
+    <div className="p-6 flex flex-col gap-4">
+      <div className="rounded-xl bg-gradient-to-r from-[rgb(230,0,126)] to-[rgb(200,0,100)] p-5 relative overflow-hidden">
         <p className="text-[10px] font-bold text-white/80 tracking-widest uppercase mb-1">
           Mon centre
         </p>
@@ -232,16 +232,16 @@ function CenterDetailView({ center }: { center: CenterDetail }) {
         </div>
       </div>
 
-      <div className="flex gap-3 mb-4">
+      <div className="flex gap-3">
         <StatCard
           value={center.materials_count}
-          label="Materiels"
+          label="Matériels"
           sub="dans mon centre"
         />
         <StatCard
           value={center.missing_count}
           label="Manquants"
-          sub="a retrouver"
+          sub="à retrouver"
           accent="pink"
         />
         <StatCard
@@ -265,7 +265,7 @@ function CenterDetailView({ center }: { center: CenterDetail }) {
             <ChevronRight size={12} /> Modifier
           </Link>
         </div>
-        <Row label="Telephone" value={center.center_headmaster_telephone} />
+        <Row label="Téléphone" value={center.center_headmaster_telephone} />
         <Row label="Adresse email" value={center.center_headmaster_email} />
         <Row label="Adresse" value={address} />
       </SectionCard>
@@ -273,7 +273,7 @@ function CenterDetailView({ center }: { center: CenterDetail }) {
       {activityTags.length > 0 && (
         <SectionCard>
           <h2 className="text-[15px] font-bold text-gray-900 mb-3">
-            Activites
+            Activités
           </h2>
           <Row label="Description" value={center.activities} />
           <div className="flex flex-wrap gap-2 mt-3">
