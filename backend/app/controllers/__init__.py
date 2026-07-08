@@ -13,6 +13,7 @@ from .update_center_controller import update_center_controller
 
 from .create_inventory_controller import create_inventory_controller
 from .get_list_inventories_controller import get_list_inventories_controller
+from .get_list_stocks_inventory_controller import get_list_stocks_inventory_controller
 
 
 __all__=[
@@ -31,6 +32,7 @@ __all__=[
     "update_center_controller",
 
     "create_inventory_controller",
-    "get_list_inventories_controller"
+    "get_list_inventories_controller",
+    "get_list_stocks_inventory_controller"
 
     ]

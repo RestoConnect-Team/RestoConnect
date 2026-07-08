@@ -22,6 +22,7 @@ from .get_center_stocks_list_service import get_center_stocks_list_service
 
 from .create_inventory_service import create_inventory_service
 from .get_list_inventories_service import get_user_center_inventories_list_service
+from .get_inventory_stocks_service import get_inventory_stocks_service
 
 __all__ = [
     "generate_random_token_service",
@@ -44,5 +45,6 @@ __all__ = [
     "get_list_centers_service",
 
     "create_inventory_service",
-    "get_user_center_inventories_list_service"
+    "get_user_center_inventories_list_service",
+    "get_inventory_stocks_service"
     ]
