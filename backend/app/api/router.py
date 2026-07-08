@@ -14,6 +14,9 @@ from app.api.endpoints import (
     get_warehouse_infos_route,
     get_stock_by_scan,
     update_product_status,
+
+    create_inventory_route,
+    get_list_inventories_route
 )
 
 api_router = APIRouter()
@@ -41,3 +44,6 @@ api_router.include_router(get_warehouse_infos_route.router)
 
 api_router.include_router(get_stock_by_scan.router, prefix="/stock", tags=["Stock"])
 api_router.include_router(update_product_status.router, prefix="/stock", tags=["Stock"])
+
+api_router.include_router(create_inventory_route.router, prefix="/inventory", tags=["Inventory"])
+api_router.include_router(get_list_inventories_route.router, prefix="/inventory", tags=["Inventory"])

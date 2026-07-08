@@ -1,8 +1,8 @@
 from datetime import date, time
 
 from .connection import SessionLocal
-from .models import User, Stock, Center, Vehicule, VehiculeDocument, CenterSchedule, ClosingPeriod
-from app.enums import VehiculeCategory, VehiculeStatus, UserStatus, CenterStatus, WeekDays, StockStatus, StockCategory
+from .models import User, Stock, Center, Vehicule, VehiculeDocument, CenterSchedule, ClosingPeriod, Inventory, InventoryStock
+from app.enums import VehiculeCategory, VehiculeStatus, UserStatus, CenterStatus, WeekDays, StockStatus, StockCategory, InventoryStatus, InventoryStockStatus
 
 #crypt context for password hashing
 import bcrypt
@@ -405,6 +405,59 @@ def seed():
         ClosingPeriod(center_id=2, start_date=date(2026, 7, 20), end_date=date(2026, 8, 15)),
     ]
 
+    inventories = [
+        Inventory(
+            inventory_start_date=date(2026, 6, 15),
+            inventory_end_date=date(2026, 6, 15),
+            status=InventoryStatus.FINISHED,
+            center_id=1,
+            user_id=3,
+        ),
+        Inventory(
+            inventory_start_date=date(2026, 7, 1),
+            inventory_end_date=None,
+            status=InventoryStatus.ON_GOING,
+            center_id=2,
+            user_id=4,
+        ),
+    ]
+
+    inventory_stocks = [
+        # Inventaire 1 (centre 1)
+        InventoryStock(
+            inventory_id=1,
+            stock_id=1,
+            status=InventoryStockStatus.FOUND,
+            scan_id=None,
+        ),
+        InventoryStock(
+            inventory_id=1,
+            stock_id=2,
+            status=InventoryStockStatus.NOT_FOUND,
+            scan_id=None,
+        ),
+
+        # Inventaire 2 (centre 2)
+        InventoryStock(
+            inventory_id=2,
+            stock_id=3,
+            status=InventoryStockStatus.NOT_FOUND,
+            scan_id=None,
+        ),
+        InventoryStock(
+            inventory_id=2,
+            stock_id=4,
+            status=InventoryStockStatus.FOUND,
+            scan_id=None,
+        ),
+        InventoryStock(
+            inventory_id=2,
+            stock_id=5,
+            status=InventoryStockStatus.NOT_FOUND,
+            scan_id=None,
+        ),
+    ]
+
     db.add_all(users)
     db.add_all(stocks)
     db.add_all(centers)
@@ -413,6 +466,10 @@ def seed():
     db.add_all(vehicule_documents)
     db.commit()
     db.add_all(closing_periods)
+    db.commit()
+    db.add_all(inventories)
+    db.commit()
+    db.add_all(inventory_stocks)
     db.commit()
     db.close()
     print("Seed OK ✅")

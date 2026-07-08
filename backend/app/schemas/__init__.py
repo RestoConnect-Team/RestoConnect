@@ -15,6 +15,9 @@ from .warehouse_infos_schema import WarehouseInfos
 from .product_reference_scan import ProductScanResponse, ProductStatusUpdate
 from .get_list_centers_response_schema import ListCentersResponse
 
+from .one_stock_from_inventory import OneStockFromInventory
+from .one_inventory_from_inventorys import OneInventoryFromInventorys
+
 __all__ = [
     "LoginRequest",
     "LoginResponse",
@@ -42,5 +45,8 @@ __all__ = [
     "WarehouseInfos",
     "ListCentersResponse",
     "ProductScanResponse",
-    "ProductStatusUpdate"
+    "ProductStatusUpdate",
+
+    "OneStockFromInventory",
+    "OneInventoryFromInventorys"
     ]
