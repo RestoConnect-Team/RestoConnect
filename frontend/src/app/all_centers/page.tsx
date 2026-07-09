@@ -1,140 +1,126 @@
-"use client"; 
+"use client";
 
-import { useFetchData } from '@/hooks/useFetchData';
-import { fetchCentersList, Center } from '@/lib/api/centers_list_info';
-
-import Title from "@/components/title/title";
+import { useState } from "react";
+import Link from "next/link";
+import { useFetchData } from "@/hooks/useFetchData";
+import {
+  fetchCentersList,
+  Center,
+  ListCentersResponse,
+} from "@/lib/api/centers_list_info";
 import PageError from "@/components/page_error/page_error";
 import Loading from "@/components/loading/loading";
+import { Building2, MapPin, Package, Users } from "lucide-react";
+import { PageLayout } from "@/components/layout/PageLayout";
 
-export default function AllCenters() {
-  const { data, loading, error } = useFetchData<Center[]>(fetchCentersList);
-  const centersList = data ?? [];
+const INITIAL_VISIBLE = 4;
+
+function CenterCard({
+  center,
+  isUserCenter,
+}: {
+  center: Center;
+  isUserCenter?: boolean;
+}) {
+  return (
+    <Link
+      href={`/all_centers/${center.center_id}`}
+      className="block bg-white rounded-xl border border-gray-200 p-4 relative hover:shadow-md hover:border-[rgb(230,0,126)] transition-all"
+    >
+      {isUserCenter && (
+        <span className="absolute top-3 right-3 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[rgb(230,0,126)] text-white">
+          Mon centre
+        </span>
+      )}
+      <div className="w-10 h-10 rounded-lg bg-pink-100 flex items-center justify-center mb-3">
+        <Building2 size={20} className="text-[rgb(230,0,126)]" />
+      </div>
+      <p className="text-[14px] font-semibold text-gray-900 leading-snug mb-1 pr-16">
+        {center.name}
+      </p>
+      <div className="flex items-center gap-1 text-[12px] text-gray-500 mb-3">
+        <MapPin size={11} className="shrink-0" />
+        <span>{center.city}</span>
+      </div>
+      <div className="flex items-center gap-4 text-[12px] text-gray-500">
+        <span className="flex items-center gap-1">
+          <Package size={12} />
+          {center.materials_count} matériels
+        </span>
+        <span className="flex items-center gap-1">
+          <Users size={12} />
+          {center.contacts_count} contact
+          {center.contacts_count !== 1 ? "s" : ""}
+        </span>
+      </div>
+    </Link>
+  );
+}
+
+function Section({
+  title,
+  items,
+  userCenterId,
+  loadMoreLabel,
+}: {
+  title: string;
+  items: Center[];
+  userCenterId?: number;
+  loadMoreLabel: string;
+}) {
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
+  const visible = items.slice(0, visibleCount);
+  const hasMore = visibleCount < items.length;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Header Section */}
-        <Title 
-          title="Liste des centres" 
-          subtitle="Trouvez un centre d'accueil près de chez vous"
-        />
-
-        {/* Error State */}
-        {error && (
-          <PageError page_error={error} />
-        )}
-
-        {/* Loading State */}
-        {loading && (
-          <Loading loading_sentence="Chargement des centres..." />
-        )}
-
-        {/* Content State */}
-        {!loading && centersList.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {centersList.map((center) => (
-              <div
-                key={center.id}
-                className="bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100 hover:border-[rgb(230,0,126)]"
-              >
-                {/* Card Header */}
-                <div className="h-2 bg-gradient-to-r from-[rgb(230,0,126)] to-[rgb(240,51,127)]"></div>
-
-                {/* Card Content */}
-                <div className="p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4 line-clamp-2">{center.name}</h3>
-
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <span className="text-sm font-medium text-gray-500 w-24">📍 location:</span>
-                      <span className="text-sm text-gray-700">{center.location}</span>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm font-medium text-gray-500 w-24">📅 Horaires:</span>
-                      <span className="text-sm text-gray-700">{center.schedule}</span>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm font-medium text-gray-500 w-24">🚨 Alerte:</span>
-                      <span
-                        className={`inline-block text-xs font-semibold px-3 py-1 rounded-full ${
-                          center.alerte === 'active'
-                            ? 'bg-red-100 text-red-700'
-                            : 'bg-green-100 text-green-700'
-                        }`}
-                      >
-                        {center.alerte}
-                      </span>
-                    </div>
-                  </div>
-
-                  <hr className="my-4 border-gray-200" />
-
-                  <div className="space-y-2 text-sm">
-                    <p className="font-semibold text-gray-900">Responsable</p>
-                    <p className="text-gray-700"><strong>Nom:</strong> {center.responsable_name}</p>
-                    <p className="text-gray-700">
-                      <strong>Email:</strong>{' '}
-                      <a href={`mailto:${center.responsable_email}`} className="text-[rgb(230,0,126)] hover:underline">
-                        {center.responsable_email}
-                      </a>
-                    </p>
-                    <p className="text-gray-700">
-                      <strong>Téléphone:</strong>{' '}
-                      <a href={`tel:${center.responsable_number}`} className="text-[rgb(230,0,126)] hover:underline">
-                        {center.responsable_number}
-                      </a>
-                    </p>
-                  </div>
-                </div>
-
-                {/* Card Footer */}
-                <div className="bg-gray-50 px-6 py-3 flex gap-3">
-                  <button className="flex-1 py-2 px-3 bg-[rgb(230,0,126)] text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity">
-                    Contacter
-                  </button>
-                  <button className="flex-1 py-2 px-3 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-100 transition-colors">
-                    Détails
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Empty State */}
-        {!loading && centersList.length === 0 && !error && (
-          <div className="text-center py-16">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-              <span className="text-3xl">🏢</span>
-            </div>
-            <p className="text-gray-600 text-lg">Aucun centre trouvé</p>
-            <p className="text-gray-500 text-sm mt-2">Aucun centre d'accueil disponible pour le moment</p>
-          </div>
-        )}
-
-        {/* Stats Section */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-[rgb(230,0,126)]">
-            <p className="text-gray-600 text-sm font-medium mb-2">Total centres</p>
-            <p className="text-3xl font-bold text-gray-900">{centersList.length}</p>
-          </div>
-          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-[rgb(240,51,127)]">
-            <p className="text-gray-600 text-sm font-medium mb-2">Alertes actives</p>
-            <p className="text-3xl font-bold text-gray-900">
-              {centersList.filter(c => c.alerte === 'active').length}
-            </p>
-          </div>
-          <div className="bg-white rounded-xl shadow-md p-6 border-l-4 border-[rgb(200,0,100)]">
-            <p className="text-gray-600 text-sm font-medium mb-2">Centres actifs</p>
-            <p className="text-3xl font-bold text-gray-900">
-              {centersList.filter(c => c.alerte !== 'active').length}
-            </p>
-          </div>
-        </div>
+    <section>
+      <h2 className="text-[18px] font-bold text-gray-900 mb-4">{title}</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {visible.map((center) => (
+          <CenterCard
+            key={center.center_id}
+            center={center}
+            isUserCenter={center.center_id === userCenterId}
+          />
+        ))}
       </div>
-    </div>
+      {hasMore && (
+        <button
+          onClick={() => setVisibleCount((v) => v + INITIAL_VISIBLE)}
+          className="mt-4 w-full text-center text-[13px] text-gray-500 hover:text-[rgb(230,0,126)] transition-colors py-1 cursor-pointer"
+        >
+          ... {loadMoreLabel} ...
+        </button>
+      )}
+    </section>
+  );
+}
+
+export default function AllCenters() {
+  const { data, loading, error } =
+    useFetchData<ListCentersResponse>(fetchCentersList);
+
+  return (
+    <PageLayout>
+      <div className="p-6 flex flex-col gap-6">
+        {error && <PageError page_error={error} />}
+        {loading && <Loading loading_sentence="Chargement des centres..." />}
+
+        {!loading && data && (
+          <>
+            <Section
+              title="Entrepôts"
+              items={data.warehouses_list}
+              loadMoreLabel="Charger plus d'entrepôts"
+            />
+            <Section
+              title="Centres"
+              items={data.centers_list}
+              loadMoreLabel="Charger plus de centres"
+            />
+          </>
+        )}
+      </div>
+    </PageLayout>
   );
 }

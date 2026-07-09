@@ -1,27 +1,6 @@
-@import "../styles/index.css";
-
 button:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(230, 0, 126, 0.1);
-}
-
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--gray-100);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-dark);
 }
 
 /* Animation for loading spinner */
@@ -36,7 +15,11 @@ button:focus {
 
 /* Gradient background utility */
 .gradient-primary {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    var(--primary-light) 100%
+  );
 }
 
 /* Utility classes */

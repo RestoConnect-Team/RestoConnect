@@ -1,8 +1,8 @@
 from datetime import date, time
 
 from .connection import SessionLocal
-from .models import User, Stock, Center, Vehicule, VehiculeDocument, CenterSchedule
-from app.enums import VehiculeCategory, VehiculeStatus, UserStatus, CenterStatus, WeekDays, StockStatus, StockCategory
+from .models import User, Stock, Center, Vehicule, VehiculeDocument, CenterSchedule, ClosingPeriod, Inventory, InventoryStock
+from app.enums import VehiculeCategory, VehiculeStatus, UserStatus, CenterStatus, WeekDays, StockStatus, StockCategory, InventoryStatus, InventoryStockStatus
 
 #crypt context for password hashing
 import bcrypt
@@ -91,6 +91,34 @@ def seed():
             telephone="0123456789", street="159 Cedar St", city="Townsville",
             postal_code="67890", created_at=date(2026, 5, 1), updated_at=date(2026, 5, 1),
         ),
+        User(
+            name="Thomas", lastname="Girard", email="resp3@resto.com",
+            password=hash_password("1234"), photo_url=None,
+            center_id=3, status=UserStatus.CENTER_ADMIN,
+            telephone="0123456789", street="10 Avenue Henri Barbusse", city="Villeurbanne",
+            postal_code="69100", created_at=date(2026, 5, 5), updated_at=date(2026, 5, 5),
+        ),
+        User(
+            name="Camille", lastname="Lambert", email="resp4@resto.com",
+            password=hash_password("1234"), photo_url=None,
+            center_id=4, status=UserStatus.CENTER_ADMIN,
+            telephone="0123456789", street="25 Avenue Franklin Roosevelt", city="Bron",
+            postal_code="69500", created_at=date(2026, 5, 10), updated_at=date(2026, 5, 10),
+        ),
+        User(
+            name="Yanis", lastname="Da Silva", email="resp5@resto.com",
+            password=hash_password("1234"), photo_url=None,
+            center_id=5, status=UserStatus.CENTER_ADMIN,
+            telephone="0123456789", street="7 Rue Marcel Cachin", city="Vénissieux",
+            postal_code="69200", created_at=date(2026, 5, 15), updated_at=date(2026, 5, 15),
+        ),
+        User(
+            name="Chloé", lastname="Perrin", email="resp6@resto.com",
+            password=hash_password("1234"), photo_url=None,
+            center_id=6, status=UserStatus.CENTER_ADMIN,
+            telephone="0123456789", street="15 Avenue de la République", city="Vaulx-en-Velin",
+            postal_code="69800", created_at=date(2026, 5, 20), updated_at=date(2026, 5, 20),
+        )
     ]
 
     stocks = [
@@ -153,6 +181,8 @@ def seed():
             street="Rue Servient",
             city="Lyon",
             postal_code="69003",
+            telephone="04 72 00 11 22",
+            email="partdieu@restosducoeur.org",
             status=CenterStatus.OPEN,
             description="Centre principal situé au cœur du quartier d'affaires de Lyon.",
             activities="Restauration rapide, livraison",
@@ -163,6 +193,8 @@ def seed():
             street="Boulevard de la Croix-Rousse",
             city="Lyon",
             postal_code="69004",
+            telephone="04 72 00 22 33",
+            email="croixrousse@restosducoeur.org",
             status=CenterStatus.OPEN,
             description="Centre situé sur les pentes de la Croix-Rousse.",
             activities="Restauration sur place, traiteur",
@@ -173,6 +205,8 @@ def seed():
             street="Avenue Henri Barbusse",
             city="Villeurbanne",
             postal_code="69100",
+            telephone="04 72 00 33 44",
+            email="villeurbanne@restosducoeur.org",
             status=CenterStatus.TEMPORARY_CLOSE,
             description="Centre fermé temporairement pour travaux.",
             activities="Restauration rapide",
@@ -183,6 +217,8 @@ def seed():
             street="Avenue Franklin Roosevelt",
             city="Bron",
             postal_code="69500",
+            telephone="04 72 00 44 55",
+            email="bron@restosducoeur.org",
             status=CenterStatus.OPEN,
             description="Centre desservant le secteur est de l'agglomération.",
             activities="Livraison, traiteur événementiel",
@@ -193,10 +229,23 @@ def seed():
             street="Rue Marcel Cachin",
             city="Vénissieux",
             postal_code="69200",
+            telephone="04 72 00 55 66",
+            email="venissieux@restosducoeur.org",
             status=CenterStatus.CLOSE,
             description="Centre actuellement fermé.",
             activities="Restauration rapide",
         ),
+        Center(
+            name="Entrepôt Vaulx-en-Velin",
+            street_number=15,
+            street="Avenue de la République",
+            city="Vaulx-en-Velin",
+            postal_code="69800",
+            status=CenterStatus.OPEN,
+            description="Entrepôt situé dans le quartier de la République.",
+            activities="Stockage, livraison",
+            is_warehouse=True
+        )
     ]
 
     center_schedules = [
@@ -350,12 +399,77 @@ def seed():
         ),
     ]
 
+    closing_periods = [
+        ClosingPeriod(center_id=1, start_date=date(2026, 7, 13), end_date=date(2026, 7, 30)),
+        ClosingPeriod(center_id=1, start_date=date(2026, 8, 10), end_date=date(2026, 8, 23)),
+        ClosingPeriod(center_id=2, start_date=date(2026, 7, 20), end_date=date(2026, 8, 15)),
+    ]
+
+    inventories = [
+        Inventory(
+            inventory_start_date=date(2026, 6, 15),
+            inventory_end_date=date(2026, 6, 15),
+            status=InventoryStatus.FINISHED,
+            center_id=1,
+            user_id=3,
+        ),
+        Inventory(
+            inventory_start_date=date(2026, 7, 1),
+            inventory_end_date=None,
+            status=InventoryStatus.ON_GOING,
+            center_id=2,
+            user_id=4,
+        ),
+    ]
+
+    inventory_stocks = [
+        # Inventaire 1 (centre 1)
+        InventoryStock(
+            inventory_id=1,
+            stock_id=1,
+            status=InventoryStockStatus.FOUND,
+            scan_id=None,
+        ),
+        InventoryStock(
+            inventory_id=1,
+            stock_id=2,
+            status=InventoryStockStatus.NOT_FOUND,
+            scan_id=None,
+        ),
+
+        # Inventaire 2 (centre 2)
+        InventoryStock(
+            inventory_id=2,
+            stock_id=3,
+            status=InventoryStockStatus.NOT_FOUND,
+            scan_id=None,
+        ),
+        InventoryStock(
+            inventory_id=2,
+            stock_id=4,
+            status=InventoryStockStatus.FOUND,
+            scan_id=None,
+        ),
+        InventoryStock(
+            inventory_id=2,
+            stock_id=5,
+            status=InventoryStockStatus.NOT_FOUND,
+            scan_id=None,
+        ),
+    ]
+
     db.add_all(users)
     db.add_all(stocks)
     db.add_all(centers)
     db.add_all(center_schedules)
     db.add_all(vehicules)
     db.add_all(vehicule_documents)
+    db.commit()
+    db.add_all(closing_periods)
+    db.commit()
+    db.add_all(inventories)
+    db.commit()
+    db.add_all(inventory_stocks)
     db.commit()
     db.close()
     print("Seed OK ✅")

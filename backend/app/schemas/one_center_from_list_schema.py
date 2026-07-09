@@ -11,3 +11,5 @@ class OneCenterFromList(BaseModel):
     city : str
     #status Ouvert / fermer / arrêt saisonier
     status : CenterStatus
+    materials_count: int = 0
+    contacts_count: int = 0
