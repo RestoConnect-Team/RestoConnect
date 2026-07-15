@@ -17,7 +17,8 @@ from app.api.endpoints import (
 
     create_inventory_route,
     get_list_inventories_route,
-    get_list_stocks_inventory_route
+    get_list_stocks_inventory_route,
+    get_qr_code_route
 )
 
 api_router = APIRouter()
@@ -49,3 +50,4 @@ api_router.include_router(update_product_status.router, prefix="/stock", tags=["
 api_router.include_router(create_inventory_route.router, prefix="/inventory", tags=["Inventory"])
 api_router.include_router(get_list_inventories_route.router, prefix="/inventory", tags=["Inventory"])
 api_router.include_router(get_list_stocks_inventory_route.router, prefix="/inventory", tags=["Inventory"])
+api_router.include_router(get_qr_code_route.router, prefix="/qr_code", tags=["QR Code"])
