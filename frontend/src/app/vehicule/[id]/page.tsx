@@ -20,6 +20,7 @@ import {
 } from "@/lib/api/vehicule_infos";
 import Loading from "@/components/loading/loading";
 import PageError from "@/components/page_error/page_error";
+import { PageLayout } from "@/components/layout/PageLayout";
 
 function formatDate(date: string | null | undefined) {
   if (!date) return "Non définie";
@@ -51,7 +52,10 @@ function normalizeText(value: string | null | undefined) {
     .trim();
 }
 
-function documentStatus(document: VehiculeDocument): { label: string; className: string } {
+function documentStatus(document: VehiculeDocument): {
+  label: string;
+  className: string;
+} {
   if (!document.expiration_date) {
     return {
       label: "Sans expiration",
@@ -64,7 +68,7 @@ function documentStatus(document: VehiculeDocument): { label: string; className:
   const expirationDate = new Date(document.expiration_date);
   expirationDate.setHours(0, 0, 0, 0);
   const daysLeft = Math.floor(
-    (expirationDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    (expirationDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
   );
 
   if (daysLeft < 0) {
@@ -92,7 +96,7 @@ export default function VehiculeDetailPage() {
   const vehiculeId = Number(params.id);
 
   const { data, loading, error } = useFetchData<VehiculeDetailResponse>(() =>
-    fetchVehiculeInfos(vehiculeId)
+    fetchVehiculeInfos(vehiculeId),
   );
 
   const vehicule = data?.vehicule ?? null;
@@ -106,7 +110,8 @@ export default function VehiculeDetailPage() {
 
     return documentAlerts.some((alert) => {
       const sameLevel = alert.level === technicalInspectionAlert.level;
-      const sameExpireDate = alert.expire_date === technicalInspectionAlert.expire_date;
+      const sameExpireDate =
+        alert.expire_date === technicalInspectionAlert.expire_date;
       const alertDescription = normalizeText(alert.description);
       const sameDescription = alertDescription === techDescription;
 
@@ -127,9 +132,12 @@ export default function VehiculeDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="mx-auto w-full max-w-4xl px-4 py-6 space-y-4">
-        <Link href="/vehicule" className="text-sm text-[rgb(230,0,126)] hover:underline">
+    <PageLayout>
+      <div className="w-full p-6 space-y-4">
+        <Link
+          href="/vehicule"
+          className="text-sm text-[rgb(230,0,126)] hover:underline"
+        >
           ← Retour à la liste
         </Link>
 
@@ -140,7 +148,9 @@ export default function VehiculeDetailPage() {
                 key={`${alert.name}-${alert.description}-${alert.expire_date}`}
                 className={`rounded-lg border px-3 py-2 text-sm ${alertStyles(alert.level)}`}
               >
-                <p className="font-medium">{alert.description || "Alerte document"}</p>
+                <p className="font-medium">
+                  {alert.description || "Alerte document"}
+                </p>
                 <p className="text-xs opacity-90">{alertText(alert)}</p>
               </div>
             ))}
@@ -151,12 +161,17 @@ export default function VehiculeDetailPage() {
           </div>
         )}
 
-        {technicalInspectionAlert && !technicalInspectionAlreadyInDocumentAlerts && (
-          <div className={`rounded-lg border px-3 py-2 text-sm ${alertStyles(technicalInspectionAlert.level)}`}>
-            <p className="font-medium">Contrôle technique</p>
-            <p className="text-xs opacity-90">{alertText(technicalInspectionAlert)}</p>
-          </div>
-        )}
+        {technicalInspectionAlert &&
+          !technicalInspectionAlreadyInDocumentAlerts && (
+            <div
+              className={`rounded-lg border px-3 py-2 text-sm ${alertStyles(technicalInspectionAlert.level)}`}
+            >
+              <p className="font-medium">Contrôle technique</p>
+              <p className="text-xs opacity-90">
+                {alertText(technicalInspectionAlert)}
+              </p>
+            </div>
+          )}
 
         <section className="rounded-xl border border-slate-200 bg-white p-4">
           <h1 className="text-2xl font-bold text-slate-900">{vehicule.name}</h1>
@@ -176,53 +191,77 @@ export default function VehiculeDetailPage() {
                 : "Documents conformes"}
             </span>
           </div>
-          <p className="mt-3 text-sm text-slate-500">Centre: {vehicule.center_name || "Non assigné"}</p>
+          <p className="mt-3 text-sm text-slate-500">
+            Centre: {vehicule.center_name || "Non assigné"}
+          </p>
         </section>
 
         <section className="rounded-xl border border-slate-200 bg-white p-4">
-          <h2 className="text-sm font-semibold text-slate-800 mb-3">Informations générales</h2>
+          <h2 className="text-sm font-semibold text-slate-800 mb-3">
+            Informations générales
+          </h2>
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
             <div>
               <dt className="text-slate-500">Immatriculation</dt>
-              <dd className="font-medium text-slate-800">{vehicule.immatriculation || "Non renseignée"}</dd>
+              <dd className="font-medium text-slate-800">
+                {vehicule.immatriculation || "Non renseignée"}
+              </dd>
             </div>
             <div>
               <dt className="text-slate-500">Type</dt>
-              <dd className="font-medium text-slate-800">{vehicule.category || "Non défini"}</dd>
+              <dd className="font-medium text-slate-800">
+                {vehicule.category || "Non défini"}
+              </dd>
             </div>
             <div>
               <dt className="text-slate-500">Centre affecté</dt>
-              <dd className="font-medium text-slate-800">{vehicule.center_name || "Non assigné"}</dd>
+              <dd className="font-medium text-slate-800">
+                {vehicule.center_name || "Non assigné"}
+              </dd>
             </div>
             <div>
               <dt className="text-slate-500">Statut</dt>
-              <dd className="font-medium text-slate-800">{vehicule.status || "Non défini"}</dd>
+              <dd className="font-medium text-slate-800">
+                {vehicule.status || "Non défini"}
+              </dd>
             </div>
             <div>
               <dt className="text-slate-500">Kilométrage</dt>
-              <dd className="font-medium text-slate-800">{vehicule.nb_km.toLocaleString("fr-FR")} km</dd>
+              <dd className="font-medium text-slate-800">
+                {vehicule.nb_km.toLocaleString("fr-FR")} km
+              </dd>
             </div>
             <div>
               <dt className="text-slate-500">Dernier contrôle technique</dt>
-              <dd className="font-medium text-slate-800">{formatDate(vehicule.last_technical_inspection_date)}</dd>
+              <dd className="font-medium text-slate-800">
+                {formatDate(vehicule.last_technical_inspection_date)}
+              </dd>
             </div>
             <div>
               <dt className="text-slate-500">Prochain contrôle technique</dt>
-              <dd className="font-medium text-slate-800">{formatDate(vehicule.next_technical_inspection_date)}</dd>
+              <dd className="font-medium text-slate-800">
+                {formatDate(vehicule.next_technical_inspection_date)}
+              </dd>
             </div>
             <div>
               <dt className="text-slate-500">Dernière révision</dt>
-              <dd className="font-medium text-slate-800">{formatDate(vehicule.last_service_date)}</dd>
+              <dd className="font-medium text-slate-800">
+                {formatDate(vehicule.last_service_date)}
+              </dd>
             </div>
             <div>
               <dt className="text-slate-500">Prochaine révision</dt>
-              <dd className="font-medium text-slate-800">{formatDate(vehicule.next_service_date)}</dd>
+              <dd className="font-medium text-slate-800">
+                {formatDate(vehicule.next_service_date)}
+              </dd>
             </div>
           </dl>
         </section>
 
         <section className="rounded-xl border border-slate-200 bg-white p-4">
-          <h2 className="text-sm font-semibold text-slate-800 mb-3">Alertes documents ({documentAlerts.length})</h2>
+          <h2 className="text-sm font-semibold text-slate-800 mb-3">
+            Alertes documents ({documentAlerts.length})
+          </h2>
           {documentAlerts.length === 0 ? (
             <div className="rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-700 inline-flex items-center gap-2">
               <CheckCircle2 size={15} />
@@ -242,9 +281,13 @@ export default function VehiculeDetailPage() {
                       ) : (
                         <Wrench size={15} />
                       )}
-                      <span className="font-medium text-sm">{alert.description || "Alerte"}</span>
+                      <span className="font-medium text-sm">
+                        {alert.description || "Alerte"}
+                      </span>
                     </div>
-                    <span className="text-xs">{formatDate(alert.expire_date)}</span>
+                    <span className="text-xs">
+                      {formatDate(alert.expire_date)}
+                    </span>
                   </div>
                   <p className="text-xs mt-1 opacity-90">{alertText(alert)}</p>
                 </li>
@@ -267,15 +310,22 @@ export default function VehiculeDetailPage() {
                 const status = documentStatus(document);
 
                 return (
-                  <li key={document.id} className="rounded-lg border border-slate-200 px-3 py-2">
+                  <li
+                    key={document.id}
+                    className="rounded-lg border border-slate-200 px-3 py-2"
+                  >
                     <div className="flex items-center justify-between gap-3">
                       <div>
-                        <p className="font-medium text-sm text-slate-800">{document.file_name}</p>
+                        <p className="font-medium text-sm text-slate-800">
+                          {document.file_name}
+                        </p>
                         <p className="text-xs text-slate-500">
                           {document.description || "Sans description"}
                         </p>
                       </div>
-                      <span className={`rounded-md border px-2 py-1 text-xs ${status.className}`}>
+                      <span
+                        className={`rounded-md border px-2 py-1 text-xs ${status.className}`}
+                      >
                         {status.label}
                       </span>
                     </div>
@@ -302,7 +352,9 @@ export default function VehiculeDetailPage() {
         </section>
 
         <section className="rounded-xl border border-slate-200 bg-white p-4">
-          <h2 className="text-sm font-semibold text-slate-800 mb-3">Responsable du véhicule</h2>
+          <h2 className="text-sm font-semibold text-slate-800 mb-3">
+            Responsable du véhicule
+          </h2>
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
             <div>
               <dt className="text-slate-500">Nom</dt>
@@ -314,17 +366,23 @@ export default function VehiculeDetailPage() {
             </div>
             <div>
               <dt className="text-slate-500">Email</dt>
-              <dd className="font-medium text-slate-800">{vehicule.responsable_email || "Non renseigné"}</dd>
+              <dd className="font-medium text-slate-800">
+                {vehicule.responsable_email || "Non renseigné"}
+              </dd>
             </div>
             <div>
               <dt className="text-slate-500">Téléphone</dt>
-              <dd className="font-medium text-slate-800">{vehicule.responsable_phone || "Non renseigné"}</dd>
+              <dd className="font-medium text-slate-800">
+                {vehicule.responsable_phone || "Non renseigné"}
+              </dd>
             </div>
           </dl>
         </section>
 
         <section className="rounded-xl border border-slate-200 bg-white p-4">
-          <h2 className="text-sm font-semibold text-slate-800 mb-3">Historique d'utilisation</h2>
+          <h2 className="text-sm font-semibold text-slate-800 mb-3">
+            Historique d'utilisation
+          </h2>
           <ul className="space-y-2 text-sm text-slate-600">
             <li className="flex items-center gap-2">
               <FileText size={14} /> Sortie distribution - aujourd'hui
@@ -338,6 +396,6 @@ export default function VehiculeDetailPage() {
           </ul>
         </section>
       </div>
-    </div>
+    </PageLayout>
   );
 }

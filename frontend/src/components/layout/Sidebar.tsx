@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ScanLine, LogOut, X } from "lucide-react";
 import { useFetchData } from "@/hooks/useFetchData";
 import { fetchProfilInfo, Profile } from "@/lib/api/my_profil_info";
 import { routes } from "@/routes";
+import { AuthService } from "@/services/auth.service";
 
 interface SidebarProps {
   isMobile?: boolean;
@@ -19,10 +20,22 @@ export function Sidebar({
   isMobile = false,
   onClose,
 }: SidebarProps) {
+  const router = useRouter();
   const pathname = usePathname();
   const { data: profile } = useFetchData<Profile>(fetchProfilInfo);
 
   const centerName = profile?.center ?? "Mon centre";
+
+  const authService = new AuthService();
+
+  const handleLogOut = async () => {
+    try {
+      await authService.logOut();
+      router.push("/");
+    } catch (error) {
+      throw error;
+    }
+  };
 
   return (
     <aside className="flex flex-col w-64 shrink-0 bg-[var(--sidebar)] border-r border-[var(--sidebar-border)] h-full overflow-hidden">
@@ -118,7 +131,12 @@ export function Sidebar({
 
       {/* User */}
       <div className="border-t border-[var(--sidebar-border)]">
-        <div className="flex gap-4 px-4 py-3 text-[var(--muted-foreground)] text-sm hover:bg-red-100 hover:text-red-600 cursor-pointer transition-colors items-center">
+        <div
+          className="flex gap-4 px-4 py-3 text-[var(--muted-foreground)] 
+          text-sm hover:bg-red-100 hover:text-red-600 cursor-pointer 
+          transition-colors items-center"
+          onClick={handleLogOut}
+        >
           <LogOut size={18} />
           <span>Se déconnecter</span>
         </div>
