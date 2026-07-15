@@ -2,6 +2,7 @@ from .user import User
 
 from .stock import Stock
 from .scan import Scan
+from .stock_event import StockEvent 
 
 from .center import Center
 from .center_scheduale import CenterSchedule
@@ -18,6 +19,7 @@ __all__ = [
     "User",
 
     "Stock",
+    "StockEvent", 
 
     "Scan",
 

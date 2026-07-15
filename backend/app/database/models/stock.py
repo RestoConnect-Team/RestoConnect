@@ -18,10 +18,11 @@ class Stock(Base):
     creation_date = Column(Date)
     last_scan_date = Column(Date)
 
-
+    description = Column(String, nullable=True)
+    rating = Column(Integer, nullable=True)
     center_id = Column(Integer, ForeignKey('center.id'))
     center = relationship("Center")
 
-    
-    
-
+    events = relationship(
+        "StockEvent", back_populates="stock", cascade="all, delete-orphan"
+    )
