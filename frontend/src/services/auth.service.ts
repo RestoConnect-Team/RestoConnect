@@ -21,16 +21,11 @@ export class AuthService {
 
   async logOut(): Promise<void> {
     try {
-      const response = await fetch("http://localhost:8000/api/deconnection", {
+      await fetch("http://localhost:8000/api/deconnection", {
         method: "GET",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
       });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.detail || "Logout failed");
-      }
     } catch (error) {
       throw error;
     }

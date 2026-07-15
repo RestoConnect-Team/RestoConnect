@@ -7,6 +7,8 @@ import Loading from "@/components/loading/loading";
 import { PageLayout } from "@/components/layout/PageLayout";
 import { ProfilePicture } from "@/components/layout/ProfilePicture";
 import { Info, LogOut, Settings } from "lucide-react";
+import { AuthService } from "@/services/auth.service";
+import { useRouter } from "next/navigation";
 
 export default function Profil() {
   const {
@@ -14,6 +16,18 @@ export default function Profil() {
     loading,
     error,
   } = useFetchData<Profile>(fetchProfilInfo);
+
+  const authService = new AuthService();
+  const router = useRouter();
+
+  const handleLogOut = async () => {
+    try {
+      await authService.logOut();
+      router.push("/");
+    } catch (error) {
+      throw error;
+    }
+  };
 
   return (
     <PageLayout title={"Mon profil"} onClick={() => {}} buttonLabel="Modifier">
@@ -81,10 +95,10 @@ export default function Profil() {
               <Settings />
               <span>Paramètres</span>
             </div>
-            <div className="flex p-4 gap-4 text-red-600 hover:bg-red-100 cursor-pointer transition-colors">
+            <button className="flex p-4 gap-4 w-full text-red-600 hover:bg-red-100 cursor-pointer transition-colors">
               <LogOut />
-              <span>Se déconnecter</span>
-            </div>
+              <span onClick={handleLogOut}>Se déconnecter</span>
+            </button>
           </div>
         </div>
       )}
