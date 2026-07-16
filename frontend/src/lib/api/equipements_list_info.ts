@@ -1,23 +1,24 @@
-export interface EquipementItem {
+export interface EquipmentItem {
   id: number;
   reference: string;
   name: string;
-  categorie: string;
-  quantity: number;
+  category: string;
+  status: string;
+  qr_code: string;
 }
 
-export const fetchEquipementList = async (): Promise<EquipementItem[]> => {
-  const response = await fetch('http://localhost:8000/api/stock_list', {
-    method: 'GET',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
+export const fetchEquipementList = async (): Promise<EquipmentItem[]> => {
+  const response = await fetch("http://localhost:8000/api/stock_list", {
+    method: "GET",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.detail || 'Failed to fetch equipements');
+    throw new Error(data.detail || "Failed to fetch equipements");
   }
 
-  return data as EquipementItem[];
+  return data as EquipmentItem[];
 };
