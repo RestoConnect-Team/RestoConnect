@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { Download, Printer, Maximize } from "lucide-react"; // Removed X import as DialogContent handles its own close button
+import { Download, Printer, Maximize } from "lucide-react"; 
 import { Button } from "@/components/ui/button";
 import { QRCodeCanvas } from "qrcode.react";
 import {
@@ -9,7 +9,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"; // Import Dialog components
+} from "@/components/ui/dialog";
 
 interface ProductDetailQrCodeProps {
   productReference: string;
@@ -20,10 +20,9 @@ export function ProductDetailQrCode({
   productReference,
   productName,
 }: ProductDetailQrCodeProps) {
-  const qrCodeRef = useRef<HTMLDivElement>(null); // Ref for the main view's QR code
-  const enlargedQrCodeRef = useRef<HTMLDivElement>(null); // Ref for the modal's QR code
-  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string | null>(null); // Data URL for the main view's QR code
-
+  const qrCodeRef = useRef<HTMLDivElement>(null); 
+  const enlargedQrCodeRef = useRef<HTMLDivElement>(null);
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string | null>(null); 
   // Effect to get the data URL of the generated QR code
   useEffect(() => {
     if (qrCodeRef.current) {
@@ -32,9 +31,9 @@ export function ProductDetailQrCode({
         setQrCodeDataUrl(canvas.toDataURL("image/png"));
       }
     }
-  }, [productReference]); // Dependency array ensures effect runs when productReference changes
+  }, [productReference]); 
 
-  const [isEnlargeModalOpen, setIsEnlargeModalOpen] = useState(false); // State to control modal visibility
+  const [isEnlargeModalOpen, setIsEnlargeModalOpen] = useState(false); 
 
   const handleDownloadQrCode = () => {
     if (qrCodeDataUrl) {
@@ -89,7 +88,7 @@ export function ProductDetailQrCode({
   };
 
   const handleEnlargeQrCode = () => {
-    setIsEnlargeModalOpen(true); // Open the modal instead of a new tab
+    setIsEnlargeModalOpen(true); 
   };
 
   return (
@@ -98,7 +97,7 @@ export function ProductDetailQrCode({
         Étiquette QR
       </h2>
       <div className="flex items-start gap-5 flex-wrap">
-        {productReference ? ( // Check if productReference exists to render QR code
+        {productReference ? (
           <>
             <div
               ref={qrCodeRef}
@@ -109,13 +108,13 @@ export function ProductDetailQrCode({
                 size={160}
                 level="H"
                 imageSettings={{
-                  src: "",
+                  src: "null",
                   x: undefined,
                   y: undefined,
                   height: 0,
                   width: 0,
                   excavate: false,
-                }} // No logo in the middle
+                }} 
               />
             </div>
             <div className="space-y-2 pt-1">
@@ -159,10 +158,10 @@ export function ProductDetailQrCode({
             {productReference && (
               <QRCodeCanvas
                 value={productReference}
-                size={256} // Larger size for the modal
+                size={256} 
                 level="H"
                 imageSettings={{
-                  src: "",
+                  src: "null",
                   x: undefined,
                   y: undefined,
                   height: 0,
@@ -174,7 +173,7 @@ export function ProductDetailQrCode({
           </div>
           <div className="flex justify-end gap-2">
             <Button onClick={() => setIsEnlargeModalOpen(false)}>Fermer</Button>
-            {productReference && ( // Only show download if reference exists
+            {productReference && ( 
               <Button onClick={handleDownloadQrCode}>
                 <Download size={14} className="mr-2" /> Télécharger
               </Button>
