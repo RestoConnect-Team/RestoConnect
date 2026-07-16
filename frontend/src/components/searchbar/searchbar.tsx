@@ -1,13 +1,12 @@
+"use client";
 
-'use client';
-
-import { useRef, useEffect, useState } from 'react';
-import { Search, X, ChevronDown } from 'lucide-react';
+import { useRef, useEffect, useState } from "react";
+import { Search, X, ChevronDown } from "lucide-react";
 
 export interface FilterOption {
   id: string;
   label: string;
-  type: 'checkbox' | 'select';
+  type: "checkbox" | "select";
   options?: { value: string; label: string }[];
 }
 
@@ -18,11 +17,11 @@ export interface SearchBarProps {
 }
 
 export default function SearchBar({
-  placeholder = 'Rechercher...',
+  placeholder = "Rechercher...",
   filters = [],
   onSearch,
 }: SearchBarProps) {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState<Record<string, any>>({});
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -33,11 +32,13 @@ export default function SearchBar({
   };
 
   const handleFilterToggle = (filterId: string, optionValue: string) => {
-    const filterType = filters.find(f => f.id === filterId)?.type;
+    const filterType = filters.find((f) => f.id === filterId)?.type;
     let newFilters = { ...activeFilters };
 
-    if (filterType === 'checkbox') {
-      const current = Array.isArray(newFilters[filterId]) ? newFilters[filterId] : [];
+    if (filterType === "checkbox") {
+      const current = Array.isArray(newFilters[filterId])
+        ? newFilters[filterId]
+        : [];
       if (current.includes(optionValue)) {
         newFilters[filterId] = current.filter((v: string) => v !== optionValue);
         if (newFilters[filterId].length === 0) delete newFilters[filterId];
@@ -59,67 +60,75 @@ export default function SearchBar({
   const hasActiveFilters = Object.keys(activeFilters).length > 0;
 
   // Compter le nombre total de filtres sélectionnés (inclus les arrays)
-  const activeFiltersCount = Object.values(activeFilters).reduce((count, value) => {
-    if (Array.isArray(value)) return count + value.length;
-    return value ? count + 1 : count;
-  }, 0);
+  const activeFiltersCount = Object.values(activeFilters).reduce(
+    (count, value) => {
+      if (Array.isArray(value)) return count + value.length;
+      return value ? count + 1 : count;
+    },
+    0,
+  );
 
   // Fermer le menu au clic dehors
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setShowFilters(false);
       }
     };
 
     if (showFilters) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [showFilters]);
 
   return (
-    <div className="w-full relative">
+    <div className="w-full relative flex ">
       {/* Barre de recherche principale */}
-      <div className="flex items-center gap-2 bg-white rounded-lg border border-gray-300 shadow-sm px-4 py-2">
-        <Search size={20} className="text-gray-400" />
-        <input
-          type="text"
-          placeholder={placeholder}
-          value={searchQuery}
-          onChange={(e) => handleSearch(e.target.value)}
-          className="flex-1 outline-none text-sm text-gray-700"
-        />
-        {searchQuery && (
-          <button
-            onClick={() => handleSearch('')}
-            className="text-gray-400 hover:text-gray-600"
-          >
-            <X size={18} />
-          </button>
-        )}
+      <Search
+        size={16}
+        className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+      />
+      <input
+        type="text"
+        placeholder={placeholder}
+        value={searchQuery}
+        onChange={(e) => handleSearch(e.target.value)}
+        className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[rgb(230,0,126)]/50"
+      />
+      {searchQuery && (
+        <button
+          onClick={() => handleSearch("")}
+          className="cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+        >
+          <X size={18} />
+        </button>
+      )}
 
-        {/* Bouton filtres */}
-        {filters.length > 0 && (
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className={`ml-2 pl-2 border-l border-gray-300 flex items-center gap-1 text-sm font-medium transition-colors ${
-              hasActiveFilters ? 'text-blue-600' : 'text-gray-600'
-            } hover:text-gray-900`}
-          >
-            Filtres
-            {hasActiveFilters && (
-              <span className="bg-blue-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-                {activeFiltersCount}
-              </span>
-            )}
-            <ChevronDown
-              size={16}
-              className={`transition-transform ${showFilters ? 'rotate-180' : ''}`}
-            />
-          </button>
-        )}
-      </div>
+      {/* Bouton filtres */}
+      {filters.length > 0 && (
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          className={`ml-2 pl-2 border-l border-gray-300 flex items-center gap-1 text-sm font-medium transition-colors ${
+            hasActiveFilters ? "text-blue-600" : "text-gray-600"
+          } hover:text-gray-900`}
+        >
+          Filtres
+          {hasActiveFilters && (
+            <span className="bg-blue-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+              {activeFiltersCount}
+            </span>
+          )}
+          <ChevronDown
+            size={16}
+            className={`transition-transform ${showFilters ? "rotate-180" : ""}`}
+          />
+        </button>
+      )}
 
       {/* Menu déroulant des filtres */}
       {showFilters && filters.length > 0 && (
@@ -146,7 +155,7 @@ export default function SearchBar({
                     <div className="flex flex-wrap gap-2">
                       {filter.options.map((option) => {
                         const isActive =
-                          filter.type === 'checkbox'
+                          filter.type === "checkbox"
                             ? Array.isArray(activeFilters[filter.id]) &&
                               activeFilters[filter.id].includes(option.value)
                             : activeFilters[filter.id] === option.value;
@@ -159,8 +168,8 @@ export default function SearchBar({
                             }
                             className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
                               isActive
-                                ? 'bg-blue-600 text-white shadow-md'
-                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                ? "bg-blue-600 text-white shadow-md"
+                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                             }`}
                           >
                             {option.label}
