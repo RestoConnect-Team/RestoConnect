@@ -116,7 +116,7 @@ export default function ProductDetailPage({
 
             <ProductDetailInfo
               product={product}
-              onEdit={() => handleProductUpdated(product)}
+              onEdit={() => console.log("Edit product", product.id)}
             />
 
             <ProductDetailStatus
