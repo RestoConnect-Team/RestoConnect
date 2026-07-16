@@ -3,7 +3,7 @@ from .hash_password_service import hash_password_service
 from .verify_password_service import verify_password_service
 from .get_user_service import get_user_by_token_service
 from .get_user_by_email_service import get_user_by_email_service
-from .deconncet_user_service import deconnect_user_service
+from .deconnect_user_service import deconnect_user_service
 
 from .is_user_center_admin_service import is_user_center_admin_service
 

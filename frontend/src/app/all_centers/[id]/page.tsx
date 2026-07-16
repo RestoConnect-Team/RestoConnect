@@ -21,6 +21,7 @@ import {
   Mail,
   ChevronRight,
 } from "lucide-react";
+import { PageLayout } from "@/components/layout/PageLayout";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -76,7 +77,7 @@ function StatCard({
 
 function SectionCard({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 mb-4">
+    <div className="bg-white rounded-xl border border-gray-200 p-5">
       {children}
     </div>
   );
@@ -181,14 +182,14 @@ export default function CenterDetailPage({
   } = useFetchData<CenterDetail>(fetchCenterDetail(Number(id)));
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-2xl mx-auto px-4 py-6">
+    <PageLayout>
+      <div className="p-6">
         {error && <PageError page_error={error} />}
         {loading && <Loading loading_sentence="Chargement du centre..." />}
 
         {!loading && center && <CenterDetailView center={center} />}
       </div>
-    </div>
+    </PageLayout>
   );
 }
 
@@ -223,6 +224,25 @@ function CenterDetailView({ center }: { center: CenterDetail }) {
 
   return (
     <>
+      {/* Center header */}
+      <div className="rounded-xl bg-gradient-to-r from-[rgb(230,0,126)] to-[rgb(200,0,100)] p-5 mb-4 relative overflow-hidden">
+        {center.is_user_center && (
+          <p className="text-[10px] font-bold text-white/80 tracking-widest uppercase mb-1">
+            Mon centre
+          </p>
+        )}
+        <h1 className="text-[22px] font-bold text-white leading-tight">
+          {center.name}
+        </h1>
+        <div className="flex items-center gap-1 mt-1 text-white/80 text-[13px]">
+          <MapPin size={12} />
+          <span>{center.city}</span>
+        </div>
+        <div className="absolute top-4 right-4 w-9 h-9 bg-white/20 rounded-lg flex items-center justify-center">
+          <Home size={18} className="text-white" />
+        </div>
+      </div>
+
       {/* Stats row */}
       <div className="flex gap-3 mb-4">
         <StatCard
@@ -248,119 +268,108 @@ function CenterDetailView({ center }: { center: CenterDetail }) {
         />
       </div>
 
-      {/* Center header */}
-      <div className="rounded-xl bg-gradient-to-r from-[rgb(230,0,126)] to-[rgb(200,0,100)] p-5 mb-4 relative overflow-hidden">
-        {center.is_user_center && (
-          <p className="text-[10px] font-bold text-white/80 tracking-widest uppercase mb-1">
-            Mon centre
-          </p>
-        )}
-        <h1 className="text-[22px] font-bold text-white leading-tight">
-          {center.name}
-        </h1>
-        <div className="flex items-center gap-1 mt-1 text-white/80 text-[13px]">
-          <MapPin size={12} />
-          <span>{center.city}</span>
-        </div>
-        <div className="absolute top-4 right-4 w-9 h-9 bg-white/20 rounded-lg flex items-center justify-center">
-          <Home size={18} className="text-white" />
-        </div>
-      </div>
-
-      {/* Informations */}
-      <SectionCard>
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-[15px] font-bold text-gray-900">Informations</h2>
-          <Link
-            href={`/all_centers/${center.center_id}/edit`}
-            className="flex items-center gap-1 text-[12px] text-gray-400 hover:text-[rgb(230,0,126)]"
-          >
-            <ChevronRight size={12} /> Modifier
-          </Link>
-        </div>
-        <Row label="Téléphone" value={center.center_headmaster_telephone} />
-        <Row label="Adresse email" value={center.center_headmaster_email} />
-        <Row label="Adresse" value={address} />
-      </SectionCard>
-
-      {/* Activités */}
-      <SectionCard>
-        <h2 className="text-[15px] font-bold text-gray-900 mb-3">Activités</h2>
-        <Row label="Description" value={center.activities} />
-        <div className="flex flex-wrap gap-2 mt-3">
-          {activityTags &&
-            activityTags.map((tag) => (
-              <span
-                key={tag}
-                className="px-3 py-1 rounded-full border border-gray-300 text-[12px] text-gray-700 bg-gray-50"
-              >
-                {tag}
-              </span>
-            ))}
-        </div>
-      </SectionCard>
-
-      {/* Permanence */}
-      <SectionCard>
-        <h2 className="text-[15px] font-bold text-gray-900 mb-3">Permanence</h2>
-        <div className="flex gap-4 text-[13px]">
-          <span className="w-32 shrink-0 text-gray-400">Horaires</span>
-          <div className="space-y-1 text-gray-800">
-            {scheduleEntries.map(([day, slots]) =>
-              slots.map((slot, i) => (
-                <p key={`${day}-${i}`}>
-                  {day}, {formatTime(slot.opening_time)} à{" "}
-                  {formatTime(slot.closing_time)}
-                </p>
-              )),
-            )}
-          </div>
-        </div>
-      </SectionCard>
-
-      {/* Responsable */}
-      <SectionCard>
-        <ContactRow contact={headmaster} idx={0} isHead />
-        <div className="mt-3 pt-3 border-t border-gray-100 space-y-1 text-[12px] text-gray-500">
-          <div className="flex items-center gap-2">
-            <Mail size={12} className="shrink-0" />
-            <span>{center.center_headmaster_email}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Phone size={12} className="shrink-0" />
-            <span>{center.center_headmaster_telephone}</span>
-          </div>
-        </div>
-      </SectionCard>
-
-      {/* Contacts */}
-      {center.contacts.length > 0 && (
+      <div className="flex flex-col gap-4">
+        {/* Informations */}
         <SectionCard>
-          <h2 className="text-[15px] font-bold text-gray-900 mb-1">
-            Contacts ({center.contacts.length})
-          </h2>
-          {center.contacts.map((contact, idx) => (
-            <ContactRow key={contact.id} contact={contact} idx={idx + 1} />
-          ))}
-        </SectionCard>
-      )}
-
-      {/* Dernières alertes */}
-      {center.alerts.length > 0 && (
-        <SectionCard>
-          <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center justify-between mb-3">
             <h2 className="text-[15px] font-bold text-gray-900">
-              Dernières alertes
+              Informations
             </h2>
-            <button className="text-[12px] text-[rgb(230,0,126)] hover:underline">
-              Voir tout
-            </button>
+            <Link
+              href={`/all_centers/${center.center_id}/edit`}
+              className="flex items-center gap-1 text-[12px] text-gray-400 hover:text-[rgb(230,0,126)]"
+            >
+              <ChevronRight size={12} /> Modifier
+            </Link>
           </div>
-          {center.alerts.map((alert, idx) => (
-            <AlertRow key={idx} alert={alert} idx={idx} />
-          ))}
+          <Row label="Téléphone" value={center.center_headmaster_telephone} />
+          <Row label="Adresse email" value={center.center_headmaster_email} />
+          <Row label="Adresse" value={address} />
         </SectionCard>
-      )}
+
+        {/* Activités */}
+        <SectionCard>
+          <h2 className="text-[15px] font-bold text-gray-900 mb-3">
+            Activités
+          </h2>
+          <Row label="Description" value={center.activities} />
+          <div className="flex flex-wrap gap-2 mt-3">
+            {activityTags &&
+              activityTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-3 py-1 rounded-full border border-gray-300 text-[12px] text-gray-700 bg-gray-50"
+                >
+                  {tag}
+                </span>
+              ))}
+          </div>
+        </SectionCard>
+
+        {/* Permanence */}
+        <SectionCard>
+          <h2 className="text-[15px] font-bold text-gray-900 mb-3">
+            Permanence
+          </h2>
+          <div className="flex gap-4 text-[13px]">
+            <span className="w-32 shrink-0 text-gray-400">Horaires</span>
+            <div className="space-y-1 text-gray-800">
+              {scheduleEntries.map(([day, slots]) =>
+                slots.map((slot, i) => (
+                  <p key={`${day}-${i}`}>
+                    {day}, {formatTime(slot.opening_time)} à{" "}
+                    {formatTime(slot.closing_time)}
+                  </p>
+                )),
+              )}
+            </div>
+          </div>
+        </SectionCard>
+
+        {/* Responsable */}
+        <SectionCard>
+          <ContactRow contact={headmaster} idx={0} isHead />
+          <div className="mt-3 pt-3 border-t border-gray-100 space-y-1 text-[12px] text-gray-500">
+            <div className="flex items-center gap-2">
+              <Mail size={12} className="shrink-0" />
+              <span>{center.center_headmaster_email}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Phone size={12} className="shrink-0" />
+              <span>{center.center_headmaster_telephone}</span>
+            </div>
+          </div>
+        </SectionCard>
+
+        {/* Contacts */}
+        {center.contacts.length > 0 && (
+          <SectionCard>
+            <h2 className="text-[15px] font-bold text-gray-900 mb-1">
+              Contacts ({center.contacts.length})
+            </h2>
+            {center.contacts.map((contact, idx) => (
+              <ContactRow key={contact.id} contact={contact} idx={idx + 1} />
+            ))}
+          </SectionCard>
+        )}
+
+        {/* Dernières alertes */}
+        {center.alerts.length > 0 && (
+          <SectionCard>
+            <div className="flex items-center justify-between mb-1">
+              <h2 className="text-[15px] font-bold text-gray-900">
+                Dernières alertes
+              </h2>
+              <button className="text-[12px] text-[rgb(230,0,126)] hover:underline">
+                Voir tout
+              </button>
+            </div>
+            {center.alerts.map((alert, idx) => (
+              <AlertRow key={idx} alert={alert} idx={idx} />
+            ))}
+          </SectionCard>
+        )}
+      </div>
     </>
   );
 }
