@@ -1,5 +1,6 @@
 import { Box, ChefHat, Monitor, Snowflake, Sofa } from "lucide-react";
 import { ReactElement } from "react";
+import { EquipmentCategory } from "@/app/equipment/categoryStatus";
 
 export type CategoryConfig = {
   icon: ReactElement<any, any>;
@@ -8,22 +9,22 @@ export type CategoryConfig = {
 
 export const getCategoryConfig = (category: string): CategoryConfig => {
   switch (category) {
-    case "Informatique":
+    case EquipmentCategory.IT:
       return {
         icon: <Monitor className="h-4 w-4 min-h-4 min-w-4" />,
         style: "text-[#1447E6] border-[#BEDBFF] bg-[#EFF6FF]",
       };
-    case "Réfrigéré":
+    case EquipmentCategory.COLD:
       return {
         icon: <Snowflake className="h-4 w-4 min-h-4 min-w-4" />,
         style: "text-[#007595] border-[#A2F4FD] bg-[#ECFEFF]",
       };
-    case "Restauration":
+    case EquipmentCategory.CATERING:
       return {
         icon: <ChefHat className="h-4 w-4 min-h-4 min-w-4" />,
         style: "text-[#CA3500] border-[#FFD6A8] bg-[#FFF7ED]",
       };
-    case "Bureau":
+    case EquipmentCategory.OFFICE:
       return {
         icon: <Sofa className="h-4 w-4 min-h-4 min-w-4" />,
         style: "text-[#008236] border-[#B9F8CF] bg-[#F0FDF4]",

@@ -1,90 +1,48 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { Search, X, ChevronDown } from "lucide-react";
+import { Search, X } from "lucide-react";
 
 export interface FilterOption {
   id: string;
   label: string;
+  filter: (value: string) => boolean;
+  isActive?: boolean;
   options?: { value: string; label: string }[];
 }
 
 export interface SearchBarProps {
   placeholder?: string;
   filters?: FilterOption[];
+  setFilters: (filters: FilterOption[]) => void;
   onSearch: (query: string, activeFilters: Record<string, any>) => void;
 }
 
 export default function SearchBar({
   placeholder = "Rechercher...",
   filters = [],
+  setFilters,
   onSearch,
 }: SearchBarProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState<Record<string, any>>({});
-  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const [noFilterOption, setNoFilterOption] = useState<FilterOption>({
+    id: "0",
+    label: "Tous",
+    filter: () => {
+      return true;
+    },
+    isActive: true,
+  });
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     onSearch(query, activeFilters);
   };
 
-  const handleFilterToggle = (filterId: string, optionValue: string) => {
-    // const filterType = filters.find((f) => f.id === filterId)?.type;
-    let newFilters = { ...activeFilters };
-
-    // if (filterType === "checkbox") {
-    //   const current = Array.isArray(newFilters[filterId])
-    //     ? newFilters[filterId]
-    //     : [];
-    //   if (current.includes(optionValue)) {
-    //     newFilters[filterId] = current.filter((v: string) => v !== optionValue);
-    //     if (newFilters[filterId].length === 0) delete newFilters[filterId];
-    //   } else {
-    //     newFilters[filterId] = [...current, optionValue];
-    //   }
-    // } else {
-    //   if (newFilters[filterId] === optionValue) {
-    //     delete newFilters[filterId];
-    //   } else {
-    //     newFilters[filterId] = optionValue;
-    //   }
-    // }
-
-    setActiveFilters(newFilters);
-    onSearch(searchQuery, newFilters);
-  };
-
-  // Compter le nombre total de filtres sélectionnés (inclus les arrays)
-  const activeFiltersCount = Object.values(activeFilters).reduce(
-    (count, value) => {
-      if (Array.isArray(value)) return count + value.length;
-      return value ? count + 1 : count;
-    },
-    0,
-  );
-
-  // Fermer le menu au clic dehors
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setShowFilters(false);
-      }
-    };
-
-    if (showFilters) {
-      document.addEventListener("mousedown", handleClickOutside);
-      return () =>
-        document.removeEventListener("mousedown", handleClickOutside);
-    }
-  }, [showFilters]);
-
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-3">
       <div className="w-full relative flex">
         {/* Barre de recherche principale */}
         <Search
@@ -106,71 +64,58 @@ export default function SearchBar({
             <X size={18} />
           </button>
         )}
-
-        {/* Menu déroulant des filtres */}
-        {showFilters && filters.length > 0 && (
-          <>
-            {/* Backdrop transparent */}
-            <div
-              className="fixed inset-0 z-30"
-              onClick={() => setShowFilters(false)}
-            />
-
-            {/* Dropdown menu */}
-            <div
-              ref={dropdownRef}
-              className="absolute top-full left-0 mt-2 bg-white rounded-lg border border-gray-300 shadow-xl z-40 p-4 min-w-96 max-w-2xl"
-            >
-              <div className="space-y-4">
-                {filters.map((filter) => (
-                  <div key={filter.id} className="flex flex-col gap-3">
-                    <h3 className="font-semibold text-sm text-gray-800">
-                      {filter.label}
-                    </h3>
-
-                    {filter.options && (
-                      <div className="flex flex-wrap gap-2">
-                        {filter.options.map((option) => {
-                          // const isActive =
-                          //   filter.type === "checkbox"
-                          //     ? Array.isArray(activeFilters[filter.id]) &&
-                          //       activeFilters[filter.id].includes(option.value)
-                          //     : activeFilters[filter.id] === option.value;
-
-                          return (
-                            <button
-                              key={option.value}
-                              onClick={() =>
-                                handleFilterToggle(filter.id, option.value)
-                              }
-                              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all 
-                              ${"bg-gray-100 text-gray-700 hover:bg-gray-200"}
-                            `}
-                            >
-                              {option.label}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </>
-        )}
       </div>
+
       {/* Bouton filtres */}
-      {filters.map((filter) => (
-        <button
-          onClick={() => !showFilters}
-          className={`cursor-pointer py-2 px-4 border border-slate-200 rounded-full bg-white w-fit flex items-center gap-1 
-          text-sm font-medium transition-colors hover:text-gray-900`}
-          key={filter.id}
-        >
-          {filter.label}
-        </button>
-      ))}
+      {filters.length > 0 && (
+        <div className="flex gap-2">
+          <button
+            onClick={() => {
+              const areFiltersActive = filters.some((f) => f.isActive);
+              if (areFiltersActive) {
+                setFilters(
+                  filters.map((f) => ({
+                    ...f,
+                    isActive: false,
+                  })),
+                );
+              }
+              setNoFilterOption({
+                ...noFilterOption,
+                isActive: true,
+              });
+            }}
+            className={`cursor-pointer py-2 px-4 border rounded-full w-fit flex items-center gap-1 
+            text-sm font-medium transition-colors 
+            ${noFilterOption.isActive ? "bg-[#e6007e] text-white hover:bg-[#e6007e]/80" : "bg-white border-slate-200 hover:text-gray-900"}`}
+          >
+            Tous
+          </button>
+
+          {filters.map((filter) => (
+            <button
+              onClick={() => {
+                const filtersTemp = filters.map((f) => ({
+                  ...f,
+                  isActive: f.id === filter.id ? !f.isActive : f.isActive,
+                }));
+                const areFiltersActive = filtersTemp.some((f) => f.isActive);
+                setFilters(filtersTemp);
+                setNoFilterOption({
+                  ...noFilterOption,
+                  isActive: !areFiltersActive,
+                });
+              }}
+              className={`cursor-pointer py-2 px-4 border rounded-full w-fit flex items-center gap-1 
+            text-sm font-medium transition-colors 
+            ${filter.isActive ? "bg-[#e6007e] text-white hover:bg-[#e6007e]/80" : "bg-white border-slate-200 hover:text-gray-900"}`}
+              key={filter.id}
+            >
+              {filter.label}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
