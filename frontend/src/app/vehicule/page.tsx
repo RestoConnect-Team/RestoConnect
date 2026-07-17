@@ -48,7 +48,7 @@ export default function Vehicule() {
     useFetchData<VehiculeData>(fetchVehiculeList);
   const vehiculesData = data ?? { vehicules_center: [], vehicules_other: [] };
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const rows = useMemo<VehiculeRow[]>(() => {
     const centerRows = vehiculesData.vehicules_center.map((vehicule) => ({

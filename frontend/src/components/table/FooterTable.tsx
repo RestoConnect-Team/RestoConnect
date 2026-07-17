@@ -68,7 +68,7 @@ export function FooterTable({
             defaultValue={numberPerPage}
           >
             {numberPerPageList.map((npp) => (
-              <option>{npp}</option>
+              <option key={npp}>{npp}</option>
             ))}
           </select>
           éléments par page
