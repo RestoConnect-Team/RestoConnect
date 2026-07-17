@@ -1,3 +1,4 @@
+import { StockStatus } from "@/app/scan/stock_status_enum";
 import {
   ArrowRight,
   CircleCheckBig,
@@ -18,7 +19,7 @@ export type StatusConfig = {
 
 export const getStatusConfig = (category: string): StatusConfig => {
   switch (category) {
-    case "Disponible":
+    case StockStatus.DISPONIBLE:
       return {
         icon: <CircleCheckBig className="h-4 w-4 min-h-4 min-w-4" />,
         style: "text-[#2D6B31] border-[#BBD8BC] bg-[#F0F7F0]",

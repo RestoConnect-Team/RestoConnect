@@ -7,7 +7,7 @@ export interface EquipmentItem {
   qr_code: string;
 }
 
-export const fetchEquipementList = async (): Promise<EquipmentItem[]> => {
+export const fetchEquipmentList = async (): Promise<EquipmentItem[]> => {
   const response = await fetch("http://localhost:8000/api/stock_list", {
     method: "GET",
     credentials: "include",
@@ -17,7 +17,7 @@ export const fetchEquipementList = async (): Promise<EquipmentItem[]> => {
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.detail || "Failed to fetch equipements");
+    throw new Error(data.detail || "Failed to fetch equipments");
   }
 
   return data as EquipmentItem[];
