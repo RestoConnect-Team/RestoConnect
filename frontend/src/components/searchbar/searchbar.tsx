@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useState } from "react";
 import { Search, X } from "lucide-react";
 
 export interface FilterOption {
@@ -14,7 +14,7 @@ export interface FilterOption {
 export interface SearchBarProps {
   placeholder?: string;
   filters?: FilterOption[];
-  setFilters: (filters: FilterOption[]) => void;
+  setFilters?: (filters: FilterOption[]) => void;
   onSearch: (query: string, activeFilters: Record<string, any>) => void;
 }
 
@@ -72,7 +72,7 @@ export default function SearchBar({
           <button
             onClick={() => {
               const areFiltersActive = filters.some((f) => f.isActive);
-              if (areFiltersActive) {
+              if (areFiltersActive && setFilters) {
                 setFilters(
                   filters.map((f) => ({
                     ...f,
@@ -100,7 +100,7 @@ export default function SearchBar({
                   isActive: f.id === filter.id ? !f.isActive : f.isActive,
                 }));
                 const areFiltersActive = filtersTemp.some((f) => f.isActive);
-                setFilters(filtersTemp);
+                setFilters?.(filtersTemp);
                 setNoFilterOption({
                   ...noFilterOption,
                   isActive: !areFiltersActive,
