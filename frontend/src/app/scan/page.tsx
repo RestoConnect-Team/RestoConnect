@@ -136,7 +136,7 @@ export default function ScanQrPage() {
             <ProductInfoFooter 
               product={product}
               onNewScan={handleNewScan}
-              onViewDetails={() => product.id !== -1 && router.push(`/stock/${product.id}`)}
+              onViewDetails={() => router.push(`/details_product/${product.id}`)}
             />
           </div>
         )}

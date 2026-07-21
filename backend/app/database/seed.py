@@ -127,7 +127,7 @@ def seed():
             name="Pc",
             category=StockCategory.INFORMATIQUE,
             status = StockStatus.LOST,
-            qr_code = "",
+            qr_code = "REF001_c1",
             creation_date = date(2025,1,1),
             last_scan_date = date(2026,6,1),
             center_id=1
@@ -137,7 +137,7 @@ def seed():
             name="Frigo",
             category=StockCategory.REFRIGIRE,
             status = StockStatus.DISPONIBLE,
-            qr_code = "",
+            qr_code = "REF002_c1",
             creation_date = date(2025,6,1),
             last_scan_date = date(2026,6,1),
             center_id=1
@@ -147,7 +147,7 @@ def seed():
             name="Pc",
             category=StockCategory.INFORMATIQUE,
             status = StockStatus.LOST,
-            qr_code = "",
+            qr_code = "REF001_c2",
             creation_date = date(2025,1,1),
             last_scan_date = date(2026,3,1),
             center_id=2
@@ -157,7 +157,7 @@ def seed():
             name="Frigo",
             category=StockCategory.REFRIGIRE,
             status = StockStatus.DISPONIBLE,
-            qr_code = "",
+            qr_code = "REF002_c2",
             creation_date = date(2025,9,1),
             last_scan_date = date(2026,4,1),
             center_id=2
@@ -167,7 +167,7 @@ def seed():
             name="Table",
             category=StockCategory.BUREAU,
             status = StockStatus.DISPONIBLE,
-            qr_code = "",
+            qr_code = "REF003_c2",
             creation_date = date(2025,1,1),
             last_scan_date = date(2026,6,1),
             center_id=2
