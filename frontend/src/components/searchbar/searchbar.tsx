@@ -3,19 +3,21 @@
 import { useState } from "react";
 import { Search, X } from "lucide-react";
 
+import { Select, SelectOption } from "@/components/searchbar/Select";
+
 export interface FilterOption {
   id: string;
   label: string;
   filter: (value: string) => boolean;
   isActive?: boolean;
-  options?: { value: string; label: string }[];
 }
 
 export interface SearchBarProps {
   placeholder?: string;
+  onSearch: (query: string, activeFilters: Record<string, any>) => void;
   filters?: FilterOption[];
   setFilters?: (filters: FilterOption[]) => void;
-  onSearch: (query: string, activeFilters: Record<string, any>) => void;
+  options?: SelectOption[];
 }
 
 export default function SearchBar({
@@ -23,6 +25,7 @@ export default function SearchBar({
   filters = [],
   setFilters,
   onSearch,
+  options = [],
 }: SearchBarProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilters, setActiveFilters] = useState<Record<string, any>>({});
@@ -66,56 +69,62 @@ export default function SearchBar({
         )}
       </div>
 
-      {/* Bouton filtres */}
-      {filters.length > 0 && (
-        <div className="flex gap-2">
-          <button
-            onClick={() => {
-              const areFiltersActive = filters.some((f) => f.isActive);
-              if (areFiltersActive && setFilters) {
-                setFilters(
-                  filters.map((f) => ({
-                    ...f,
-                    isActive: false,
-                  })),
-                );
-              }
-              setNoFilterOption({
-                ...noFilterOption,
-                isActive: true,
-              });
-            }}
-            className={`cursor-pointer py-2 px-4 border rounded-full w-fit flex items-center gap-1 
-            text-sm font-medium transition-colors 
-            ${noFilterOption.isActive ? "bg-[#e6007e] text-white hover:bg-[#e6007e]/80" : "bg-white border-slate-200 hover:text-gray-900"}`}
-          >
-            Tous
-          </button>
+      <div className="flex gap-5">
+        {options.length > 0 && (
+          <Select options={options} defaultLabel="Toutes les catégories" />
+        )}
 
-          {filters.map((filter) => (
+        {/* Bouton filtres */}
+        {filters.length > 0 && (
+          <div className="flex gap-2">
             <button
               onClick={() => {
-                const filtersTemp = filters.map((f) => ({
-                  ...f,
-                  isActive: f.id === filter.id ? !f.isActive : f.isActive,
-                }));
-                const areFiltersActive = filtersTemp.some((f) => f.isActive);
-                setFilters?.(filtersTemp);
+                const areFiltersActive = filters.some((f) => f.isActive);
+                if (areFiltersActive && setFilters) {
+                  setFilters(
+                    filters.map((f) => ({
+                      ...f,
+                      isActive: false,
+                    })),
+                  );
+                }
                 setNoFilterOption({
                   ...noFilterOption,
-                  isActive: !areFiltersActive,
+                  isActive: true,
                 });
               }}
               className={`cursor-pointer py-2 px-4 border rounded-full w-fit flex items-center gap-1 
             text-sm font-medium transition-colors 
-            ${filter.isActive ? "bg-[#e6007e] text-white hover:bg-[#e6007e]/80" : "bg-white border-slate-200 hover:text-gray-900"}`}
-              key={filter.id}
+            ${noFilterOption.isActive ? "bg-[#e6007e] text-white hover:bg-[#e6007e]/80" : "bg-white border-slate-200 hover:text-gray-900"}`}
             >
-              {filter.label}
+              Tous
             </button>
-          ))}
-        </div>
-      )}
+
+            {filters.map((filter) => (
+              <button
+                onClick={() => {
+                  const filtersTemp = filters.map((f) => ({
+                    ...f,
+                    isActive: f.id === filter.id ? !f.isActive : f.isActive,
+                  }));
+                  const areFiltersActive = filtersTemp.some((f) => f.isActive);
+                  setFilters?.(filtersTemp);
+                  setNoFilterOption({
+                    ...noFilterOption,
+                    isActive: !areFiltersActive,
+                  });
+                }}
+                className={`cursor-pointer py-2 px-4 border rounded-full w-fit flex items-center gap-1 
+            text-sm font-medium transition-colors 
+            ${filter.isActive ? "bg-[#e6007e] text-white hover:bg-[#e6007e]/80" : "bg-white border-slate-200 hover:text-gray-900"}`}
+                key={filter.id}
+              >
+                {filter.label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -43,6 +43,9 @@ export default function Equipement() {
   );
 
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [categories, setCategories] = useState<string[]>(
+    Array.from(new Set(equipmentList.map((equipment) => equipment.category))),
+  );
 
   const labels = [
     "Nom",
@@ -74,14 +77,14 @@ export default function Equipement() {
 
   // Apply search
   useEffect(() => {
+    if (loading || error) return;
     const query = searchQuery.trim().toLowerCase();
 
     if (query.length > 0) {
       const searched = equipmentList.filter((element) => {
         return (
           element.name.toLowerCase().includes(query) ||
-          element.reference.toLowerCase().includes(query) ||
-          element.category.toLowerCase().includes(query)
+          element.reference.toLowerCase().includes(query)
         );
       });
 
@@ -89,6 +92,9 @@ export default function Equipement() {
     } else {
       setSearchedList(equipmentList);
     }
+    setCategories(
+      Array.from(new Set(equipmentList.map((equipment) => equipment.category))),
+    );
   }, [searchQuery, equipmentList]);
 
   // Apply filters
@@ -140,12 +146,13 @@ export default function Equipement() {
   };
 
   const renderCategory = (category: string): ReactNode => {
-    let categoryConfig = getCategoryConfig(category);
+    const categoryConfig = getCategoryConfig(category);
+    const style = Object.values(categoryConfig.style).join(" ");
 
     return (
       <td className="py-2 px-3 text-sm max-w-[175px] w-50">
         <span
-          className={`py-1 px-2 flex items-center gap-2 border-2 rounded-lg ${categoryConfig.style} font-semibold`}
+          className={`py-1 px-2 flex items-center gap-2 border-2 rounded-lg ${style} font-semibold`}
         >
           {categoryConfig.icon}
           {category}
@@ -208,6 +215,12 @@ export default function Equipement() {
               filters={filters}
               setFilters={setFilters}
               placeholder="Rechercher par nom, référence..."
+              options={categories.map((category) => ({
+                label: category,
+                value: category,
+                icon: getCategoryConfig(category).icon,
+                style: getCategoryConfig(category).style,
+              }))}
             />
             <div className="flex flex-col flex-1 overflow-y-auto">
               <div className="flex-1 border border-b-0 border-slate-200 rounded-t-xl bg-white overflow-x-auto">

@@ -4,7 +4,11 @@ import { EquipmentCategory } from "@/app/types/categoryStatus";
 
 export type CategoryConfig = {
   icon: ReactElement<any, any>;
-  style: string;
+  style: {
+    color: string;
+    borderColor: string;
+    bg: string;
+  };
 };
 
 export const getCategoryConfig = (category: string): CategoryConfig => {
@@ -12,27 +16,47 @@ export const getCategoryConfig = (category: string): CategoryConfig => {
     case EquipmentCategory.IT:
       return {
         icon: <Monitor className="h-4 w-4 min-h-4 min-w-4" />,
-        style: "text-[#1447E6] border-[#BEDBFF] bg-[#EFF6FF]",
+        style: {
+          color: "text-[#1447E6]",
+          borderColor: "border-[#BEDBFF]",
+          bg: "bg-[#EFF6FF]",
+        },
       };
     case EquipmentCategory.COLD:
       return {
         icon: <Snowflake className="h-4 w-4 min-h-4 min-w-4" />,
-        style: "text-[#007595] border-[#A2F4FD] bg-[#ECFEFF]",
+        style: {
+          color: "text-[#007595]",
+          borderColor: "border-[#A2F4FD]",
+          bg: "bg-[#ECFEFF]",
+        },
       };
     case EquipmentCategory.CATERING:
       return {
         icon: <ChefHat className="h-4 w-4 min-h-4 min-w-4" />,
-        style: "text-[#CA3500] border-[#FFD6A8] bg-[#FFF7ED]",
+        style: {
+          color: "text-[#CA3500]",
+          borderColor: "border-[#FFD6A8]",
+          bg: "bg-[#FFF7ED]",
+        },
       };
     case EquipmentCategory.OFFICE:
       return {
         icon: <Sofa className="h-4 w-4 min-h-4 min-w-4" />,
-        style: "text-[#008236] border-[#B9F8CF] bg-[#F0FDF4]",
+        style: {
+          color: "text-[#008236]",
+          borderColor: "border-[#B9F8CF]",
+          bg: "bg-[#F0FDF4]",
+        },
       };
     default:
       return {
         icon: <Box className="h-4 w-4 min-h-4 min-w-4" />,
-        style: "text-slate-500 border-slate-300 bg-slate-100",
+        style: {
+          color: "text-slate-500",
+          borderColor: "border-slate-300",
+          bg: "bg-slate-100",
+        },
       };
   }
 };
