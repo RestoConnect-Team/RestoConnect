@@ -15,10 +15,12 @@ import { getCategoryConfig } from "@/app/equipment/utils/getCategoryConfig";
 import { getStatusConfig } from "@/app/equipment/utils/getStatusConfig";
 import { FooterTable } from "@/components/table/FooterTable";
 import { StockStatus } from "@/app/scan/stock_status_enum";
+import { useRouter } from "next/navigation";
 
 const DEFAULT_NUMBER_PER_PAGE = 10;
 
 export default function Equipement() {
+  const router = useRouter();
   const { data, loading, error } =
     useFetchData<EquipmentItem[]>(fetchEquipmentList);
 
@@ -54,10 +56,10 @@ export default function Equipement() {
   const [filters, setFilters] = useState<FilterOption[]>([
     {
       id: "available",
-      label: StockStatus.DISPONIBLE,
+      label: StockStatus.AVAILABLE,
       isActive: false,
       filter: (value: string) => {
-        return value === StockStatus.DISPONIBLE;
+        return value === StockStatus.AVAILABLE;
       },
     },
     {
@@ -75,7 +77,6 @@ export default function Equipement() {
     const query = searchQuery.trim().toLowerCase();
 
     if (query.length > 0) {
-      // TODO add center name
       const searched = equipmentList.filter((element) => {
         return (
           element.name.toLowerCase().includes(query) ||
@@ -133,10 +134,6 @@ export default function Equipement() {
         ></div>
         <div className="px-5">
           <div className="font-semibold truncate">{label}</div>
-          {/* // TODO add center name */}
-          <div className="text-[13px] text-slate-400 truncate">
-            Centre hardcodé
-          </div>
         </div>
       </td>
     );
@@ -251,7 +248,12 @@ export default function Equipement() {
                         {/* //TODO add actions */}
                         <td className="py-2 pl-3 pr-5">
                           <div className="flex items-center justify-between gap-3">
-                            <button className="cursor-pointer hover:text-slate-500 text-slate-400 transition-colors">
+                            <button
+                              className="cursor-pointer hover:text-slate-500 text-slate-400 transition-colors"
+                              onClick={() =>
+                                router.push("/equipment/" + equipment.id)
+                              }
+                            >
                               <Eye className="h-5 w-5 min-h-5 min-w-5" />
                             </button>
                             <button className="cursor-pointer hover:text-slate-500 text-slate-400 transition-colors">

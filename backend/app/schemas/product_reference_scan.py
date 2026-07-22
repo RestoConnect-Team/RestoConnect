@@ -10,4 +10,4 @@ class ProductScanResponse(BaseModel):
     center_name: str
 
 class ProductStatusUpdate(BaseModel):
-    status: Literal[StockStatus.DISPONIBLE, StockStatus.LOST]
+    status: Literal[StockStatus.AVAILABLE, StockStatus.LOST]

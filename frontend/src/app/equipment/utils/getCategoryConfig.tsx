@@ -1,6 +1,6 @@
 import { Box, ChefHat, Monitor, Snowflake, Sofa } from "lucide-react";
 import { ReactElement } from "react";
-import { EquipmentCategory } from "@/app/equipment/categoryStatus";
+import { EquipmentCategory } from "@/app/types/categoryStatus";
 
 export type CategoryConfig = {
   icon: ReactElement<any, any>;

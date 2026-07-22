@@ -19,7 +19,7 @@ export type StatusConfig = {
 
 export const getStatusConfig = (category: string): StatusConfig => {
   switch (category) {
-    case StockStatus.DISPONIBLE:
+    case StockStatus.AVAILABLE:
       return {
         icon: <CircleCheckBig className="h-4 w-4 min-h-4 min-w-4" />,
         style: "text-[#2D6B31] border-[#BBD8BC] bg-[#F0F7F0]",
@@ -46,9 +46,18 @@ export const getStatusConfig = (category: string): StatusConfig => {
           borderColor: "border-[#FFAA00]",
         },
       };
-    case "En panne":
+    case StockStatus.LOST:
       return {
         icon: <TriangleAlert className="h-4 w-4 min-h-4 min-w-4" />,
+        style: "text-[#8B1A18] border-[#EE443F] bg-[#FDECEA]",
+        rowStyle: {
+          bgColor: "bg-[#EE443F]",
+          borderColor: "border-[#EE443F]",
+        },
+      };
+    case StockStatus.LOST:
+      return {
+        icon: <CircleQuestionMark className="h-4 w-4 min-h-4 min-w-4" />,
         style: "text-[#8B1A18] border-[#EE443F] bg-[#FDECEA]",
         rowStyle: {
           bgColor: "bg-[#EE443F]",

@@ -1,21 +1,21 @@
 import { Info, Truck, MapPin } from "lucide-react";
 
-export interface ProductHistoryItem {
+export interface EquipmentHistoryItem {
   event_type: string;
   details: string;
   stock_date: string;
   user_name: string;
 }
 
-interface ProductDetailHistoryProps {
-  history: ProductHistoryItem[];
+interface EquipmentDetailHistoryProps {
+  history: EquipmentHistoryItem[];
   lastScanDate?: string;
 }
 
-export function ProductDetailHistory({
+export function EquipmentDetailHistory({
   history,
   lastScanDate,
-}: ProductDetailHistoryProps) {
+}: EquipmentDetailHistoryProps) {
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-5 ">
       <h2 className="text-[15px] font-semibold text-gray-900 mb-3">
