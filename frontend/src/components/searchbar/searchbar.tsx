@@ -17,6 +17,8 @@ export interface SearchBarProps {
   onSearch: (query: string, activeFilters: Record<string, any>) => void;
   filters?: FilterOption[];
   setFilters?: (filters: FilterOption[]) => void;
+  selectValue?: SelectOption;
+  setSelectValue: (v: SelectOption) => void;
   options?: SelectOption[];
 }
 
@@ -25,6 +27,8 @@ export default function SearchBar({
   filters = [],
   setFilters,
   onSearch,
+  selectValue,
+  setSelectValue,
   options = [],
 }: SearchBarProps) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -70,8 +74,12 @@ export default function SearchBar({
       </div>
 
       <div className="flex gap-5">
-        {options.length > 0 && (
-          <Select options={options} defaultLabel="Toutes les catégories" />
+        {options.length > 1 && selectValue && (
+          <Select
+            selectValue={selectValue}
+            setSelectValue={setSelectValue}
+            options={options}
+          />
         )}
 
         {/* Bouton filtres */}

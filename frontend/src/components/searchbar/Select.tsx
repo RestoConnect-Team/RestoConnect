@@ -1,5 +1,4 @@
 import { Boxes } from "lucide-react";
-import { useState } from "react";
 import Select, {
   components,
   OptionProps,
@@ -18,8 +17,9 @@ export interface SelectOption {
 }
 
 type SelectProps = {
+  selectValue: SelectOption;
+  setSelectValue: (v: SelectOption) => void;
   options: SelectOption[];
-  defaultLabel?: string;
 };
 
 const Option = (props: OptionProps<SelectOption>) => {
@@ -48,30 +48,14 @@ const SingleValue = (props: SingleValueProps<SelectOption>) => {
   );
 };
 
-function CustomSelect({ options, defaultLabel }: SelectProps) {
-  const optionsArr: SelectOption[] = [
-    {
-      label: defaultLabel ?? "Toutes les options",
-      value: "all",
-      icon: <Boxes className="h-4 w-4 min-h-4 min-w-4" />,
-      style: {
-        color: "text-gray-400",
-        borderColor: "border-gray-400",
-        bg: "gray-400",
-      },
-    },
-    ...options,
-  ];
-
-  const [value, setValue] = useState(optionsArr[0]);
-
+function CustomSelect({ options, selectValue, setSelectValue }: SelectProps) {
   return (
     <Select<SelectOption>
       isSearchable={false}
-      value={value}
-      onChange={(v) => setValue(v!)}
-      options={optionsArr}
-      defaultValue={optionsArr[0]}
+      value={selectValue}
+      onChange={(v) => setSelectValue(v!)}
+      options={options}
+      defaultValue={selectValue}
       components={{
         Option,
         SingleValue,

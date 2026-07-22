@@ -9,13 +9,14 @@ import SearchBar, { FilterOption } from "@/components/searchbar/Searchbar";
 import PageError from "@/components/page_error/page_error";
 import Loading from "@/components/loading/loading";
 import { PageLayout } from "@/components/layout/PageLayout";
-import { Eye, PenBox, Plus, QrCode, Trash2 } from "lucide-react";
-import { ReactNode, useEffect, useState } from "react";
+import { Boxes, Eye, PenBox, Plus, QrCode, Trash2 } from "lucide-react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { getCategoryConfig } from "@/app/equipment/utils/getCategoryConfig";
 import { getStatusConfig } from "@/app/equipment/utils/getStatusConfig";
 import { FooterTable } from "@/components/table/FooterTable";
 import { StockStatus } from "@/app/scan/stock_status_enum";
 import { useRouter } from "next/navigation";
+import { SelectOption } from "@/components/searchbar/Select";
 
 const DEFAULT_NUMBER_PER_PAGE = 10;
 
@@ -30,22 +31,8 @@ export default function Equipement() {
     DEFAULT_NUMBER_PER_PAGE,
   );
   const [pageIndex, setPageIndex] = useState<number>(0);
-  const [numberOfPages, setNumberOfPages] = useState<number>(
-    Math.ceil(equipmentList.length / numberPerPage),
-  );
-
-  const [searchedList, setSearchedList] =
-    useState<EquipmentItem[]>(equipmentList);
-  const [filteredList, setFilteredList] =
-    useState<EquipmentItem[]>(searchedList);
-  const [slicedList, setSlicedList] = useState<EquipmentItem[]>(
-    filteredList.slice(0, numberPerPage),
-  );
 
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [categories, setCategories] = useState<string[]>(
-    Array.from(new Set(equipmentList.map((equipment) => equipment.category))),
-  );
 
   const labels = [
     "Nom",
@@ -75,62 +62,80 @@ export default function Equipement() {
     },
   ]);
 
-  // Apply search
-  useEffect(() => {
-    if (loading || error) return;
+  const categories = useMemo(() => {
+    return Array.from(
+      new Set(equipmentList.map((equipment) => equipment.category)),
+    );
+  }, [equipmentList]);
+
+  const categoriesOptions = categories.map((category) => ({
+    label: category,
+    value: category,
+    icon: getCategoryConfig(category).icon,
+    style: getCategoryConfig(category).style,
+  }));
+
+  categoriesOptions.unshift({
+    label: "Toutes les catégories",
+    value: "all",
+    icon: <Boxes className="h-4 w-4 min-h-4 min-w-4" />,
+    style: {
+      color: "text-gray-400",
+      borderColor: "border-gray-400",
+      bg: "gray-400",
+    },
+  });
+
+  const [selectValue, setSelectValue] = useState<SelectOption>(
+    categoriesOptions[0],
+  );
+
+  const filteredList = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
 
-    if (query.length > 0) {
-      const searched = equipmentList.filter((element) => {
-        return (
+    // Search
+    let result = equipmentList;
+
+    if (query) {
+      result = result.filter(
+        (element) =>
           element.name.toLowerCase().includes(query) ||
-          element.reference.toLowerCase().includes(query)
-        );
-      });
-
-      setSearchedList(searched);
-    } else {
-      setSearchedList(equipmentList);
+          element.reference.toLowerCase().includes(query),
+      );
     }
-    setCategories(
-      Array.from(new Set(equipmentList.map((equipment) => equipment.category))),
-    );
-  }, [searchQuery, equipmentList]);
 
-  // Apply filters
-  useEffect(() => {
-    let filteredElements: EquipmentItem[] = [];
-    filters.map((filter) => {
-      if (filter.isActive) {
-        filteredElements = filteredElements.concat(
-          searchedList.filter((element) => filter.filter(element.status)),
-        );
-      }
-    });
-
-    if (filteredElements.length > 0) {
-      setFilteredList(filteredElements);
-    } else if (filters.some((f) => f.isActive)) {
-      setFilteredList([]);
-    } else {
-      setFilteredList(searchedList);
+    // Category filter
+    if (selectValue.value !== "all") {
+      result = result.filter(
+        (element) => element.category === selectValue.value,
+      );
     }
-  }, [filters, searchedList]);
 
-  // Slice list into pages
-  useEffect(() => {
-    const newSlicedList = filteredList.slice(
-      pageIndex * numberPerPage,
-      pageIndex * numberPerPage + numberPerPage,
-    );
-    setSlicedList(newSlicedList);
-  }, [pageIndex, filteredList, numberPerPage]);
+    // Status filters
+    const activeFilters = filters.filter((filter) => filter.isActive);
 
-  // Reset page index to 0 when changes are made
+    if (activeFilters.length > 0) {
+      result = result.filter((element) =>
+        activeFilters.some((filter) => filter.filter(element.status)),
+      );
+    }
+
+    return result;
+  }, [equipmentList, searchQuery, selectValue.value, filters]);
+
+  const numberOfPages = useMemo(() => {
+    return Math.ceil(filteredList.length / numberPerPage);
+  }, [filteredList.length, numberPerPage]);
+
+  const slicedList = useMemo(() => {
+    const start = pageIndex * numberPerPage;
+
+    return filteredList.slice(start, start + numberPerPage);
+  }, [filteredList, pageIndex, numberPerPage]);
+
   useEffect(() => {
     setPageIndex(0);
-    setNumberOfPages(Math.ceil(filteredList.length / numberPerPage));
-  }, [filteredList, numberPerPage]);
+  }, [searchQuery, selectValue.value, filters, numberPerPage]);
 
   const renderLabel = (label: string, status: string): ReactNode => {
     return (
@@ -215,12 +220,9 @@ export default function Equipement() {
               filters={filters}
               setFilters={setFilters}
               placeholder="Rechercher par nom, référence..."
-              options={categories.map((category) => ({
-                label: category,
-                value: category,
-                icon: getCategoryConfig(category).icon,
-                style: getCategoryConfig(category).style,
-              }))}
+              selectValue={selectValue}
+              setSelectValue={setSelectValue}
+              options={categoriesOptions}
             />
             <div className="flex flex-col flex-1 overflow-y-auto">
               <div className="flex-1 border border-b-0 border-slate-200 rounded-t-xl bg-white overflow-x-auto">
