@@ -15,7 +15,6 @@ export const routes = [
   { href: "/inventaires", label: "Inventaires", Icon: ClipboardList },
   { href: "/vehicule", label: "Véhicules", Icon: Truck },
   { href: "/all_centers", label: "Centres", Icon: Building2 },
-  { href: "/equipe", label: "Équipe", Icon: Users },
   { href: "/notifications", label: "Notifications", Icon: Bell, badge: true },
   { href: "/profil", label: "Mon profil", Icon: User },
 ];
