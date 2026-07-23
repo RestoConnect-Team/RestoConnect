@@ -46,7 +46,7 @@ export default function QrCodeModal({
             />
           )}
         </div>
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-center gap-2">
           {equipmentReference && (
             <Button onClick={handleDownloadQrCode}>
               <Download size={16} /> Télécharger
