@@ -18,7 +18,7 @@ export interface SearchBarProps {
   filters?: FilterOption[];
   setFilters?: (filters: FilterOption[]) => void;
   selectValue?: SelectOption;
-  setSelectValue: (v: SelectOption) => void;
+  setSelectValue?: (v: SelectOption) => void;
   options?: SelectOption[];
 }
 
@@ -74,7 +74,7 @@ export default function SearchBar({
       </div>
 
       <div className="flex gap-5">
-        {options.length > 1 && selectValue && (
+        {options.length > 1 && selectValue && setSelectValue && (
           <Select
             selectValue={selectValue}
             setSelectValue={setSelectValue}

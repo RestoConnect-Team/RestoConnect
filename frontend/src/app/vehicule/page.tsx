@@ -15,6 +15,9 @@ import PageError from "@/components/page_error/page_error";
 import Loading from "@/components/loading/loading";
 import { PageLayout } from "@/components/layout/PageLayout";
 import SearchBar from "@/components/searchbar/Searchbar";
+import { FooterTable } from "@/components/table/FooterTable";
+
+const DEFAULT_NUMBER_PER_PAGE = 10;
 
 type VehiculeRow = VehiculeItem & {
   source: "center" | "other";
@@ -50,6 +53,11 @@ export default function Vehicule() {
 
   const [searchQuery, setSearchQuery] = useState<string>("");
 
+  const [numberPerPage, setNumberPerPage] = useState<number>(
+    DEFAULT_NUMBER_PER_PAGE,
+  );
+  const [pageIndex, setPageIndex] = useState<number>(0);
+
   const rows = useMemo<VehiculeRow[]>(() => {
     const centerRows = vehiculesData.vehicules_center.map((vehicule) => ({
       ...vehicule,
@@ -68,7 +76,7 @@ export default function Vehicule() {
     return [...centerRows, ...otherRows];
   }, [vehiculesData]);
 
-  const filteredRows = useMemo(() => {
+  const filteredList = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     if (!q) return rows;
 
@@ -81,6 +89,16 @@ export default function Vehicule() {
       );
     });
   }, [rows, searchQuery]);
+
+  const numberOfPages = useMemo(() => {
+    return Math.ceil(filteredList.length / numberPerPage);
+  }, [filteredList.length, numberPerPage]);
+
+  const slicedList = useMemo(() => {
+    const start = pageIndex * numberPerPage;
+
+    return filteredList.slice(start, start + numberPerPage);
+  }, [filteredList, pageIndex, numberPerPage]);
 
   return (
     <PageLayout title="Véhicules">
@@ -121,7 +139,7 @@ export default function Vehicule() {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredRows.map((vehicule) => (
+                    {slicedList.map((vehicule) => (
                       <tr
                         key={`${vehicule.source}-${vehicule.id}`}
                         className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50/70"
@@ -167,9 +185,17 @@ export default function Vehicule() {
                   </tbody>
                 </table>
               </div>
+              <FooterTable
+                numberOfPages={numberOfPages}
+                pageIndex={pageIndex}
+                setPageIndex={setPageIndex}
+                listLength={filteredList.length}
+                numberPerPage={numberPerPage}
+                setNumberPerPage={setNumberPerPage}
+              />
             </div>
 
-            {filteredRows.length === 0 && (
+            {filteredList.length === 0 && (
               <div className="text-center py-10 text-slate-500 text-sm">
                 Aucun véhicule trouvé pour cette recherche.
               </div>
