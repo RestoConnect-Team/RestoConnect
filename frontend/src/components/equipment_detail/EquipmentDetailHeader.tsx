@@ -26,7 +26,7 @@ export function EquipmentDetailHeader({
       </h1>
       <div className="flex flex-wrap gap-2 mt-3">
         <span
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-sm border-2 font-medium ${categoryConfig.style}`}
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-sm border-2 font-medium ${Object.values(categoryConfig.style).join(" ")}`}
         >
           {categoryConfig.icon}
           {equipment.category}
