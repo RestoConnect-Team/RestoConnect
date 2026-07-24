@@ -4,7 +4,7 @@ export interface EquipmentItem {
   name: string;
   category: string;
   status: string;
-  qr_code: string;
+  qr_code?: string;
 }
 
 export const fetchEquipmentList = async (): Promise<EquipmentItem[]> => {

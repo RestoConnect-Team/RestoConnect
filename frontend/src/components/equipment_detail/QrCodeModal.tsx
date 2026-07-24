@@ -7,18 +7,17 @@ import {
 import { QRCodeCanvas } from "qrcode.react";
 import { Button } from "../ui/button";
 import { Download } from "lucide-react";
+import { EquipmentItem } from "@/lib/api/equipements_list_info";
 
 type QrCodeModalsProps = {
-  equipmentName: string;
-  equipmentReference: string;
+  equipment: EquipmentItem;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   handleDownloadQrCode: () => void;
 };
 
 export default function QrCodeModal({
-  equipmentName,
-  equipmentReference,
+  equipment,
   isOpen,
   setIsOpen,
   handleDownloadQrCode,
@@ -27,12 +26,12 @@ export default function QrCodeModal({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>QR Code pour {equipmentName}</DialogTitle>
+          <DialogTitle>QR Code pour {equipment.name}</DialogTitle>
         </DialogHeader>
         <div className="flex justify-center p-4">
-          {equipmentReference && (
+          {equipment.reference && (
             <QRCodeCanvas
-              value={equipmentReference}
+              value={equipment.reference}
               size={256}
               level="H"
               imageSettings={{
@@ -47,7 +46,7 @@ export default function QrCodeModal({
           )}
         </div>
         <div className="flex justify-center gap-2">
-          {equipmentReference && (
+          {equipment.reference && (
             <Button onClick={handleDownloadQrCode}>
               <Download size={16} /> Télécharger
             </Button>

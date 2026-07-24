@@ -6,41 +6,26 @@ import { Button } from "@/components/ui/button";
 import { QRCodeCanvas } from "qrcode.react";
 import { useReactToPrint } from "react-to-print";
 import QrCodeModal from "@/components/equipment_detail/QrCodeModal";
+import { downloadQrCode } from "@/utils/downloadQrCode";
+import { getQrCodeUrl } from "@/utils/getQrCodeUrl";
+import { EquipmentItem } from "@/lib/api/equipements_list_info";
 
 interface EquipmentDetailQrCodeProps {
-  equipmentReference: string;
-  equipmentName: string;
+  equipment: EquipmentItem;
 }
 
 export function EquipmentDetailQrCode({
-  equipmentReference,
-  equipmentName,
+  equipment,
 }: EquipmentDetailQrCodeProps) {
   const qrCodeRef = useRef<HTMLDivElement>(null);
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string | null>(null);
   // Effect to get the data URL of the generated QR code
   useEffect(() => {
-    if (qrCodeRef.current) {
-      const canvas = qrCodeRef.current.querySelector("canvas");
-      if (canvas) {
-        setQrCodeDataUrl(canvas.toDataURL("image/png"));
-      }
-    }
-  }, [equipmentReference]);
+    const url = getQrCodeUrl(qrCodeRef) ?? null;
+    setQrCodeDataUrl(url);
+  }, [equipment.reference]);
 
   const [isEnlargeModalOpen, setIsEnlargeModalOpen] = useState(false);
-
-  const handleDownloadQrCode = () => {
-    if (qrCodeDataUrl) {
-      // This downloads the 160px version
-      const link = document.createElement("a");
-      link.href = qrCodeDataUrl;
-      link.download = `qrcode-${equipmentReference}.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  };
 
   const contentRef = useRef<HTMLDivElement>(null);
   const reactToPrintFn = useReactToPrint({ contentRef });
@@ -61,14 +46,14 @@ export function EquipmentDetailQrCode({
         Étiquette QR
       </h2>
       <div className="flex items-start gap-5 flex-wrap">
-        {equipmentReference ? (
+        {equipment.reference ? (
           <>
             <div
               ref={qrCodeRef}
               className="border border-gray-200 rounded-xl p-3 bg-gray-50 cursor-pointer hover:border-[#cb006b]/40 transition-colors"
             >
               <QRCodeCanvas
-                value={equipmentReference}
+                value={equipment.reference}
                 size={160}
                 level="H"
                 imageSettings={{
@@ -83,7 +68,7 @@ export function EquipmentDetailQrCode({
             </div>
             <div className="space-y-2 pt-1">
               <p className="text-[12px] text-gray-400 font-mono">
-                {equipmentName.substring(0, 4)} · {equipmentReference}
+                {equipment.name.substring(0, 4)} · {equipment.reference}
               </p>
               <Button
                 onClick={handleEnlargeQrCode}
@@ -93,7 +78,9 @@ export function EquipmentDetailQrCode({
                 <Maximize size={14} /> Agrandir
               </Button>
               <Button
-                onClick={handleDownloadQrCode}
+                onClick={() =>
+                  downloadQrCode(qrCodeDataUrl, equipment.reference)
+                }
                 variant="outline"
                 className="flex items-center gap-2 h-9 px-3 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 w-full justify-start"
               >
@@ -113,11 +100,12 @@ export function EquipmentDetailQrCode({
         )}
       </div>
       <QrCodeModal
-        equipmentName={equipmentName}
-        equipmentReference={equipmentReference}
+        equipment={equipment}
         isOpen={isEnlargeModalOpen}
         setIsOpen={setIsEnlargeModalOpen}
-        handleDownloadQrCode={handleDownloadQrCode}
+        handleDownloadQrCode={() =>
+          downloadQrCode(qrCodeDataUrl, equipment.reference)
+        }
       />
 
       {/* QrCode for printing */}
@@ -127,7 +115,7 @@ export function EquipmentDetailQrCode({
           ref={contentRef}
         >
           <h1 className="text-3xl">
-            QR Code pour {equipmentName} ({equipmentReference})
+            QR Code pour {equipment.name} ({equipment.reference})
           </h1>
           {qrCodeDataUrl ? (
             <img src={qrCodeDataUrl} alt="QR Code" />

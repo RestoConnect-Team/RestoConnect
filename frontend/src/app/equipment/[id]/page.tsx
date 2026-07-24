@@ -130,10 +130,7 @@ export default function EquipmentDetailPage({
               }
             />
 
-            <EquipmentDetailQrCode
-              equipmentReference={equipment.reference}
-              equipmentName={equipment.name}
-            />
+            <EquipmentDetailQrCode equipment={equipment} />
 
             <EquipmentDetailHistory
               history={history}

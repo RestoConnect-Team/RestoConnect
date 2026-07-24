@@ -10,13 +10,18 @@ import PageError from "@/components/page_error/page_error";
 import Loading from "@/components/loading/loading";
 import { PageLayout } from "@/components/layout/PageLayout";
 import { Boxes, Eye, PenBox, Plus, QrCode, Trash2 } from "lucide-react";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { getCategoryConfig } from "@/app/equipment/utils/getCategoryConfig";
 import { getStatusConfig } from "@/app/equipment/utils/getStatusConfig";
 import { FooterTable } from "@/components/table/FooterTable";
 import { StockStatus } from "@/app/scan/stock_status_enum";
 import { useRouter } from "next/navigation";
 import { SelectOption } from "@/components/searchbar/Select";
+import QrCodeModal from "@/components/equipment_detail/QrCodeModal";
+import { downloadQrCode } from "@/utils/downloadQrCode";
+import { getQrCodeUrl } from "@/utils/getQrCodeUrl";
+import { QRCodeCanvas } from "qrcode.react";
+import TableActions from "@/components/table/TableActions";
 
 const DEFAULT_NUMBER_PER_PAGE = 10;
 
@@ -33,6 +38,11 @@ export default function Equipement() {
   const [pageIndex, setPageIndex] = useState<number>(0);
 
   const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const [selectedEquipment, setSelectedEquipment] =
+    useState<EquipmentItem | null>(null);
+  const [isEnlargeModalOpen, setIsEnlargeModalOpen] = useState(false);
+  const qrCodeRef = useRef<HTMLDivElement>(null);
 
   const labels = [
     "Nom",
@@ -251,8 +261,11 @@ export default function Equipement() {
                           {equipment.reference}
                         </td>
                         <td className="py-2 px-3">
-                          {equipment.qr_code.length > 0 ? (
-                            <QrCode className="text-slate-400" />
+                          {equipment.qr_code && equipment.qr_code.length > 0 ? (
+                            <QrCode
+                              className="text-slate-400 cursor-pointer hover:text-slate-500 transition-colors"
+                              onClick={() => setSelectedEquipment(equipment)}
+                            />
                           ) : (
                             <span className="py-1 px-2 text-[#FF6900] bg-[#FFF7ED] border-1 border-[#FFD6A8] text-sm rounded-md">
                               Manquante
@@ -260,24 +273,30 @@ export default function Equipement() {
                           )}
                         </td>
                         {renderStatus(equipment.status)}
-                        {/* //TODO add actions */}
                         <td className="py-2 pl-3 pr-5">
-                          <div className="flex items-center justify-between gap-3">
-                            <button
-                              className="cursor-pointer hover:text-slate-500 text-slate-400 transition-colors"
-                              onClick={() =>
-                                router.push("/equipment/" + equipment.id)
-                              }
-                            >
-                              <Eye className="h-5 w-5 min-h-5 min-w-5" />
-                            </button>
-                            <button className="cursor-pointer hover:text-slate-500 text-slate-400 transition-colors">
-                              <PenBox className="h-5 w-5 min-h-5 min-w-5" />
-                            </button>
-                            <button className="cursor-pointer hover:text-slate-500 text-slate-400 transition-colors">
-                              <Trash2 className="h-5 w-5 min-h-5 min-w-5" />
-                            </button>
-                          </div>
+                          <TableActions
+                            actions={[
+                              {
+                                icon: (className) => (
+                                  <Eye className={className} />
+                                ),
+                                onClick: () =>
+                                  router.push("/equipment/" + equipment.id),
+                              },
+                              {
+                                icon: (className) => (
+                                  <PenBox className={className} />
+                                ),
+                                onClick: () => {},
+                              },
+                              {
+                                icon: (className) => (
+                                  <Trash2 className={className} />
+                                ),
+                                onClick: () => {},
+                              },
+                            ]}
+                          />
                         </td>
                       </tr>
                     ))}
@@ -296,6 +315,26 @@ export default function Equipement() {
           </>
         )}
       </div>
+      {selectedEquipment && (
+        <>
+          <QrCodeModal
+            equipment={selectedEquipment}
+            isOpen={selectedEquipment !== null}
+            setIsOpen={(open) => {
+              if (!open) setSelectedEquipment(null);
+            }}
+            handleDownloadQrCode={() =>
+              downloadQrCode(
+                getQrCodeUrl(qrCodeRef) ?? null,
+                selectedEquipment.reference,
+              )
+            }
+          />
+          <div ref={qrCodeRef}>
+            <QRCodeCanvas value={selectedEquipment.reference} size={0} />
+          </div>
+        </>
+      )}
     </PageLayout>
   );
 }
