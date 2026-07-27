@@ -21,6 +21,7 @@ from app.api.endpoints import (
     get_list_centers_route,
     get_center_infos_route,
     get_warehouse_infos_route,
+    delete_center_route,
 
    
     create_inventory_route,
@@ -48,6 +49,7 @@ api_router.include_router(get_list_centers_route.router, tags=["Center"])
 api_router.include_router(get_my_center_infos_route.router, tags=["Center"])
 api_router.include_router(get_center_infos_route.router, prefix="/center", tags=["Center"])
 api_router.include_router(get_warehouse_infos_route.router, prefix="/warehouse", tags=["Warehouse", "Center"])
+api_router.include_router(delete_center_route.router, prefix="/center", tags=["Center"])
 
 api_router.include_router(get_list_stocks_route.router, tags=["Stock"])
 api_router.include_router(get_stock_by_scan.router, prefix="/stock", tags=["Stock"])

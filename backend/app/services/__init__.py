@@ -20,6 +20,7 @@ from .get_my_center_service import get_my_center_service
 from .get_center_schedule_service import get_center_schedule_service
 from .get_center_admin_service import get_center_admin_service
 from .get_center_service import get_center_service
+from .delete_center_service import delete_center_service
 
 from .get_list_centers_service import get_list_centers_service
 from .get_center_stocks_list_service import get_center_stocks_list_service
@@ -53,6 +54,7 @@ __all__ = [
     "get_center_schedule_service",
     "get_center_service",
     "get_list_centers_service",
+    "delete_center_service",
 
     "create_inventory_service",
     "get_user_center_inventories_list_service",

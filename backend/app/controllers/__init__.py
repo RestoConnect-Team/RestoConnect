@@ -12,6 +12,7 @@ from .get_my_center_infos_controller import get_my_center_infos_controller
 from .get_center_infos_controller import get_center_infos_controller
 from .get_warehouse_infos_controller import get_warehouse_infos_controller
 from .update_center_controller import update_center_controller
+from .delete_center_controller import delete_center_controller
 
 from .get_list_stocks_controller import get_list_stocks_controller
 from .delete_stock_controller import delete_stock_controller
@@ -36,7 +37,8 @@ __all__=[
     "get_center_infos_controller",
     "get_warehouse_infos_controller",
     "update_center_controller",
-
+    "delete_center_controller",
+    
     "get_list_stocks_controller",
     "delete_stock_controller",
 
