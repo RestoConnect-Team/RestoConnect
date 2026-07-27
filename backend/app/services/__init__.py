@@ -13,6 +13,8 @@ from .get_vehicule_infos_service import get_vehicule_infos_service
 from .get_list_stocks_user_center_service import get_list_stocks_user_center_service
 from .get_list_stocks_warehouse_service import get_list_stocks_warehouse_service
 
+from .delete_stock_service import delete_stock_service
+
 from .get_my_center_service import get_my_center_service
 from .get_center_schedule_service import get_center_schedule_service
 from .get_center_admin_service import get_center_admin_service
@@ -37,8 +39,12 @@ __all__ = [
 
     "get_list_vehicules_service",
     "get_vehicule_infos_service",
+    
     "get_list_stocks_user_center_service",
     "get_list_stocks_warehouse_service",
+
+    "delete_stock_service",
+
     "get_center_stocks_list_service",
     "get_my_center_service",
     "get_center_admin_service",

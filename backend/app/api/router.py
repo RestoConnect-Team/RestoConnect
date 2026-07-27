@@ -5,20 +5,27 @@ from app.api.endpoints import (
     deconnect_route,
 
     get_user_route,
+
     get_list_vehicules_route,
     get_vehicule_infos_route,
+
     get_list_stocks_route,
+    delete_stock_route,
+    get_stock_by_scan,
+    update_stock_status,
+    get_stock_detail,
+    
+
     get_my_center_infos_route,
     get_list_centers_route,
     get_center_infos_route,
     get_warehouse_infos_route,
-    get_stock_by_scan,
-    update_stock_status,
 
+   
     create_inventory_route,
     get_list_inventories_route,
     get_list_stocks_inventory_route,
-    get_stock_detail,
+
     get_qr_code_route
 )
 
@@ -47,6 +54,7 @@ api_router.include_router(get_warehouse_infos_route.router)
 
 api_router.include_router(get_stock_by_scan.router, prefix="/stock", tags=["Stock"])
 api_router.include_router(update_stock_status.router, prefix="/stock", tags=["Stock"])
+api_router.include_router(delete_stock_route.router, prefix="/stock", tags=["Stock"])
 
 api_router.include_router(create_inventory_route.router, prefix="/inventory", tags=["Inventory"])
 api_router.include_router(get_list_inventories_route.router, prefix="/inventory", tags=["Inventory"])
