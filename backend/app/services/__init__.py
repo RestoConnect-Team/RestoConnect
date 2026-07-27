@@ -9,6 +9,7 @@ from .is_user_center_admin_service import is_user_center_admin_service
 
 from .get_list_vehicules_service import get_list_vehicules_service
 from .get_vehicule_infos_service import get_vehicule_infos_service
+from .delete_vehicule_servcie import delete_vehicule_service
 
 from .get_list_stocks_user_center_service import get_list_stocks_user_center_service
 from .get_list_stocks_warehouse_service import get_list_stocks_warehouse_service
@@ -39,7 +40,8 @@ __all__ = [
 
     "get_list_vehicules_service",
     "get_vehicule_infos_service",
-    
+    "delete_vehicule_service",
+
     "get_list_stocks_user_center_service",
     "get_list_stocks_warehouse_service",
 

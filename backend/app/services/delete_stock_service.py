@@ -8,4 +8,5 @@ def delete_stock_service(stock_id: int, db: Session) -> bool:
 
     db.delete(stock)
     db.commit()
+    
     return True

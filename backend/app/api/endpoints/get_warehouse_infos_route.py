@@ -8,6 +8,6 @@ from app.database.connection import get_db
 
 router = APIRouter()
 
-@router.get("/warehouse/{warehouse_id}", response_model=WarehouseInfos)
-def center_infos_endpoint(warehouse_id: int, db: Session = Depends(get_db)):
+@router.get("/{warehouse_id}", response_model=WarehouseInfos)
+def warehouse_infos_endpoint(warehouse_id: int, db: Session = Depends(get_db)):
     return get_warehouse_infos_controller(warehouse_id, db)
