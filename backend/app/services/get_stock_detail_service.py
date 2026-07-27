@@ -3,7 +3,7 @@ from app.database.models import Stock, User, StockEvent
 from app.schemas.product_detail_schema import ProductDetailResponse, ProductDetail, ProductHistoryItem
 from app.core.config import BASE_URL
 
-def get_product_detail_service(product_id: int, db: Session) -> ProductDetailResponse:
+def get_stock_detail_service(product_id: int, db: Session) -> ProductDetailResponse:
     """
     Récupère les détails complets d'un produit, y compris son historique.
     """

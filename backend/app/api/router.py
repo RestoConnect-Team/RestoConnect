@@ -13,12 +13,12 @@ from app.api.endpoints import (
     get_center_infos_route,
     get_warehouse_infos_route,
     get_stock_by_scan,
-    update_product_status,
+    update_stock_status,
 
     create_inventory_route,
     get_list_inventories_route,
     get_list_stocks_inventory_route,
-    get_product_detail,
+    get_stock_detail,
     get_qr_code_route
 )
 
@@ -46,10 +46,10 @@ api_router.include_router(get_center_infos_route.router)
 api_router.include_router(get_warehouse_infos_route.router)
 
 api_router.include_router(get_stock_by_scan.router, prefix="/stock", tags=["Stock"])
-api_router.include_router(update_product_status.router, prefix="/stock", tags=["Stock"])
+api_router.include_router(update_stock_status.router, prefix="/stock", tags=["Stock"])
 
 api_router.include_router(create_inventory_route.router, prefix="/inventory", tags=["Inventory"])
 api_router.include_router(get_list_inventories_route.router, prefix="/inventory", tags=["Inventory"])
 api_router.include_router(get_list_stocks_inventory_route.router, prefix="/inventory", tags=["Inventory"])
-api_router.include_router(get_product_detail.router, prefix="/stock", tags=["Stock"])
+api_router.include_router(get_stock_detail.router, prefix="/stock", tags=["Stock"])
 api_router.include_router(get_qr_code_route.router, prefix="/qr_code", tags=["QR Code"])

@@ -3,7 +3,7 @@ from fastapi import HTTPException
 from app.database.models import Stock
 
 
-def get_product_by_reference_service(reference: str, db: Session):
+def get_stock_by_reference_service(reference: str, db: Session):
     product = (
         db.query(Stock)
         .options(joinedload(Stock.center))

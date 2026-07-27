@@ -1,10 +1,10 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from app.services.get_product_detail_service import get_product_detail_service
+from app.services.get_stock_detail_service import get_stock_detail_service
 from app.services.get_user_service import get_user_by_token_service
 from app.schemas.product_detail_schema import ProductDetailResponse
 
-def get_product_detail_controller(
+def get_stock_detail_controller(
     product_id: int,
     token: str | None,
     db: Session
@@ -19,7 +19,7 @@ def get_product_detail_controller(
     if not current_user:
         raise HTTPException(status_code=401, detail="Jeton invalide")
 
-    product_detail = get_product_detail_service(product_id, db)
+    product_detail = get_stock_detail_service(product_id, db)
     if not product_detail:
         raise HTTPException(status_code=404, detail="Produit non trouvé")
     return product_detail

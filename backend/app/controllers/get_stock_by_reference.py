@@ -2,10 +2,10 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from app.schemas import ProductScanResponse
-from app.services.get_product_by_reference_service import get_product_by_reference_service
+from app.services.get_stock_by_reference_service import get_stock_by_reference_service
 from app.services.get_user_service import get_user_by_token_service
 from app.database.models import User
-def get_product_by_reference(
+def get_stock_by_reference(
     reference: str,
     token: str,
     db: Session
@@ -16,7 +16,7 @@ def get_product_by_reference(
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")
 
-    product = get_product_by_reference_service(reference, db)
+    product = get_stock_by_reference_service(reference, db)
 
     return ProductScanResponse(
         id=product.id,
