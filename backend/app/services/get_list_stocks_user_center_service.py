@@ -5,8 +5,9 @@ from app.database.models import Stock, User
 
 
 
-def get_user_center_stocks_list_service(user: User, db: Session):
+def get_list_stocks_user_center_service(user: User, db: Session):
     
     equipement_list_query = select(Stock).where(Stock.center_id == user.center_id)
+    
 
     return db.scalars(equipement_list_query).all()

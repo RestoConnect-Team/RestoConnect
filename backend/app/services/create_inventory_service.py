@@ -7,7 +7,7 @@ from app.database.models import User, Inventory, InventoryStock
 from app.enums import InventoryStatus, InventoryStockStatus
 from app.schemas import OneStockFromInventory
 
-from app.services import get_user_center_stocks_list_service
+from app.services import get_list_stocks_user_center_service
 
 
 def create_inventory_service(user: User, db: Session) -> list[OneStockFromInventory]:
@@ -23,7 +23,7 @@ def create_inventory_service(user: User, db: Session) -> list[OneStockFromInvent
     db.commit()
     db.refresh(create_inventory)
 
-    existing_stocks = get_user_center_stocks_list_service(user, db)
+    existing_stocks = get_list_stocks_user_center_service(user, db)
 
     create_inventory_stocks = []
 
