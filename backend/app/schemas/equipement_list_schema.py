@@ -9,7 +9,7 @@ class OneEquipementFromList(BaseModel):
     category : StockCategory
     status : StockStatus
     qr_code : str
-
+    center_name : str
 
     
     class Config:
