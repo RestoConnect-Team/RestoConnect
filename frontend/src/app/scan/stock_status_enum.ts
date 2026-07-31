@@ -1,5 +1,5 @@
 export enum StockStatus {
-    DISPONIBLE = 'disponible',
-    LOST = 'perdu',
-    ERROR = 'error',
+  AVAILABLE = "Disponible",
+  LOST = "Perdu",
+  ERROR = "error",
 }

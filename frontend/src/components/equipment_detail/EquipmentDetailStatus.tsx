@@ -4,17 +4,17 @@ import { useState } from "react";
 import { Star, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-interface ProductDetailStatusProps {
-  productDescription: string | null;
-  productRating: number | null;
+interface EquipmentDetailStatusProps {
+  equipmentDescription: string | null;
+  equipmentRating: number | null;
   onReportProblem: () => void;
 }
 
-export function ProductDetailStatus({
-  productDescription,
-  productRating: productRated,
+export function EquipmentDetailStatus({
+  equipmentDescription,
+  equipmentRating: equipmentRated,
   onReportProblem,
-}: ProductDetailStatusProps) {
+}: EquipmentDetailStatusProps) {
   const [rating, setRating] = useState(0);
 
   return (
@@ -41,7 +41,7 @@ export function ProductDetailStatus({
           Quel est l'état de ce matériel ?
         </h3>
 
-        {productRated && (
+        {equipmentRated && (
           <div className="flex items-center gap-1">
             {[1, 2, 3, 4, 5].map((star) => (
               <Star
@@ -62,9 +62,9 @@ export function ProductDetailStatus({
       {/* Notes déjà saisies */}
       <div className="pt-4 border-t border-gray-100">
         <h3 className="text-sm font-medium text-gray-700 mb-2">Notes</h3>
-        {productDescription ? (
+        {equipmentDescription ? (
           <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-100">
-            {productDescription}
+            {equipmentDescription}
           </p>
         ) : (
           <p className="text-sm text-gray-500">

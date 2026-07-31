@@ -1,20 +1,20 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { StockStatus } from "@/app/scan/stock_status_enum";
-import { ProductDetailHeader } from "@/components/product_detail/ProductDetailHeader";
-import { ProductDetailInfo } from "@/components/product_detail/ProductDetailInfo";
-import { ProductDetailQrCode } from "@/components/product_detail/ProductDetailQrCode";
+import { EquipmentDetailHeader } from "@/components/equipment_detail/EquipmentDetailHeader";
+import { EquipmentDetailInfo } from "@/components/equipment_detail/EquipmentDetailInfo";
+import { EquipmentDetailQrCode } from "@/components/equipment_detail/EquipmentDetailQrCode";
 import {
-  ProductDetailHistory,
-  ProductHistoryItem,
-} from "@/components/product_detail/ProductDetailHistory";
-import { ProductDetailStatus } from "@/components/product_detail/ProductDetailStatus";
+  EquipmentDetailHistory,
+  EquipmentHistoryItem,
+} from "@/components/equipment_detail/EquipmentDetailHistory";
+import { EquipmentDetailStatus } from "@/components/equipment_detail/EquipmentDetailStatus";
+import { PageLayout } from "@/components/layout/PageLayout";
 
-interface ProductDetailData {
+interface EquipmentDetailData {
   id: number;
   name: string;
   reference: string;
@@ -27,21 +27,20 @@ interface ProductDetailData {
   rating: number;
 }
 
-export default function ProductDetailPage({
+export default function EquipmentDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const router = useRouter();
   const resolvedParams = use(params);
   const { id } = resolvedParams;
-  const [product, setProduct] = useState<ProductDetailData | null>(null);
-  const [history, setHistory] = useState<ProductHistoryItem[]>([]);
+  const [equipment, setEquipment] = useState<EquipmentDetailData | null>(null);
+  const [history, setHistory] = useState<EquipmentHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchProductDetails = async () => {
+    const fetchEquipmentDetails = async () => {
       try {
         setLoading(true);
         const response = await fetch(`http://localhost:8000/api/stock/${id}`, {
@@ -51,19 +50,19 @@ export default function ProductDetailPage({
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(
-            errorData.detail || "Failed to fetch product details",
+            errorData.detail || "Failed to fetch Equipment details",
           );
         }
 
         const data: {
-          details: ProductDetailData;
-          history: ProductHistoryItem[];
+          details: EquipmentDetailData;
+          history: EquipmentHistoryItem[];
         } = await response.json();
-        setProduct(data.details);
+        setEquipment(data.details);
         setHistory(data.history);
       } catch (err: any) {
         setError(
-          err.message || "An error occurred while fetching product details.",
+          err.message || "An error occurred while fetching Equipment details.",
         );
       } finally {
         setLoading(false);
@@ -71,7 +70,7 @@ export default function ProductDetailPage({
     };
 
     if (id) {
-      fetchProductDetails();
+      fetchEquipmentDetails();
     }
   }, [id]);
 
@@ -91,7 +90,7 @@ export default function ProductDetailPage({
     );
   }
 
-  if (!product) {
+  if (!equipment) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p>Produit non trouvé.</p>
@@ -100,49 +99,46 @@ export default function ProductDetailPage({
   }
 
   return (
-    <main className="flex-1 overflow-auto">
-      <div className="p-4 lg:p-6 max-w-3xl mx-auto pb-24 lg:pb-6">
+    <PageLayout>
+      <div className="p-6">
         <Link
-          href="/equipement"
+          href="/equipment"
           className="flex items-center gap-1.5 text-sm text-[#cb006b] hover:text-[#a30056] mb-4 font-medium transition-colors"
         >
           <ArrowLeft size={15} />
           Retour à la liste des matériels
         </Link>
 
-        {product && (
+        {equipment && (
           <>
-            <ProductDetailHeader product={product} />
+            <EquipmentDetailHeader equipment={equipment} />
 
-            <ProductDetailInfo
-              product={product}
-              onEdit={() => console.log("Edit product", product.id)}
+            <EquipmentDetailInfo
+              equipment={equipment}
+              onEdit={() => console.log("Edit equipment", equipment.id)}
             />
 
-            <ProductDetailStatus
-              productDescription={product.description}
-              productRating={product.rating}
+            <EquipmentDetailStatus
+              equipmentDescription={equipment.description}
+              equipmentRating={equipment.rating}
               onReportProblem={() =>
                 console.log(
                   "Signaler un problème pour",
-                  product.id,
+                  equipment.id,
                   "from status section",
                 )
               }
             />
 
-            <ProductDetailQrCode
-              productReference={product.reference}
-              productName={product.name}
-            />
+            <EquipmentDetailQrCode equipment={equipment} />
 
-            <ProductDetailHistory
+            <EquipmentDetailHistory
               history={history}
-              lastScanDate={product.last_scan_date}
+              lastScanDate={equipment.last_scan_date}
             />
           </>
         )}
       </div>
-    </main>
+    </PageLayout>
   );
 }

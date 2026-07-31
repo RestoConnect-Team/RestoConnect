@@ -9,7 +9,7 @@ export function PageLayout({
   children: React.ReactNode;
   title?: string;
   onClick?: () => void;
-  buttonLabel?: string;
+  buttonLabel?: string | React.ReactNode;
 }) {
   return (
     <main className="flex-1 bg-[F5F5F5] min-h-[calc(100vh-14rem)] flex flex-col">
@@ -20,7 +20,8 @@ export function PageLayout({
           {onClick && (
             <button
               onClick={onClick}
-              className="md:w-40 py-2 px-4 bg-[rgb(230,0,126)] text-white font-medium rounded-lg hover:opacity-80 transition-opacity cursor-pointer"
+              className="flex items-center justify-center gap-2 md:w-35 py-2 px-4 bg-[rgb(230,0,126)] text-white 
+              font-medium rounded-lg hover:opacity-80 transition-opacity cursor-pointer"
             >
               {buttonLabel}
             </button>
