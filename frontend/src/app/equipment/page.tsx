@@ -22,11 +22,13 @@ import { downloadQrCode } from "@/utils/downloadQrCode";
 import { getQrCodeUrl } from "@/utils/getQrCodeUrl";
 import { QRCodeCanvas } from "qrcode.react";
 import TableActions from "@/components/table/TableActions";
+import { EquipmentService } from "@/services/equipment.service";
 
 const DEFAULT_NUMBER_PER_PAGE = 10;
 
 export default function Equipement() {
   const router = useRouter();
+  const equipmentService = new EquipmentService();
   const { data, loading, error } =
     useFetchData<EquipmentItem[]>(fetchEquipmentList);
 
@@ -293,7 +295,11 @@ export default function Equipement() {
                                 icon: (className) => (
                                   <Trash2 className={className} />
                                 ),
-                                onClick: () => {},
+                                onClick: () => {
+                                  equipmentService.deleteEquipment(
+                                    equipment.id,
+                                  );
+                                },
                               },
                             ]}
                           />
