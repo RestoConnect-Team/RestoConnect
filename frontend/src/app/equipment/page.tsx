@@ -1,25 +1,25 @@
 "use client";
 
-import { EquipmentItem } from "@/types/equipment";
-import SearchBar, { FilterOption } from "@/components/searchbar/Searchbar";
-import PageError from "@/components/page_error/page_error";
-import Loading from "@/components/loading/loading";
-import { PageLayout } from "@/components/layout/PageLayout";
-import { Boxes, Eye, PenBox, Plus, QrCode, Trash2 } from "lucide-react";
-import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { getCategoryConfig } from "@/app/equipment/utils/getCategoryConfig";
 import { getStatusConfig } from "@/app/equipment/utils/getStatusConfig";
-import { FooterTable } from "@/components/table/FooterTable";
 import { StockStatus } from "@/app/scan/stock_status_enum";
-import { useRouter } from "next/navigation";
-import { SelectOption } from "@/components/searchbar/Select";
 import QrCodeModal from "@/components/equipment_detail/QrCodeModal";
-import { downloadQrCode } from "@/utils/downloadQrCode";
-import { getQrCodeUrl } from "@/utils/getQrCodeUrl";
-import { QRCodeCanvas } from "qrcode.react";
+import { PageLayout } from "@/components/layout/PageLayout";
+import Loading from "@/components/loading/loading";
+import { ConfirmModal } from "@/components/modals/ConfirmModal";
+import PageError from "@/components/page_error/page_error";
+import SearchBar, { FilterOption } from "@/components/searchbar/Searchbar";
+import { SelectOption } from "@/components/searchbar/Select";
+import { FooterTable } from "@/components/table/FooterTable";
 import TableActions from "@/components/table/TableActions";
 import { EquipmentService } from "@/services/equipment.service";
-import { ConfirmModal } from "@/components/modals/ConfirmModal";
+import { EquipmentItem } from "@/types/equipment";
+import { downloadQrCode } from "@/utils/downloadQrCode";
+import { getQrCodeUrl } from "@/utils/getQrCodeUrl";
+import { Boxes, Eye, PenBox, Plus, QrCode, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { QRCodeCanvas } from "qrcode.react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 
 const DEFAULT_NUMBER_PER_PAGE = 10;
 
@@ -40,7 +40,6 @@ export default function Equipement() {
 
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const [isEnlargeModalOpen, setIsEnlargeModalOpen] = useState(false);
   const qrCodeRef = useRef<HTMLDivElement>(null);
 
   const labels = [
