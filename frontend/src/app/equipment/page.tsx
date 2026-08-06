@@ -1,36 +1,37 @@
 "use client";
 
-import { useFetchData } from "@/hooks/useFetchData";
-import {
-  EquipmentItem,
-  fetchEquipmentList,
-} from "@/lib/api/equipements_list_info";
-import SearchBar, { FilterOption } from "@/components/searchbar/Searchbar";
-import PageError from "@/components/page_error/page_error";
-import Loading from "@/components/loading/loading";
-import { PageLayout } from "@/components/layout/PageLayout";
-import { Boxes, Eye, PenBox, Plus, QrCode, Trash2 } from "lucide-react";
-import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { getCategoryConfig } from "@/app/equipment/utils/getCategoryConfig";
 import { getStatusConfig } from "@/app/equipment/utils/getStatusConfig";
-import { FooterTable } from "@/components/table/FooterTable";
 import { StockStatus } from "@/app/scan/stock_status_enum";
-import { useRouter } from "next/navigation";
-import { SelectOption } from "@/components/searchbar/Select";
 import QrCodeModal from "@/components/equipment_detail/QrCodeModal";
+import { PageLayout } from "@/components/layout/PageLayout";
+import Loading from "@/components/loading/loading";
+import { ConfirmModal } from "@/components/modals/ConfirmModal";
+import PageError from "@/components/page_error/page_error";
+import SearchBar, { FilterOption } from "@/components/searchbar/Searchbar";
+import { SelectOption } from "@/components/searchbar/Select";
+import { FooterTable } from "@/components/table/FooterTable";
+import TableActions from "@/components/table/TableActions";
+import { EquipmentService } from "@/services/equipment.service";
+import { EquipmentItem } from "@/types/equipment";
 import { downloadQrCode } from "@/utils/downloadQrCode";
 import { getQrCodeUrl } from "@/utils/getQrCodeUrl";
+import { Boxes, Eye, PenBox, Plus, QrCode, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { QRCodeCanvas } from "qrcode.react";
-import TableActions from "@/components/table/TableActions";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 
 const DEFAULT_NUMBER_PER_PAGE = 10;
 
 export default function Equipement() {
   const router = useRouter();
-  const { data, loading, error } =
-    useFetchData<EquipmentItem[]>(fetchEquipmentList);
-
-  const equipmentList = data ?? [];
+  const equipmentService = new EquipmentService();
+  const [equipments, setEquipements] = useState<EquipmentItem[]>([]);
+  const [selectedEquipment, setSelectedEquipment] =
+    useState<EquipmentItem | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [mustReload, setMustReload] = useState<boolean>(true);
 
   const [numberPerPage, setNumberPerPage] = useState<number>(
     DEFAULT_NUMBER_PER_PAGE,
@@ -39,9 +40,6 @@ export default function Equipement() {
 
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const [selectedEquipment, setSelectedEquipment] =
-    useState<EquipmentItem | null>(null);
-  const [isEnlargeModalOpen, setIsEnlargeModalOpen] = useState(false);
   const qrCodeRef = useRef<HTMLDivElement>(null);
 
   const labels = [
@@ -52,6 +50,9 @@ export default function Equipement() {
     "Statut",
     "Actions",
   ];
+
+  const [equipmentToDelete, setEquipmentToDelete] =
+    useState<EquipmentItem | null>(null);
 
   const [filters, setFilters] = useState<FilterOption[]>([
     {
@@ -72,11 +73,31 @@ export default function Equipement() {
     },
   ]);
 
+  useEffect(() => {
+    const loadEquipment = async () => {
+      try {
+        setLoading(true);
+
+        const data = await equipmentService.fetchEquipmentList();
+        setEquipements(data);
+      } catch (e: any) {
+        setError(e);
+      } finally {
+        setLoading(false);
+        setMustReload(false);
+      }
+    };
+
+    if (mustReload) {
+      loadEquipment();
+    }
+  }, [mustReload]);
+
   const categories = useMemo(() => {
     return Array.from(
-      new Set(equipmentList.map((equipment) => equipment.category)),
+      new Set(equipments.map((equipment) => equipment.category)),
     );
-  }, [equipmentList]);
+  }, [equipments]);
 
   const categoriesOptions = categories.map((category) => ({
     label: category,
@@ -104,7 +125,7 @@ export default function Equipement() {
     const query = searchQuery.trim().toLowerCase();
 
     // Search
-    let result = equipmentList;
+    let result = equipments;
 
     if (query) {
       result = result.filter(
@@ -131,7 +152,7 @@ export default function Equipement() {
     }
 
     return result;
-  }, [equipmentList, searchQuery, selectValue.value, filters]);
+  }, [equipments, searchQuery, selectValue.value, filters]);
 
   const numberOfPages = useMemo(() => {
     return Math.ceil(filteredList.length / numberPerPage);
@@ -146,6 +167,12 @@ export default function Equipement() {
   useEffect(() => {
     setPageIndex(0);
   }, [searchQuery, selectValue.value, filters, numberPerPage]);
+
+  function handleDelete(equipment: EquipmentItem) {
+    equipmentService.deleteEquipment(equipment.id);
+    setEquipmentToDelete(null);
+    setMustReload(true);
+  }
 
   const renderLabel = (label: string, status: string): ReactNode => {
     return (
@@ -203,7 +230,7 @@ export default function Equipement() {
     >
       <div className="p-6 pt-3 flex flex-col gap-3 h-full">
         {/* Error State */}
-        {error && <PageError page_error={error} />}
+        {error && <PageError page_error={error.message} />}
 
         {/* Loading State */}
         {loading && (
@@ -211,7 +238,7 @@ export default function Equipement() {
         )}
 
         {/* Empty State */}
-        {!loading && equipmentList.length === 0 && !error && (
+        {!loading && equipments.length === 0 && !error && (
           <div className="text-center py-16">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
               <span className="text-3xl">📦</span>
@@ -223,7 +250,7 @@ export default function Equipement() {
           </div>
         )}
 
-        {!loading && equipmentList.length > 0 && !error && (
+        {!loading && equipments.length > 0 && !error && (
           <>
             <SearchBar
               onSearch={(e) => setSearchQuery(e)}
@@ -293,7 +320,9 @@ export default function Equipement() {
                                 icon: (className) => (
                                   <Trash2 className={className} />
                                 ),
-                                onClick: () => {},
+                                onClick: () => {
+                                  setEquipmentToDelete(equipment);
+                                },
                               },
                             ]}
                           />
@@ -334,6 +363,12 @@ export default function Equipement() {
             <QRCodeCanvas value={selectedEquipment.reference} size={0} />
           </div>
         </>
+      )}
+      {equipmentToDelete && (
+        <ConfirmModal
+          onConfirm={() => handleDelete(equipmentToDelete)}
+          onCancel={() => setEquipmentToDelete(null)}
+        />
       )}
     </PageLayout>
   );

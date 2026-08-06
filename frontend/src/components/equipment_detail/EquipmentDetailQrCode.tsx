@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState } from "react";
 import { Download, Printer, Maximize } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { QRCodeCanvas } from "qrcode.react";
 import { useReactToPrint } from "react-to-print";
 import QrCodeModal from "@/components/equipment_detail/QrCodeModal";

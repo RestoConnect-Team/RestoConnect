@@ -1,4 +1,4 @@
-import Title from "../title/title";
+import Title from "../title/Title";
 
 export function PageLayout({
   children,
