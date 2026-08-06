@@ -1,6 +1,13 @@
-import { Monitor, CircleCheckBig, MapPin, Eye, CircleAlert, Send } from 'lucide-react';
-import { StockStatus } from '@/app/scan/stock_status_enum';
-import { Button } from '@/components/ui/button';
+import {
+  Monitor,
+  CircleCheckBig,
+  MapPin,
+  Eye,
+  CircleAlert,
+  Send,
+} from "lucide-react";
+import { StockStatus } from "@/app/scan/stock_status_enum";
+import { Button } from "@/components/ui/Button";
 
 export interface ProductInfo {
   id: number;
@@ -16,7 +23,11 @@ interface ProductInfoFooterProps {
   onViewDetails: () => void;
 }
 
-export function ProductInfoFooter({ product, onNewScan, onViewDetails }: ProductInfoFooterProps) {
+export function ProductInfoFooter({
+  product,
+  onNewScan,
+  onViewDetails,
+}: ProductInfoFooterProps) {
   const isError = product.status === StockStatus.ERROR;
 
   if (isError) {
@@ -25,8 +36,12 @@ export function ProductInfoFooter({ product, onNewScan, onViewDetails }: Product
         <div className="flex items-center gap-3 mb-4 p-3 rounded-xl bg-[#FDECEA] border border-[#EE443F]">
           <CircleAlert size={18} className="text-[#8B1A18] shrink-0" />
           <div>
-            <div className="text-[14px] font-semibold text-[#8B1A18]">Étiquette non reconnue</div>
-            <div className="text-[12px] text-[#8B1A18]/80">Cette étiquette n'est pas dans le système.</div>
+            <div className="text-[14px] font-semibold text-[#8B1A18]">
+              Étiquette non reconnue
+            </div>
+            <div className="text-[12px] text-[#8B1A18]/80">
+              Cette étiquette n'est pas dans le système.
+            </div>
           </div>
         </div>
         <div className="flex gap-2">
@@ -34,7 +49,7 @@ export function ProductInfoFooter({ product, onNewScan, onViewDetails }: Product
             Scanner autre
           </Button>
           <Button onClick={() => console.log("Signaler un problème")}>
-            <Send size={14}/>
+            <Send size={14} />
             Signaler
           </Button>
         </div>
@@ -49,8 +64,12 @@ export function ProductInfoFooter({ product, onNewScan, onViewDetails }: Product
           <Monitor size={18} />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="text-[15px] font-bold text-gray-900">{product.name}</div>
-          <div className="text-[12px] text-gray-400 font-mono">{product.reference}</div>
+          <div className="text-[15px] font-bold text-gray-900">
+            {product.name}
+          </div>
+          <div className="text-[12px] text-gray-400 font-mono">
+            {product.reference}
+          </div>
         </div>
         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-sm font-medium border bg-[#F0F7F0] border-[#BBD8BC] text-[#2D6B31]">
           <CircleCheckBig size={13} />

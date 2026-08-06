@@ -5,7 +5,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { QRCodeCanvas } from "qrcode.react";
-import { Button } from "../ui/button";
+import { Button } from "../ui/Button";
 import { Download } from "lucide-react";
 import { EquipmentItem } from "@/lib/api/equipements_list_info";
 
