@@ -62,7 +62,7 @@ def get_list_centers_controller(token: str, db: Session) -> ListCentersResponse:
                 )
             )
 
-        if center.id == user_center_item.center_id:
+        elif center.id == user_center_item.center_id:
             continue
         else:
             centers.append(

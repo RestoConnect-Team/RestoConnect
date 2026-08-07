@@ -74,7 +74,7 @@ export default function Equipement() {
   ]);
 
   useEffect(() => {
-    const loadEquipment = async () => {
+    const fetchEquipment = async () => {
       try {
         setLoading(true);
 
@@ -89,7 +89,7 @@ export default function Equipement() {
     };
 
     if (mustReload) {
-      loadEquipment();
+      fetchEquipment();
     }
   }, [mustReload]);
 
