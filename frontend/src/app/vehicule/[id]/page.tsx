@@ -21,11 +21,7 @@ import {
 import Loading from "@/components/loading/loading";
 import PageError from "@/components/page_error/page_error";
 import { PageLayout } from "@/components/layout/PageLayout";
-
-function formatDate(date: string | null | undefined) {
-  if (!date) return "Non définie";
-  return new Date(date).toLocaleDateString("fr-FR");
-}
+import { formatDate } from "@/utils/formatDate";
 
 function alertStyles(level: VehiculeAlert["level"]) {
   if (level === "expired") {
