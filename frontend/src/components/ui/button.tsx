@@ -20,7 +20,7 @@ export function Button({
     outline:
       "border-2 border-[#cb006b] text-[#cb006b] hover:bg-[#fce4f0] text-[15px] font-semibold px-5 h-10",
     discreet:
-      "border-1 border-gray-200 text-gray-600 hover:text-[#cb006b] hover:border-[#cb006b] text-xs px-3 h-8",
+      "border-1 border-gray-200 text-gray-600 hover:text-[#cb006b] text-[13px] hover:border-[#cb006b] text-xs px-3 h-8",
   };
 
   return (

@@ -7,7 +7,7 @@ import { ArrowLeft, Plus, Trash2, Calendar, Clock, X } from "lucide-react";
 import {
   fetchCenterDetail,
   updateCenter,
-  CenterDetail,
+  Center,
   ClosingPeriod,
 } from "@/lib/api/center_detail_info";
 import Loading from "@/components/loading/loading";
@@ -143,7 +143,7 @@ export default function EditCenterPage({
   const { id } = use(params);
   const router = useRouter();
 
-  const [center, setCenter] = useState<CenterDetail | null>(null);
+  const [center, setCenter] = useState<Center | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);

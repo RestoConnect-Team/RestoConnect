@@ -1,3 +1,5 @@
+import { CenterDetails } from "@/types/center";
+
 export interface TimeSlot {
   opening_time: string;
   closing_time: string;
@@ -29,52 +31,29 @@ export interface ClosingPeriod {
   end_date: string;
 }
 
-export interface CenterDetail {
-  center_id: number;
-  name: string;
-  street_number: number | null;
-  street: string | null;
-  city: string | null;
-  postal_code: string | null;
-  telephone: string | null;
-  email: string | null;
-  status: string;
-  description: string | null;
-  activities: string | null;
-  center_headmaster_name: string;
-  center_headmaster_lastname: string;
-  center_headmaster_email: string;
-  center_headmaster_telephone: string;
-  center_schedule: WeeklySchedule;
-  closing_periods: ClosingPeriod[];
-  materials_count: number;
-  missing_count: number;
-  days_since_last_inventory: number | null;
-  contacts: ContactInfo[];
-  alerts: CenterAlert[];
-  is_user_center: boolean;
-}
+export const fetchCenterDetail =
+  (id: number) => async (): Promise<CenterDetails> => {
+    const response = await fetch(`http://localhost:8000/api/center/${id}`, {
+      method: "GET",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+    const data = await response.json();
+    if (!response.ok)
+      throw new Error(data.detail || "Failed to fetch center details");
+    return data as CenterDetails;
+  };
 
-export const fetchCenterDetail = (id: number) => async (): Promise<CenterDetail> => {
-  const response = await fetch(`http://localhost:8000/api/center/${id}`, {
-    method: 'GET',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
+export const fetchMyCenterDetail = async (): Promise<CenterDetails> => {
+  const response = await fetch("http://localhost:8000/api/my_center", {
+    method: "GET",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
   });
   const data = await response.json();
-  if (!response.ok) throw new Error(data.detail || 'Failed to fetch center details');
-  return data as CenterDetail;
-};
-
-export const fetchMyCenterDetail = async (): Promise<CenterDetail> => {
-  const response = await fetch('http://localhost:8000/api/my_center', {
-    method: 'GET',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
-  });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.detail || 'Failed to fetch my center details');
-  return data as CenterDetail;
+  if (!response.ok)
+    throw new Error(data.detail || "Failed to fetch my center details");
+  return data as CenterDetails;
 };
 
 export interface UpdateCenterPayload {
@@ -93,14 +72,16 @@ export interface UpdateCenterPayload {
   headmaster_email?: string;
 }
 
-export const updateCenter = async (id: number, payload: UpdateCenterPayload): Promise<void> => {
+export const updateCenter = async (
+  id: number,
+  payload: UpdateCenterPayload,
+): Promise<void> => {
   const response = await fetch(`http://localhost:8000/api/center/${id}`, {
-    method: 'PUT',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
+    method: "PUT",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
   const data = await response.json();
-  if (!response.ok) throw new Error(data.detail || 'Failed to update center');
+  if (!response.ok) throw new Error(data.detail || "Failed to update center");
 };
-
