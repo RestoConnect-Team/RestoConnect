@@ -1,7 +1,5 @@
 "use client";
 
-import { getCategoryConfig } from "@/app/equipment/utils/getCategoryConfig";
-import { getStatusConfig } from "@/app/equipment/utils/getStatusConfig";
 import { StockStatus } from "@/app/scan/stock_status_enum";
 import QrCodeModal from "@/components/equipment_detail/QrCodeModal";
 import { PageLayout } from "@/components/layout/PageLayout";
@@ -15,6 +13,8 @@ import TableActions from "@/components/table/TableActions";
 import { EquipmentService } from "@/services/equipment.service";
 import { EquipmentItem } from "@/types/equipment";
 import { downloadQrCode } from "@/utils/downloadQrCode";
+import { getCategoryConfig, renderCategory } from "@/utils/equipmentCategory";
+import { getStatusConfig, renderStatus } from "@/utils/equipmentStatus";
 import { getQrCodeUrl } from "@/utils/getQrCodeUrl";
 import { Boxes, Eye, PenBox, Plus, QrCode, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -74,7 +74,7 @@ export default function Equipement() {
   ]);
 
   useEffect(() => {
-    const loadEquipment = async () => {
+    const fetchEquipment = async () => {
       try {
         setLoading(true);
 
@@ -89,7 +89,7 @@ export default function Equipement() {
     };
 
     if (mustReload) {
-      loadEquipment();
+      fetchEquipment();
     }
   }, [mustReload]);
 
@@ -187,36 +187,6 @@ export default function Equipement() {
     );
   };
 
-  const renderCategory = (category: string): ReactNode => {
-    const categoryConfig = getCategoryConfig(category);
-    const style = Object.values(categoryConfig.style).join(" ");
-
-    return (
-      <td className="py-2 px-3 text-sm max-w-[175px] w-50">
-        <span
-          className={`py-1 px-2 flex items-center gap-2 border-2 rounded-lg ${style} font-semibold`}
-        >
-          {categoryConfig.icon}
-          {category}
-        </span>
-      </td>
-    );
-  };
-
-  const renderStatus = (status: string): ReactNode => {
-    let statusConfig = getStatusConfig(status);
-    return (
-      <td className="py-2 px-3 w-50">
-        <span
-          className={`py-1 px-2 flex items-center text-sm flex gap-2 border-2 rounded-lg ${statusConfig.style} font-semibold`}
-        >
-          {statusConfig.icon}
-          {status}
-        </span>
-      </td>
-    );
-  };
-
   return (
     <PageLayout
       title="Matériels"
@@ -299,7 +269,9 @@ export default function Equipement() {
                             </span>
                           )}
                         </td>
-                        {renderStatus(equipment.status)}
+                        <td className="py-2 px-3 w-50">
+                          {renderStatus(equipment.status, "py-1 px-2")}
+                        </td>
                         <td className="py-2 pl-3 pr-5">
                           <TableActions
                             actions={[

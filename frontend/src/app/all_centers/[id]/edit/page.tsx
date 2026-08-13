@@ -1,18 +1,21 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, Plus, Trash2, Calendar, Clock, X } from "lucide-react";
-import {
-  fetchCenterDetail,
-  updateCenter,
-  CenterDetail,
-  ClosingPeriod,
-} from "@/lib/api/center_detail_info";
+import { CenterHeader } from "@/components/center_detail/CenterHeader";
+import { PageLayout } from "@/components/layout/PageLayout";
+import { Section } from "@/components/layout/Section";
 import Loading from "@/components/loading/loading";
 import PageError from "@/components/page_error/page_error";
-import { PageLayout } from "@/components/layout/PageLayout";
+import {
+  ClosingPeriod,
+  fetchCenterDetail,
+  updateCenter,
+} from "@/lib/api/center_detail_info";
+import { CenterDetails } from "@/types/center";
+import { timeToHHMM } from "@/utils/formatTime";
+import { ArrowLeft, Calendar, Clock, Plus, Trash2, X } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { use, useEffect, useState } from "react";
 
 // ── types ─────────────────────────────────────────────────────────────────────
 
@@ -37,11 +40,6 @@ interface DaySchedule {
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 
-function toHHMM(t: string) {
-  // "09:00:00" → "09:00"
-  return t.slice(0, 5);
-}
-
 function buildScheduleState(
   raw: Record<string, { opening_time: string; closing_time: string }[]>,
 ): Record<string, DaySchedule> {
@@ -53,8 +51,8 @@ function buildScheduleState(
       slots:
         slots.length > 0
           ? slots.map((s) => ({
-              opening_time: toHHMM(s.opening_time),
-              closing_time: toHHMM(s.closing_time),
+              opening_time: timeToHHMM(s.opening_time),
+              closing_time: timeToHHMM(s.closing_time),
             }))
           : [{ opening_time: "09:00", closing_time: "17:00" }],
     };
@@ -118,21 +116,6 @@ function Textarea({
   );
 }
 
-function Section({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 mb-4">
-      <h2 className="text-[15px] font-bold text-gray-900 mb-4">{title}</h2>
-      {children}
-    </div>
-  );
-}
-
 // ── page ──────────────────────────────────────────────────────────────────────
 
 export default function EditCenterPage({
@@ -143,7 +126,7 @@ export default function EditCenterPage({
   const { id } = use(params);
   const router = useRouter();
 
-  const [center, setCenter] = useState<CenterDetail | null>(null);
+  const [center, setCenter] = useState<CenterDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
@@ -321,29 +304,20 @@ export default function EditCenterPage({
 
   return (
     <PageLayout>
-      <div className="p-6">
+      <div className="p-6 flex flex-col gap-3">
         {/* Back link */}
         <Link
           href={`/all_centers/${id}`}
-          className="inline-flex items-center gap-1 text-[12px] text-[rgb(230,0,126)] mb-4 hover:underline"
+          className="inline-flex items-center gap-1 text-[12px] text-[rgb(230,0,126)] hover:underline"
         >
           <ArrowLeft size={13} /> Retour au tableau de bord
         </Link>
 
-        <h1 className="text-[20px] font-bold text-gray-900 mb-5">
+        <h1 className="text-[20px] font-bold text-gray-900">
           Modifier le centre
         </h1>
 
-        {/* Center name badge */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-lg bg-pink-100 flex items-center justify-center">
-            <span className="text-[rgb(230,0,126)] text-lg font-bold">🏠</span>
-          </div>
-          <div>
-            <p className="text-[14px] font-bold text-gray-900">{center.name}</p>
-            <p className="text-[12px] text-gray-500">@ {center.city}</p>
-          </div>
-        </div>
+        <CenterHeader center={center} mode="edit" />
 
         {saveError && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-[13px] text-red-700">

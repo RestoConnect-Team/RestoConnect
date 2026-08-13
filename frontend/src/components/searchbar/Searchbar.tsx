@@ -14,7 +14,7 @@ export interface FilterOption {
 
 export interface SearchBarProps {
   placeholder?: string;
-  onSearch: (query: string, activeFilters: Record<string, any>) => void;
+  onSearch: (query: string) => void;
   filters?: FilterOption[];
   setFilters?: (filters: FilterOption[]) => void;
   selectValue?: SelectOption;
@@ -32,7 +32,6 @@ export default function SearchBar({
   options = [],
 }: SearchBarProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilters, setActiveFilters] = useState<Record<string, any>>({});
 
   const [noFilterOption, setNoFilterOption] = useState<FilterOption>({
     id: "0",
@@ -45,7 +44,7 @@ export default function SearchBar({
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    onSearch(query, activeFilters);
+    onSearch(query);
   };
 
   return (
@@ -73,66 +72,71 @@ export default function SearchBar({
         )}
       </div>
 
-      <div className="flex gap-5">
-        {options.length > 1 && selectValue && setSelectValue && (
-          <Select
-            selectValue={selectValue}
-            setSelectValue={setSelectValue}
-            options={options}
-          />
-        )}
+      {((options.length > 1 && selectValue && setSelectValue) ||
+        filters.length > 0) && (
+        <div className="flex gap-5">
+          {options.length > 1 && selectValue && setSelectValue && (
+            <Select
+              selectValue={selectValue}
+              setSelectValue={setSelectValue}
+              options={options}
+            />
+          )}
 
-        {/* Bouton filtres */}
-        {filters.length > 0 && (
-          <div className="flex gap-2">
-            <button
-              onClick={() => {
-                const areFiltersActive = filters.some((f) => f.isActive);
-                if (areFiltersActive && setFilters) {
-                  setFilters(
-                    filters.map((f) => ({
-                      ...f,
-                      isActive: false,
-                    })),
-                  );
-                }
-                setNoFilterOption({
-                  ...noFilterOption,
-                  isActive: true,
-                });
-              }}
-              className={`cursor-pointer py-2 px-4 border rounded-full w-fit flex items-center gap-1 
-            text-sm font-medium transition-colors 
-            ${noFilterOption.isActive ? "bg-[#e6007e] text-white hover:bg-[#e6007e]/80" : "bg-white border-slate-200 hover:text-gray-900"}`}
-            >
-              Tous
-            </button>
-
-            {filters.map((filter) => (
+          {/* Bouton filtres */}
+          {filters.length > 0 && (
+            <div className="flex gap-2">
               <button
                 onClick={() => {
-                  const filtersTemp = filters.map((f) => ({
-                    ...f,
-                    isActive: f.id === filter.id ? !f.isActive : f.isActive,
-                  }));
-                  const areFiltersActive = filtersTemp.some((f) => f.isActive);
-                  setFilters?.(filtersTemp);
+                  const areFiltersActive = filters.some((f) => f.isActive);
+                  if (areFiltersActive && setFilters) {
+                    setFilters(
+                      filters.map((f) => ({
+                        ...f,
+                        isActive: false,
+                      })),
+                    );
+                  }
                   setNoFilterOption({
                     ...noFilterOption,
-                    isActive: !areFiltersActive,
+                    isActive: true,
                   });
                 }}
                 className={`cursor-pointer py-2 px-4 border rounded-full w-fit flex items-center gap-1 
             text-sm font-medium transition-colors 
-            ${filter.isActive ? "bg-[#e6007e] text-white hover:bg-[#e6007e]/80" : "bg-white border-slate-200 hover:text-gray-900"}`}
-                key={filter.id}
+            ${noFilterOption.isActive ? "bg-[#e6007e] text-white hover:bg-[#e6007e]/80" : "bg-white border-slate-200 hover:text-gray-900"}`}
               >
-                {filter.label}
+                Tous
               </button>
-            ))}
-          </div>
-        )}
-      </div>
+
+              {filters.map((filter) => (
+                <button
+                  onClick={() => {
+                    const filtersTemp = filters.map((f) => ({
+                      ...f,
+                      isActive: f.id === filter.id ? !f.isActive : f.isActive,
+                    }));
+                    const areFiltersActive = filtersTemp.some(
+                      (f) => f.isActive,
+                    );
+                    setFilters?.(filtersTemp);
+                    setNoFilterOption({
+                      ...noFilterOption,
+                      isActive: !areFiltersActive,
+                    });
+                  }}
+                  className={`cursor-pointer py-2 px-4 border rounded-full w-fit flex items-center gap-1 
+            text-sm font-medium transition-colors 
+            ${filter.isActive ? "bg-[#e6007e] text-white hover:bg-[#e6007e]/80" : "bg-white border-slate-200 hover:text-gray-900"}`}
+                  key={filter.id}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

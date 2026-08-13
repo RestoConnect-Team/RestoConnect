@@ -1,17 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { useFetchData } from "@/hooks/useFetchData";
-import {
-  fetchCentersList,
-  Center,
-  ListCentersResponse,
-} from "@/lib/api/centers_list_info";
-import PageError from "@/components/page_error/page_error";
-import Loading from "@/components/loading/loading";
-import { Building2, MapPin, Package, Users } from "lucide-react";
 import { PageLayout } from "@/components/layout/PageLayout";
+import Loading from "@/components/loading/loading";
+import PageError from "@/components/page_error/page_error";
+import SearchBar from "@/components/searchbar/Searchbar";
+import { CenterService } from "@/services/center.service";
+import { Center, ListCentersResponse } from "@/types/center";
+import { Building2, MapPin, Package, Plus, Users } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const INITIAL_VISIBLE = 4;
 
@@ -25,15 +22,15 @@ function CenterCard({
   return (
     <Link
       href={`/all_centers/${center.center_id}`}
-      className="block bg-white rounded-xl border border-gray-200 p-4 relative hover:shadow-md hover:border-[rgb(230,0,126)] transition-all"
+      className="block bg-white rounded-xl border border-gray-200 p-4 relative hover:shadow-md hover:border-[#cb006b] transition-all"
     >
       {isUserCenter && (
-        <span className="absolute top-3 right-3 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[rgb(230,0,126)] text-white">
+        <span className="absolute top-3 right-3 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-pink-100 text-[#cb006b]">
           Mon centre
         </span>
       )}
       <div className="w-10 h-10 rounded-lg bg-pink-100 flex items-center justify-center mb-3">
-        <Building2 size={20} className="text-[rgb(230,0,126)]" />
+        <Building2 size={20} className="text-[#cb006b]" />
       </div>
       <p className="text-[14px] font-semibold text-gray-900 leading-snug mb-1 pr-16">
         {center.name}
@@ -60,34 +57,35 @@ function CenterCard({
 function Section({
   title,
   items,
-  userCenterId,
+  isUserCenter,
   loadMoreLabel,
 }: {
   title: string;
   items: Center[];
-  userCenterId?: number;
-  loadMoreLabel: string;
+  isUserCenter?: boolean;
+  loadMoreLabel?: string;
 }) {
-  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
-  const visible = items.slice(0, visibleCount);
+  const [visibleCount, setVisibleCount] = useState<number>(INITIAL_VISIBLE);
+  const visible =
+    items.length > visibleCount ? items.slice(0, visibleCount) : items;
   const hasMore = visibleCount < items.length;
 
   return (
     <section>
-      <h2 className="text-[18px] font-bold text-gray-900 mb-4">{title}</h2>
+      <h2 className="text-[18px] font-bold text-[#cb006b] mb-2">{title}</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {visible.map((center) => (
           <CenterCard
             key={center.center_id}
             center={center}
-            isUserCenter={center.center_id === userCenterId}
+            isUserCenter={isUserCenter}
           />
         ))}
       </div>
-      {hasMore && (
+      {hasMore && loadMoreLabel && (
         <button
           onClick={() => setVisibleCount((v) => v + INITIAL_VISIBLE)}
-          className="mt-4 w-full text-center text-[13px] text-gray-500 hover:text-[rgb(230,0,126)] transition-colors py-1 cursor-pointer"
+          className="mt-4 w-full text-center text-[13px] text-gray-500 hover:text-[#cb006b] transition-colors py-1 cursor-pointer"
         >
           ... {loadMoreLabel} ...
         </button>
@@ -97,27 +95,105 @@ function Section({
 }
 
 export default function AllCenters() {
-  const { data, loading, error } =
-    useFetchData<ListCentersResponse>(fetchCentersList);
+  const [data, setData] = useState<ListCentersResponse | null>(null);
+  const [filteredData, setFilteredData] = useState<ListCentersResponse | null>(
+    null,
+  );
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [mustReload, setMustReload] = useState<boolean>(true);
+
+  const centerService = new CenterService();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+
+        const data = await centerService.fetchCentersList();
+        setData(data);
+        setFilteredData(data);
+        setSearchQuery("");
+      } catch (e: any) {
+        setError(e);
+      } finally {
+        setLoading(false);
+        setMustReload(false);
+      }
+    };
+
+    if (mustReload) {
+      fetchData();
+    }
+  }, [mustReload]);
+
+  function filterList(centers: Center[], searchQuery: string): Center[] {
+    if (centers.length <= 0) {
+      return centers;
+    }
+    return centers.filter(
+      (element) =>
+        element.name.toLowerCase().includes(searchQuery) ||
+        element.city.toLowerCase().includes(searchQuery),
+    );
+  }
+
+  useEffect(() => {
+    if (!data) return;
+    if (searchQuery === "") {
+      setFilteredData(data);
+    } else {
+      setFilteredData({
+        user_center: filterList([data.user_center], searchQuery)[0],
+        centers_list: filterList(data.centers_list, searchQuery),
+        warehouses_list: filterList(data.warehouses_list, searchQuery),
+      });
+    }
+  }, [searchQuery]);
 
   return (
-    <PageLayout>
-      <div className="p-6 flex flex-col gap-6">
-        {error && <PageError page_error={error} />}
+    <PageLayout
+      title="Centres et entrepôts"
+      onClick={() => {}}
+      buttonLabel={
+        <>
+          <Plus />
+          Ajouter
+        </>
+      }
+    >
+      <div className="p-6 flex flex-col gap-5">
+        {error && <PageError page_error={error.message} />}
         {loading && <Loading loading_sentence="Chargement des centres..." />}
 
-        {!loading && data && (
+        {!loading && filteredData && (
           <>
-            <Section
-              title="Entrepôts"
-              items={data.warehouses_list}
-              loadMoreLabel="Charger plus d'entrepôts"
+            <SearchBar
+              onSearch={(e) => setSearchQuery(e)}
+              placeholder="Rechercher par nom, localisation..."
             />
-            <Section
-              title="Centres"
-              items={data.centers_list}
-              loadMoreLabel="Charger plus de centres"
-            />
+            {filteredData.user_center && (
+              <Section
+                title="Mon centre"
+                items={[filteredData.user_center]}
+                isUserCenter={true}
+              />
+            )}
+            {filteredData.centers_list.length > 0 && (
+              <Section
+                title="Centres"
+                items={filteredData.centers_list}
+                loadMoreLabel="Charger plus de centres"
+              />
+            )}
+            {filteredData.warehouses_list.length > 0 && (
+              <Section
+                title="Entrepôts"
+                items={filteredData.warehouses_list}
+                loadMoreLabel="Charger plus d'entrepôts "
+              />
+            )}
           </>
         )}
       </div>

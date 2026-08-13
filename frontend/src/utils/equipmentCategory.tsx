@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 import { Box, ChefHat, Monitor, Snowflake, Sofa } from "lucide-react";
 import { ReactElement } from "react";
 import { EquipmentCategory } from "@/types/categoryStatus";
@@ -11,7 +13,7 @@ export type CategoryConfig = {
   };
 };
 
-export const getCategoryConfig = (category: string): CategoryConfig => {
+export function getCategoryConfig(category: string): CategoryConfig {
   switch (category) {
     case EquipmentCategory.IT:
       return {
@@ -59,4 +61,33 @@ export const getCategoryConfig = (category: string): CategoryConfig => {
         },
       };
   }
-};
+}
+
+export function renderCategory(category: string): ReactNode {
+  const categoryConfig = getCategoryConfig(category);
+  const style = Object.values(categoryConfig.style).join(" ");
+
+  return (
+    <td className="py-2 px-3 text-sm max-w-[175px] w-50">
+      <span
+        className={`py-1 px-2 flex items-center gap-2 border-2 rounded-lg ${style} font-semibold`}
+      >
+        {categoryConfig.icon}
+        {category}
+      </span>
+    </td>
+  );
+}
+
+export function renderCategoryIcon(category: string): ReactNode {
+  const categoryConfig = getCategoryConfig(category);
+  const style = Object.values(categoryConfig.style).join(" ");
+
+  return (
+    <span
+      className={`flex-none h-8 w-8 flex items-center justify-center gap-2 border-2 rounded-lg ${style} font-semibold`}
+    >
+      {categoryConfig.icon}
+    </span>
+  );
+}
