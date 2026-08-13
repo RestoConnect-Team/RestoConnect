@@ -1,26 +1,35 @@
-import { ContactInfo } from "@/lib/api/center_detail_info";
-import { CenterDetails } from "@/types/center";
-import { AlertRow } from "../dashboard/AlertRow";
-import { ContactRow, renderMail, renderPhone } from "../dashboard/ContactRow";
-import { StatCard } from "../dashboard/StatCard";
-import { SectionCard } from "../layout/SectionCard";
-import { CenterHeaderDashboard } from "../dashboard/CenterHeaderDashboard";
-import { CenterHeader } from "./CenterHeader";
 import { Row } from "@/app/my_center/page";
+import { ContactInfo } from "@/lib/api/center_detail_info";
+import { EquipmentService } from "@/services/equipment.service";
+import { CenterDetails } from "@/types/center";
+import { EquipmentItem } from "@/types/equipment";
+import { renderCategoryIcon } from "@/utils/equipmentCategory";
+import { renderStatus } from "@/utils/equipmentStatus";
 import { formatDate } from "@/utils/formatDate";
 import { formatTime } from "@/utils/formatTime";
-import { SquarePen } from "lucide-react";
-import { Button } from "../ui/Button";
+import { ChevronRight, SquarePen } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { AlertRow } from "../dashboard/AlertRow";
+import { CenterHeaderDashboard } from "../dashboard/CenterHeaderDashboard";
+import { ContactRow, renderMail, renderPhone } from "../dashboard/ContactRow";
 import { Stats } from "../dashboard/Stats";
+import { Section } from "../layout/Section";
+import { Button } from "../ui/Button";
+import { CenterHeader } from "./CenterHeader";
+
+interface CenterDetailViewProps {
+  center: CenterDetails;
+  isDashboard?: boolean;
+}
 
 export function CenterDetailView({
   center,
   isDashboard = false,
-}: {
-  center: CenterDetails;
-  isDashboard?: boolean;
-}) {
+}: CenterDetailViewProps) {
+  // TODO: add in backend list of equipments in center details
+  const [equipments, setEquipements] = useState<EquipmentItem[]>([]);
+
   const router = useRouter();
   const address = [
     center.street_number,
@@ -55,10 +64,10 @@ export function CenterDetailView({
       {isDashboard ? (
         <Stats center={center} />
       ) : (
-        <CenterHeader center={center} />
+        <CenterHeader center={center} mode="view" />
       )}
 
-      <SectionCard>
+      <Section withPadding={false}>
         {isDashboard && <CenterHeaderDashboard center={center} />}
 
         <div className="p-5 flex flex-col gap-5">
@@ -161,39 +170,36 @@ export function CenterDetailView({
             )}
           </div>
         </div>
-      </SectionCard>
+      </Section>
 
-      <SectionCard className="p-5">
+      <Section>
         <ContactRow
           contact={headmaster}
           idx={0}
           isHead
           centerName={center.name}
         />
-      </SectionCard>
+      </Section>
 
       {center.contacts.length > 0 && (
-        <SectionCard className="p-5 gap-3">
-          <h2 className="text-[15px] font-bold text-gray-900 mb-1">
-            Contacts ({center.contacts.length})
-          </h2>
+        <Section
+          className="gap-3"
+          title={`Contacts (${center.contacts.length})`}
+        >
           <div className="flex flex-col gap-3">
             {center.contacts.map((contact, idx) => (
               <ContactRow key={contact.id} contact={contact} idx={idx + 1} />
             ))}
           </div>
-        </SectionCard>
+        </Section>
       )}
 
       {isDashboard ? (
         <>
           {center.alerts.length > 0 && (
-            <SectionCard className="p-5 gap-3">
+            <Section className="gap-3" title="Dernières alertes">
               <div className="flex items-center justify-between">
-                <h2 className="text-[15px] font-bold text-gray-900">
-                  Dernières alertes
-                </h2>
-                <button className="cursor-pointer text-[12px] text-[rgb(230,0,126)] hover:underline">
+                <button className="cursor-pointer absolute top-5 right-5 text-[12px] text-[rgb(230,0,126)] hover:underline">
                   Voir tout
                 </button>
               </div>
@@ -202,11 +208,48 @@ export function CenterDetailView({
                   <AlertRow key={idx} alert={alert} idx={idx} />
                 ))}
               </div>
-            </SectionCard>
+            </Section>
           )}
         </>
       ) : (
-        <></>
+        <>
+          <Section title={`Matériels (${center.materials_count})`}>
+            <div>
+              {equipments.map((equipment) => {
+                return (
+                  <div
+                    className="flex w-full justify-between items-center py-3 gap-3"
+                    key={equipment.id}
+                  >
+                    {renderCategoryIcon(equipment.category)}
+                    <div className="flex flex-col justify-center grow shrink truncate">
+                      <p className="font-semibold truncate overflow-hidden shrink truncate">
+                        {equipment.name}
+                      </p>
+                      <p className="text-slate-500 font-mono text-xs">
+                        {equipment.reference}
+                      </p>
+                    </div>
+
+                    {renderStatus(equipment.status, "flex-none px-2 h-8")}
+                    <button
+                      className="cursor-pointer flex-none"
+                      onClick={() => {
+                        router.push(`/equipment/${equipment.id}`);
+                      }}
+                    >
+                      <ChevronRight className="text-slate-400 hover:text-slate-600 w-4 h-4" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </Section>
+          <Section title="Derniers inventaires">
+            <></>
+            {/* //TODO */}
+          </Section>
+        </>
       )}
     </div>
   );

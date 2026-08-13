@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { StockStatus } from "@/app/scan/stock_status_enum";
 import {
   ArrowRight,
@@ -75,3 +76,15 @@ export const getStatusConfig = (category: string): StatusConfig => {
       };
   }
 };
+
+export function renderStatus(status: string, className?: string): ReactNode {
+  let statusConfig = getStatusConfig(status);
+  return (
+    <span
+      className={`${className} flex items-center text-sm flex gap-2 border-2 rounded-md ${statusConfig.style} font-semibold`}
+    >
+      {statusConfig.icon}
+      {status}
+    </span>
+  );
+}

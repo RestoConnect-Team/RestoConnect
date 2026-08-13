@@ -1,7 +1,7 @@
 import { MapPin } from "lucide-react";
 import { StockStatus } from "@/app/scan/stock_status_enum";
-import { getCategoryConfig } from "@/app/equipment/utils/getCategoryConfig";
-import { getStatusConfig } from "@/app/equipment/utils/getStatusConfig";
+import { getStatusConfig } from "@/utils/equipmentStatus";
+import { getCategoryConfig } from "@/utils/equipmentCategory";
 
 interface EquipmentDetailHeaderProps {
   equipment: {
