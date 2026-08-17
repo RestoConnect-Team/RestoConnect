@@ -36,3 +36,7 @@ build/
 .env.local
 .env.production
 
+# Brain local (notes perso Yohann — pattern Karpathy, pas pour l'équipe)
+_brain/
+.serena/
+

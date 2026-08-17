@@ -7,7 +7,7 @@ from app.api.router import api_router
 from app.database.connection import Base, engine
 from app.database.seed import seed
 
-from app.core.config import UPLOADS_DIR, DATABASE_URL
+from app.core.config import UPLOADS_DIR, DATABASE_URL, RESET_DB_ON_BOOT
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine.url import make_url
@@ -31,9 +31,7 @@ with temp_engine.connect() as conn:
     conn.execution_options(isolation_level="AUTOCOMMIT")
 
     result = conn.execute(
-        text(
-            f"SELECT 1 FROM pg_database WHERE datname = '{database_name}'"
-        )
+        text(f"SELECT 1 FROM pg_database WHERE datname = '{database_name}'")
     )
 
     exists = result.scalar()
@@ -50,18 +48,24 @@ temp_engine.dispose()
 # DATABASE INITIALIZATION
 # =========================================================
 
-with engine.connect() as conn:
-    conn.execute(text("DROP SCHEMA public CASCADE"))
-    conn.execute(text("CREATE SCHEMA public"))
-    conn.commit()
+if RESET_DB_ON_BOOT:
+    with engine.connect() as conn:
+        conn.execute(text("DROP SCHEMA public CASCADE"))
+        conn.execute(text("CREATE SCHEMA public"))
+        conn.commit()
+    print("Schéma public reset (RESET_DB_ON_BOOT=true)")
 
 Base.metadata.create_all(bind=engine)
 
 with engine.connect() as co:
     print("Connexion OK ✅")
-print("Tables recréées")
-seed()
-print("Seed terminé")
+print("Tables prêtes")
+if RESET_DB_ON_BOOT:
+    seed()
+    print("Seed terminé")
+else:
+    # seed est idempotent (skip si users existent déjà)
+    seed()
 
 # =========================================================
 # FASTAPI APP
@@ -72,7 +76,10 @@ app = FastAPI()
 # Enable CORS for frontend communication
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001"],  # Allow Next.js dev server
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:3001",
+    ],  # Allow Next.js dev server
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -84,7 +91,7 @@ app.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
 # Include API routes
 app.include_router(api_router, prefix="/api")
 
+
 @app.get("/")
 def root():
     return {"message": "Backend running"}
-
