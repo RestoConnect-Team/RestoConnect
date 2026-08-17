@@ -32,3 +32,33 @@ _Mis à jour au fil des sessions. Bullets uniquement, pas de blocs code._
 - Cookies cross-origin : le login frontend → backend `localhost:8000` depuis `127.0.0.1:3000` ne posait PAS le cookie (SameSite=Lax cross-origin POST). Solution : faire tourner le frontend sur `localhost:3000` (même host que le backend). Fichier impacté : `frontend/playwright.config.ts:23`.
 - Bug sécurité backend : `get_user_profile(token=None)` matchait `User.token == None` (users non logués) → 200 au lieu de 401. Fixé : 401 explicite si `not token`. Fichier impacté : `backend/app/controllers/get_user_controller.py:10-11`.
 - Next.js 16 : `middleware.ts` renommé en `proxy.ts` (file convention Proxy). Garde d'auth via `proxy.ts` + `export const config = { matcher }`. Fichier impacté : `frontend/src/proxy.ts`.
+
+## Session 2026-08-17 (reprise post-RCO-32) — Phase 0 socle backend
+
+Analyse approfondie du code réel (vs brain) : 6 bugs backend non documentés découverts, bloquants pour l'épic inventaire. Le brain était périmé (RCO-27 "à finir" alors qu'il est déjà implémenté, RCO-22 "backend partiel" alors qu'il était cassé).
+
+### Bugs corrigés (Phase 0, 2 branches mergées sur dev)
+
+- **Fix #1** : `OneInventoryFromInventorys` (schéma) vs `get_list_inventories_controller` — mismatch de champs (`id`/`inventory_start_date` vs `inventory_id`/`start_date`) → Pydantic ValidationError. Aligné le controller sur le schéma. Branche `fix/inventory-backend-socle`.
+- **Fix #2** : `create_inventory_route` était en GET (anti-pattern REST) → passé en POST. Branche `fix/inventory-backend-socle`.
+- **Fix #3** : `create_inventory_controller` n'appelait jamais `create_inventory_service` (le service était mort) → câblé. Branche `fix/inventory-backend-socle`.
+- **Fix #4** : `is_user_center_admin_service` retournait `true` uniquement pour `CENTER_ADMIN` → SUPER_ADMIN/ADMIN/STOCK_ADMIN refusés (403). Accepte désormais les 4 rôles admin. Branche `fix/auth-center-scope`.
+- **Fix #5** : `get_list_stocks_inventory_route` n'avait aucune auth → ajouté cookie token + 401. Branche `fix/auth-center-scope`.
+- **Fix #6** : `get_stock_by_reference` + `update_stock_status` ne filtraient pas par centre → un user du centre 1 pouvait lire/modifier le stock du centre 2 (violation RCO-21). Ajouté filtre (403 cross-centre, entrepôt autorisé). Branche `fix/auth-center-scope`.
+
+### Bugs hors scope (documentés, à corriger avec accord)
+
+- `delete_stock_route` / `delete_vehicule_route` / `delete_center_route` : aucune auth (suppression non authentifiée possible).
+- `delete_vehicule_controller` : appelle `delete_vehicule_service` deux fois (double suppression).
+- `get_stock_detail` : pas de filtre par centre (même famille que Fix #6).
+- `routes.ts` : pointe vers `/inventaires` et `/notifications` qui n'existent pas (404 sidebar).
+- Test E2E `navbar-close.spec.ts:45` (clic overlay) échoue : le lien `/scan` intercepte le pointer events. Bug UI/test préexistant, hors Phase 0.
+
+### Tests
+
+- Backend : 6 pytest (smoke) → 15 pytest (smoke + inventory + auth_scope). 15/15 verts.
+- E2E : 8/9 (inchangé vs baseline, le 9e échec est le bug overlay préexistant).
+
+### Décision
+
+D8 : Le brain doit être vérifié contre le code réel avant chaque ticket (le brain peut être périmé). Ne pas se fier au statut "backend OK" du brain sans lire le controller + le schéma.

@@ -65,3 +65,41 @@
 - [x] Boucle TDD autonome validée sur RCO-20 + RCO-21 + RCO-32
 - [x] Mode opératoire documenté (`workflow-tdd-opencode.md`)
 - [x] Brain `/save` final
+
+## Phase 6 — Reprise post-RCO-32 : socle backend (fixes) + épic inventaire
+
+Plan détaillé : `PLAN-PHASE0-SOCLE-BACKEND.md`.
+
+### Phase 0 — Corriger le socle backend (6 bugs découverts par analyse code)
+- [x] Branche A `fix/inventory-backend-socle` : Fix #1 mismatch schéma inventaire
+- [x] Branche A : Fix #2 `create_inventory_route` GET → POST
+- [x] Branche A : Fix #3 `create_inventory_controller` appelle `create_inventory_service`
+- [x] Branche A : 3 nouveaux pytest verts + commit + merge `dev`
+- [x] Branche B `fix/auth-center-scope` : Fix #4 `is_user_center_admin_service` rôles admin
+- [x] Branche B : Fix #5 auth sur `get_list_stocks_inventory_route`
+- [x] Branche B : Fix #6 filtre par centre `get_stock_by_reference` + `update_stock_status`
+- [x] Branche B : 6 nouveaux pytest verts + commit + merge `dev`
+- [x] `insights.md` mis à jour (bugs corrigés + bugs hors scope + D8)
+
+### Phase 1 — Hygiène Jira
+- [ ] Vérifier l'accès Jira (token vs cookie Playwright)
+- [ ] Statuts : RCO-20/21/32 → Terminé ; RCO-19/17/5 → En cours
+- [ ] Créer 8 tickets manquants (transfert, modération, créations, export, inventaires véhicule)
+
+### Phase 2 — RCO-22 (réaliser un inventaire)
+- [ ] Branche `feat/rco-22-realiser-inventaire`
+- [ ] Page `/inventaires` (manquante) + flow scan→statut
+- [ ] Tests E2E + pytest
+
+### Phase 3 — RCO-27 (déjà implémenté)
+- [ ] Branche `feat/rco-27-test-e2e`
+- [ ] Test E2E manquant + corriger le brain (RCO-27 = fait)
+
+### Phase 4 — RCO-28/29/30 + RCO-23
+- [ ] RCO-28 pause/reprise (enum PAUSED + endpoint)
+- [ ] RCO-29 valider incomplet (endpoint FINISHED)
+- [ ] RCO-30 recommencer (endpoint reset)
+- [ ] RCO-23 doublons (vérif au scan)
+
+### Phase 5 — Brain keeper
+- [ ] `skill save` final (hot.md + log.md + todos.md)
