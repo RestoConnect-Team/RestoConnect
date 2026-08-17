@@ -10,6 +10,7 @@ _Mis à jour au fil des sessions. Bullets uniquement, pas de blocs code._
 - D4 : Modèle lead = `glm-5.2:cloud` (orchestrateur/codeur), PO = `minimax-m3:cloud` (1M ctx, read-only), qa/reviewer = `gpt-oss:20b-cloud`
 - D5 : RCO-20 recentré sur garde d'auth — la page login existe déjà (`frontend/src/app/page.tsx`), le vrai gap est l'absence de middleware/redirect 401
 - D6 : Branches — respect convention existante `feat/<slug>` → merge `dev` (branche courante = dev)
+- D7 (révision 2026-08-17) : **Deep Agents abandonné** — l'orchestrateur a produit 0 feature en ~20 min (log vide), tandis qu'opencode natif (moi) a livré RCO-20 + socle en direct. L'orchestrateur ajoute latence + tokens pour déléguer ce que l'agent principal fait déjà. Retour à l'approche simple : l'agent opencode principal EST l'équipe, TDD en direct, subagents explore/researcher pour chercher, skill save pour le brain.
 
 ## Bugs/incohérences détectés (inspection profonde 2026-08-17)
 

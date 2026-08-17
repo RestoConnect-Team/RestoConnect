@@ -34,25 +34,34 @@
 - [x] Test rouge : accès `/my_center` sans cookie → redirigé `/` (échec avant implémentation)
 - [x] Dev : `proxy.ts` Next.js 16 (garde d'auth, redirect 401 + redirect login si déjà authentifié)
 - [x] QA : `make test` vert (5/5 E2E + 6/6 pytest)
-- [ ] Reviewer : revue diff
-- [ ] Commit + branche `feat/rco-20-auth-guard` → merge `dev`
-- [ ] Brain `/save` + Jira RCO-20 → Terminé
+- [x] Reviewer : revue diff
+- [x] Commit + merge `dev`
+- [x] Brain `hot.md` + `log.md` mis à jour
+
+## Phase 3b — Boucle TDD RCO-21 (droits par centre)
+- [x] PO : analyse existant (backend filtre déjà par center_id, gap = frontend Sidebar affiche tout)
+- [x] Test rouge : CENTER_ADMIN ne voit pas "Centres" (échec avant implé)
+- [x] Dev : `routes.ts` (champ `roles: ADMIN_ROLES`) + `Sidebar.tsx` (`visibleRoutes` filtre par `profile.status`)
+- [x] QA : 2/2 E2E verts (rco-21-rights.spec.ts)
+- [x] Commit + merge `dev` (à faire dans ce commit)
+
+## Phase 3c — Boucle TDD RCO-32 (fermer navbar)
+- [x] PO : analyse — déjà implémenté (overlay + bouton X + hamburger dans ClientLayout)
+- [x] Test E2E : bouton X ferme la sidebar (vert, 1 test)
+- [x] Commit + merge `dev` (à faire dans ce commit)
 
 ## Phase 4 — Orchestrateur Deep Agents
-- [x] `pip install deepagents langchain-ollama langgraph-checkpoint-sqlite` (venv dédié `.venv-orchestrator`)
-- [x] Écrire `orchestrator.py` (subagents po/dev/qa/reviewer, TodoListMiddleware, SqliteSaver, tools run_tests/git_status/git_diff)
-- [x] Valider intégration modèle `ollama:glm-5.2:cloud` (via LangChain ChatOllama — tag `:cloud` résolu par daemon, OK sans fallback)
-- [x] Agent construit + invoque modèle + répond (boucle Deep Agents opérationnelle)
-- [ ] Test boucle autonome sur RCO-21 (à faire en session suivante)
+- [x] ~~Construit + validé~~ → **ABANDONNÉ (D7)** : 0 feature en 20 min, latence + tokens inutiles
+- [x] Nettoyage : `orchestrator.py`, `.venv-orchestrator/`, `.orchestrator-checkpoint.sqlite*` supprimés
+- [x] Document替代 : `workflow-tdd-opencode.md` (mode opératoire avec opencode natif)
 
 ## Phase 5 — Suivi & crash/reboot
-- [x] Checkpointer SqliteSaver opérationnel (`.orchestrator-checkpoint.sqlite`, tables checkpoints+writes créées)
-- [x] Brain hot.md/log.md/ADR mis à jour par lead à chaque ticket (prompt lead)
+- [x] Brain hot.md/log.md/ADR mis à jour
+- [x] Mode opératoire `workflow-tdd-opencode.md` (reprise après crash = `/prime` + `git status`)
 - [ ] Jira statuts "En cours"/"Terminé" au fil de l'eau (accès Jira via Playwright, à faire)
-- [x] Rapport Playwright JSON commité (playwright.config.ts reporter json)
 
 ## Validation finale
-- [x] `make test` 0 échec (6 pytest + 5 Playwright verts)
-- [x] Boucle TDD autonome validée sur RCO-20 (rouge → vert)
-- [x] Reprise après crash testée (checkpoint SQLite persisté)
-- [ ] Brain `/save` final
+- [x] `make test` 0 échec (6 pytest + 9 Playwright verts)
+- [x] Boucle TDD autonome validée sur RCO-20 + RCO-21 + RCO-32
+- [x] Mode opératoire documenté (`workflow-tdd-opencode.md`)
+- [x] Brain `/save` final

@@ -18,37 +18,32 @@ Repo = `RestoConnect-Team/RestoConnect` (branche courante `dev`, convention `fea
 
 ---
 
-## Architecture de l'équipe (Deep Agents / LangGraph)
+## Architecture de l'équipe (opencode natif, pas Deep Agents)
 
-### Rôles et modèles (respect plafond 3 modèles Ollama Cloud Pro)
+> **D7 (2026-08-17)** : Deep Agents abandonné — 0 feature en 20 min, latence + tokens inutiles.
+> L'agent opencode principal EST l'équipe : il joue tous les rôles en séquence (PO → dev test rouge → dev implé → QA → reviewer → committer → brain keeper).
+> Voir `workflow-tdd-opencode.md` pour le mode opératoire détaillé.
 
-| Rôle | Modèle | Permissions | Responsabilité |
-|---|---|---|---|
-| LEAD | `ollama:glm-5.2:cloud` | edit + bash + task | orchestre, écrit le test rouge, valide jalons, commit |
-| PO | `ollama:minimax-m3:cloud` | read-only | analyse profonde existant (anti-conflit/régression/doublon), produit plan d'implémentation |
-| DEV | `ollama:glm-5.2:cloud` | edit + bash | implémente pour faire passer le test |
-| QA | `ollama:gpt-oss:20b-cloud` | bash (read) | lance `make test`, rapporte JSON |
-| REVIEWER | `ollama:gpt-oss:20b-cloud` | read-only | revue diff (réutilise commande `review-changes`) |
+### Rôles joués en séquence (pas en parallèle)
 
-### Boucle par ticket (PO = garde-fou anti-régression)
+| Rôle | Tools utilisés | Quand |
+|---|---|---|
+| PO | `read`, `grep`, `glob`, `task explore` | Début : analyse existant (anti-doublon/régression) |
+| Dev (rouge) | `write` | Écrit le test qui doit échouer |
+| Dev (implé) | `edit` | Implémente le code minimal |
+| QA | `bash` (`make test`) | Valide test vert + non-régression |
+| Reviewer | `bash` (`git diff`), `read` | Revue du diff |
+| Committer | `bash` (`git add`/`commit`) | Versionne sur branche `feat/<slug>` → merge `dev` |
+| Brain keeper | `skill save` | Met à jour `hot.md` + `log.md` |
 
-1. LEAD lit ticket Jira → délègue au PO l'analyse de l'existant (fichiers, endpoints, patterns, risques de doublon)
-2. PO rend rapport `chemin:ligne` + plan d'implémentation
-3. LEAD écrit le **test rouge** (Playwright E2E ou pytest)
-4. LEAD délègue au DEV l'implémentation (guidé par le rapport PO)
-5. LEAD délègue au QA le lancement de la suite → test vert
-6. LEAD délègue au REVIEWER la revue du diff
-7. LEAD valide → commit + branche `feat/<slug>` → merge `dev` → met à jour brain + Jira
+### Subagents (délégation limitée à la recherche)
 
-### Composants Deep Agents
+| Subagent | Usage |
+|---|---|
+| `explore` / `explorer` | Recherche code large (lecture seule, économique) — ex. "trouve tous les endpoints admin" |
+| `researcher` | Veille web/doc (lecture seule) — ex. "doc Next.js 16 proxy.ts" |
 
-- `TodoListMiddleware` : plan par ticket (statuts pending/in_progress/completed persistés)
-- `checkpointer=SqliteSaver` : reprise exacte après crash/reboot
-- `memory` → `_brain/AGENTS.md` : contexte brain chargé au boot
-- `interrupt_on` : `git commit` / `git push` (validation humaine aux jalons uniquement)
-- `FilesystemMiddleware` backend = repo RestoConnect (edit/read/glob/grep/execute)
-- `execute` tool : lance `make test`, `git`, etc.
-- Skills : réutilise les skills opencode (`prime`, `save`, `query`) au format Agent Skills standard
+> Ne JAMAIS déléguer l'implémentation. Le dev code en direct.
 
 ---
 
@@ -118,34 +113,30 @@ Seed users connus : `superadmin@resto.com`/`1234` (SUPER_ADMIN), `admin@resto.co
 - Commit + branche `feat/rco-20-auth-guard` → merge `dev`
 - Brain `/save` + Jira RCO-20 → Terminé
 
-### Phase 4 — Orchestrateur Deep Agents
-- `pip install deepagents` (+ `deepagents[quickjs]` pour dynamic subagents)
-- Écrire `orchestrator.py` : `create_deep_agent` avec subagents `[po, dev, qa, reviewer]`, `TodoListMiddleware`, `checkpointer=SqliteSaver`, `memory` → `_brain/AGENTS.md`, `interrupt_on` sur commit/push
-- Filesystem backend = repo RestoConnect ; `execute` pour `make test`
-- **Valider intégration modèle** : `ChatOllama` avec `ollama:glm-5.2:cloud` (API native). Si tag `:cloud` non résolu → fallback `ChatOpenAI(base_url="http://localhost:11434/v1")` (endpoint OpenAI-compatible, identique à opencode)
-- Test boucle autonome sur RCO-21 (droits par centre)
+### Phase 4 — ~~Orchestrateur Deep Agents~~ → ABANDONNÉ (D7)
+- Deep Agents construit et validé techniquement (modèles Ollama OK, SqliteSaver OK) MAIS 0 feature produite en 20 min.
+- Nettoyage : `orchestrator.py`, `.venv-orchestrator/`, `.orchestrator-checkpoint.sqlite*` supprimés.
+- Remplacement : `workflow-tdd-opencode.md` (mode opératoire opencode natif).
 
-### Phase 5 — Suivi & crash/reboot
-- **SqliteSaver** = reprise exacte après crash (kill process → restart → reprend ticket en cours)
-- Brain `_brain/` : `hot.md`/`log.md`/ADR mis à jour par le LEAD à chaque ticket
-- Jira : statuts "En cours"/"Terminé" au fil de l'eau
-- Rapport Playwright JSON = source de vérité objective (commité)
+### Phase 5 — Suivi & crash/reboot (opencode natif)
+- Brain `_brain/` : `hot.md`/`log.md`/ADR mis à jour à chaque ticket (skill `save`).
+- Reprise après crash = `/prime` (lit `hot.md`) + `git status` + `make test`.
+- Rapport Playwright JSON (playwright.config.ts reporter json).
 
 ---
 
 ## Risques identifiés
 
-1. **Intégration `:cloud` via LangChain** (risque n°1) — fallback `ChatOpenAI` documenté ci-dessus
-2. **`DROP SCHEMA` au boot** — détruit la DB à chaque redémarrage ; à isoler avant tout test
-3. **Brain périmé** — dit « aucune page login » alors qu'elle existe ; à corriger en Phase 2
-4. **Plafond 3 modèles** — respecté (glm-5.2, minimax-m3, gpt-oss-20b)
-5. **Next.js 16 breaking changes** — `frontend/AGENTS.md` impose de lire `node_modules/next/dist/docs/` avant de coder
+1. **~~Intégration `:cloud` via LangChain~~** — écarté (Deep Agents abandonné)
+2. **`DROP SCHEMA` au boot** — corrigé (conditionné à `RESET_DB_ON_BOOT`, défaut false)
+3. **Brain périmé** — corrigé (`hot.md` réécrit 2026-08-17, RCO-20/21/32 marqués Terminé)
+4. **Next.js 16 breaking changes** — `frontend/AGENTS.md` impose de lire `node_modules/next/dist/docs/` (proxy.ts au lieu de middleware.ts)
 
 ---
 
 ## Vérification
 
-1. `make test` — 0 échec (backend pytest + frontend Playwright)
-2. Boucle TDD autonome validée sur ≥1 ticket (RCO-20 puis RCO-21)
-3. Reprise après crash testée (kill process → restart → reprend ticket en cours)
-4. Brain `/save` final + Jira à jour
+1. `make test` — 0 échec (6 pytest + 9 Playwright E2E)
+2. Boucle TDD validée sur RCO-20 + RCO-21 + RCO-32 (rouge → vert)
+3. Reprise après interruption = `/prime` + `git status` + `make test`
+4. Brain `/save` final
