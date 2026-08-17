@@ -48,11 +48,39 @@ Analyse approfondie du code réel (vs brain) : 6 bugs backend non documentés d�
 
 ### Bugs hors scope (documentés, à corriger avec accord)
 
-- `delete_stock_route` / `delete_vehicule_route` / `delete_center_route` : aucune auth (suppression non authentifiée possible).
+- `delete_stock_route` / `delete_vehicule_route` / `delete_center_route` : aucune auth (suppression non authentifiée possible). **3 tests d'intégration documentent ce comportement** (`test_delete_*_without_token_bug`).
 - `delete_vehicule_controller` : appelle `delete_vehicule_service` deux fois (double suppression).
 - `get_stock_detail` : pas de filtre par centre (même famille que Fix #6).
 - `routes.ts` : pointe vers `/inventaires` et `/notifications` qui n'existent pas (404 sidebar).
 - Test E2E `navbar-close.spec.ts:45` (clic overlay) échoue : le lien `/scan` intercepte le pointer events. Bug UI/test préexistant, hors Phase 0.
+
+### Session 2026-08-17 (tests d'intégration backend) — branche test/integration-backend-coverage
+
+Ajout de 29 tests d'intégration backend par domaine (44/44 pytest verts au total). 7 bugs corrigés au passage, 3 bugs exposés (documentés).
+
+#### Bugs corrigés
+
+- `deconnect_user_controller` : 401 si pas de token (sinon `User.token == None` matchait un user non logué et le "déconnectait").
+- `get_list_centers_controller` / `get_my_center_infos_controller` / `get_list_vehicules_controller` / `get_list_stocks_controller` : 401 si pas de token (même bug `User.token == None` — ces 4 controllers laissaient passer les requêtes sans auth).
+- `get_warehouse_infos_controller` : `AttributeError` (`stock.id` sur une liste) + kwargs mismatch (`warehouse_schedule` vs `center_schedule`, `stocks_list` single vs `List`). L'endpoint warehouse était complètement cassé.
+- `get_qr_code_route` : double prefix `/qr_code/qr_code/{reference}` → corrigé en `/qr_code/{reference}`.
+- `requirements.txt` : ajout `Pillow` (requis par `qrcode` pour générer du PNG, sinon `ModuleNotFoundError: No module named 'PIL'`) + `httpx` (utilisé par TestClient). Conversion UTF-16 → UTF-8.
+
+#### Bugs exposés (tests documentent le comportement actuel, à corriger dans un fix dédié)
+
+- `DELETE /api/center/{id}` sans auth → 200 (`test_delete_center_without_token_bug`).
+- `DELETE /api/vehicule/{id}` sans auth → 200 (`test_delete_vehicule_without_token_bug`).
+- `DELETE /api/stock/{id}` sans auth → 200 (`test_delete_stock_without_token_bug`).
+
+#### Couverture par domaine
+
+| Domaine | Fichier | Tests | Couverture |
+|---|---|---|---|
+| Auth | test_integration_auth.py | 4 | deconnect, profil complet, login email vide |
+| Centres | test_integration_centers.py | 9 | list, my_center, detail, warehouse, delete (bug), not_found, is_user_center |
+| Véhicules | test_integration_vehicules.py | 5 | list, detail (VehiculeDetailResponse), delete (bug), not_found |
+| Stocks | test_integration_stocks.py | 9 | list, scan, detail, status, delete (bug), not_found, cross-center |
+| QR | test_integration_qr.py | 2 | génération PNG, réf inconnue |
 
 ### Tests
 
