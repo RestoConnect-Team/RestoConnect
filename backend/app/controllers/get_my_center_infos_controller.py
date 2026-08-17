@@ -15,6 +15,8 @@ from app.enums import StockStatus
 
 
 def get_my_center_infos_controller(token: str, db: Session) -> CenterInfos:
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
     user = get_user_by_token_service(db, token)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")
@@ -62,18 +64,26 @@ def get_my_center_infos_controller(token: str, db: Session) -> CenterInfos:
     alerts: list[CenterAlert] = []
     for stock in all_stocks:
         if stock.status == StockStatus.LOST:
-            days_lost = (date.today() - stock.last_scan_date).days if stock.last_scan_date else 0
-            alerts.append(CenterAlert(
-                alert_type="missing_stock",
-                message=f"{stock.name} est signalé manquant depuis {days_lost} jour{'s' if days_lost != 1 else ''} au {my_center.name}.",
-                time_ago=f"Il y a {days_lost} jour{'s' if days_lost != 1 else ''}",
-            ))
+            days_lost = (
+                (date.today() - stock.last_scan_date).days
+                if stock.last_scan_date
+                else 0
+            )
+            alerts.append(
+                CenterAlert(
+                    alert_type="missing_stock",
+                    message=f"{stock.name} est signalé manquant depuis {days_lost} jour{'s' if days_lost != 1 else ''} au {my_center.name}.",
+                    time_ago=f"Il y a {days_lost} jour{'s' if days_lost != 1 else ''}",
+                )
+            )
     if days_since_last_inventory is not None and days_since_last_inventory > 14:
-        alerts.append(CenterAlert(
-            alert_type="inventory",
-            message=f"Dernier inventaire du {my_center.name} : il y a {days_since_last_inventory} jours. Un inventaire est recommandé.",
-            time_ago=f"Il y a {days_since_last_inventory} jours",
-        ))
+        alerts.append(
+            CenterAlert(
+                alert_type="inventory",
+                message=f"Dernier inventaire du {my_center.name} : il y a {days_since_last_inventory} jours. Un inventaire est recommandé.",
+                time_ago=f"Il y a {days_since_last_inventory} jours",
+            )
+        )
 
     # --- Closing periods ---
     closing_periods = [

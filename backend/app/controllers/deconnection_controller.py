@@ -5,6 +5,8 @@ from app.services import get_user_by_token_service, deconnect_user_service
 
 
 def deconnect_user_controller(token: str, db: Session) -> bool:
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
     user = get_user_by_token_service(db, token)
 
     if not user:
