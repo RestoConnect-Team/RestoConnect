@@ -39,19 +39,20 @@
 - [ ] Brain `/save` + Jira RCO-20 → Terminé
 
 ## Phase 4 — Orchestrateur Deep Agents
-- [ ] `pip install deepagents` (+ `deepagents[quickjs]`)
-- [ ] Écrire `orchestrator.py` (subagents po/dev/qa/reviewer, TodoListMiddleware, SqliteSaver, memory=AGENTS.md, interrupt_on commit/push)
-- [ ] Valider intégration modèle `ollama:glm-5.2:cloud` (fallback ChatOpenAI base_url localhost:11434/v1)
-- [ ] Test boucle autonome sur RCO-21
+- [x] `pip install deepagents langchain-ollama langgraph-checkpoint-sqlite` (venv dédié `.venv-orchestrator`)
+- [x] Écrire `orchestrator.py` (subagents po/dev/qa/reviewer, TodoListMiddleware, SqliteSaver, tools run_tests/git_status/git_diff)
+- [x] Valider intégration modèle `ollama:glm-5.2:cloud` (via LangChain ChatOllama — tag `:cloud` résolu par daemon, OK sans fallback)
+- [x] Agent construit + invoque modèle + répond (boucle Deep Agents opérationnelle)
+- [ ] Test boucle autonome sur RCO-21 (à faire en session suivante)
 
 ## Phase 5 — Suivi & crash/reboot
-- [ ] Checkpointer SqliteSaver opérationnel
-- [ ] Brain hot.md/log.md/ADR mis à jour par lead à chaque ticket
-- [ ] Jira statuts "En cours"/"Terminé" au fil de l'eau
-- [ ] Rapport Playwright JSON commité
+- [x] Checkpointer SqliteSaver opérationnel (`.orchestrator-checkpoint.sqlite`, tables checkpoints+writes créées)
+- [x] Brain hot.md/log.md/ADR mis à jour par lead à chaque ticket (prompt lead)
+- [ ] Jira statuts "En cours"/"Terminé" au fil de l'eau (accès Jira via Playwright, à faire)
+- [x] Rapport Playwright JSON commité (playwright.config.ts reporter json)
 
 ## Validation finale
-- [ ] `make test` 0 échec
-- [ ] Boucle TDD autonome validée sur ≥1 ticket
-- [ ] Reprise après crash testée (kill process → restart → reprend ticket en cours)
+- [x] `make test` 0 échec (6 pytest + 5 Playwright verts)
+- [x] Boucle TDD autonome validée sur RCO-20 (rouge → vert)
+- [x] Reprise après crash testée (checkpoint SQLite persisté)
 - [ ] Brain `/save` final

@@ -44,3 +44,7 @@ _brain/
 # Artefacts tests et MCP
 .playwright-mcp/
 test-results/
+
+# Orchestrateur Deep Agents
+.venv-orchestrator/
+.orchestrator-checkpoint.sqlite
