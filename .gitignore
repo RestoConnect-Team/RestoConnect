@@ -40,3 +40,7 @@ build/
 _brain/
 .serena/
 
+
+# Artefacts tests et MCP
+.playwright-mcp/
+test-results/
