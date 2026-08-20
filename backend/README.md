@@ -63,7 +63,7 @@ DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@localhost:5432/restos_connect
 
 ## Create required folders
 
-At the root of the backend project, you must create the following folders before running the application:
+At the root of the project, you must create the following folders before running the application:
 
 ```text
 /uploads
