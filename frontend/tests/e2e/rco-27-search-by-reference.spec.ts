@@ -7,7 +7,7 @@ import { test, expect } from "@playwright/test";
  * qui révèle un input. Une référence valide du centre de l'utilisateur renvoie
  * la fiche produit ; une référence inexistante affiche "Étiquette non reconnue".
  *
- * User seedé : superadmin@resto.com / 1234 (SUPER_ADMIN, centre Lyon Part-Dieu).
+ * User seedé : superadmin@resto.com / 1234 (SUPER_ADMIN, centre Melun).
  * Stocks du centre 1 : REF001_c1 (Pc, Perdu), REF002_c1 (Frigo, Disponible).
  */
 
@@ -26,9 +26,8 @@ test("RCO-27: recherche par référence valide → affiche la fiche produit", as
   await loginAndGoToScan(page);
 
   await page
-    .getByText("Étiquette illisible ? Rechercher par référence")
-    .first()
-    .click({ force: true });
+    .getByRole("button", { name: "Étiquette illisible ?" })
+    .click();
   const input = page.getByPlaceholder("Rechercher par référence");
   await expect(input).toBeVisible({ timeout: 5000 });
   await input.fill("REF001_c1");
@@ -44,9 +43,8 @@ test("RCO-27: recherche par référence inexistante → affiche 'Étiquette non 
   await loginAndGoToScan(page);
 
   await page
-    .getByText("Étiquette illisible ? Rechercher par référence")
-    .first()
-    .click({ force: true });
+    .getByRole("button", { name: "Étiquette illisible ?" })
+    .click();
   const input = page.getByPlaceholder("Rechercher par référence");
   await expect(input).toBeVisible({ timeout: 5000 });
   await input.fill("REF_INEXISTANTE");

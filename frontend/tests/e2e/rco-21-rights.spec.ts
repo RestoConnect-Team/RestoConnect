@@ -5,7 +5,7 @@ import { test, expect } from "@playwright/test";
  *
  * Un CENTER_ADMIN (Responsable de centre) ne doit pas voir les routes admin
  * (ex. "Centres" /all_centers). Seuls ADMIN/SUPER_ADMIN les voient.
- * User seedé : resp1@resto.com / 1234 (CENTER_ADMIN, centre Lyon Part-Dieu).
+ * User seedé : resp1@resto.com / 1234 (CENTER_ADMIN, centre Melun).
  */
 
 test("RED: CENTER_ADMIN ne doit pas voir le lien Centres dans la sidebar", async ({

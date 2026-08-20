@@ -52,8 +52,10 @@ test("RCO-32: navbar mobile se ferme via clic sur l'overlay", async ({
   await page.waitForTimeout(800);
   await expect(mobileSidebar(page)).toHaveClass(/translate-x-0/);
 
-  // Cliquer sur l'overlay (bg-black/40)
-  await page.locator(".fixed.inset-0.z-40").click();
+  // Cliquer sur l'overlay (bg-black/40), à droite de la sidebar (288px)
+  await page
+    .locator(".fixed.inset-0.z-40")
+    .click({ position: { x: 350, y: 400 } });
   await page.waitForTimeout(800);
   await expect(mobileSidebar(page)).toHaveClass(/-translate-x-full/);
 });
