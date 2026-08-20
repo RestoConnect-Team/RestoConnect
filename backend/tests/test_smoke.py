@@ -55,4 +55,4 @@ def test_profil_with_token(client):
     assert r.status_code == 200
     body = r.json()
     assert body["email"] == "superadmin@resto.com"
-    assert body["center"] == "Centre Lyon Part-Dieu"
+    assert body["center"] == "Centre Melun"

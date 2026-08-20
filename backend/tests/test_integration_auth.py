@@ -41,7 +41,7 @@ def test_profil_returns_full_user_profile(client):
     body = r.json()
     assert body["email"] == "resp1@resto.com"
     assert body["status"] == "Responsable de centre"
-    assert body["center"] == "Centre Lyon Part-Dieu"
+    assert body["center"] == "Centre Melun"
     assert "id" in body and "name" in body and "lastname" in body
 
 

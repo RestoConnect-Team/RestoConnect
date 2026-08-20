@@ -30,10 +30,10 @@ def test_list_centers_returns_user_center_plus_others(client):
     assert "user_center" in body
     assert "centers_list" in body
     assert "warehouses_list" in body
-    assert body["user_center"]["name"] == "Centre Lyon Part-Dieu"
+    assert body["user_center"]["name"] == "Centre Melun"
     # Le centre de l'utilisateur ne doit pas être dans centers_list
     names = [c["name"] for c in body["centers_list"]]
-    assert "Centre Lyon Part-Dieu" not in names
+    assert "Centre Melun" not in names
 
 
 def test_my_center_requires_token(client):
@@ -48,7 +48,7 @@ def test_my_center_returns_center_infos(client):
     r = client.get("/api/my_center")
     assert r.status_code == 200, r.text
     body = r.json()
-    assert body["name"] == "Centre Lyon Part-Dieu"
+    assert body["name"] == "Centre Melun"
     assert body["materials_count"] >= 1
     assert "center_schedule" in body
     assert "contacts" in body
@@ -62,7 +62,7 @@ def test_center_detail_returns_infos(client):
     assert r.status_code == 200, r.text
     body = r.json()
     assert body["center_id"] == 2
-    assert body["name"] == "Centre Lyon Croix-Rousse"
+    assert body["name"] == "Centre Meaux"
 
 
 def test_center_detail_not_found(client):
@@ -116,7 +116,7 @@ def test_delete_center_without_token_bug(client):
 
 
 def test_warehouse_infos(client):
-    """GET /api/warehouse/{id} → infos entrepôt (centre 6 = Entrepôt Vaulx-en-Velin)."""
+    """GET /api/warehouse/{id} → infos entrepôt (centre 6 = Entrepôt Torcy)."""
     _login(client, email="superadmin@resto.com", password="1234")
     r = client.get("/api/warehouse/6")
     assert r.status_code == 200, r.text
