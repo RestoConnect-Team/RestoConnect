@@ -7,7 +7,7 @@ import {
   Send,
 } from "lucide-react";
 import { StockStatus } from "@/app/scan/stock_status_enum";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 export interface ProductInfo {
   id: number;

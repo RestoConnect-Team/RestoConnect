@@ -15,7 +15,7 @@ import { CenterHeaderDashboard } from "../dashboard/CenterHeaderDashboard";
 import { ContactRow, renderMail, renderPhone } from "../dashboard/ContactRow";
 import { Stats } from "../dashboard/Stats";
 import { Section } from "../layout/Section";
-import { Button } from "../ui/Button";
+import { Button } from "../ui/button";
 import { CenterHeader } from "./CenterHeader";
 
 interface CenterDetailViewProps {

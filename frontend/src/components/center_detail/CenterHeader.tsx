@@ -1,6 +1,6 @@
 import { CenterDetails } from "@/types/center";
 import { Building2, Download, Mail, MapPin, PenSquare } from "lucide-react";
-import { Button } from "../ui/Button";
+import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 
 interface CenterHeaderProps {

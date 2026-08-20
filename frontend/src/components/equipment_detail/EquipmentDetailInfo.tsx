@@ -1,6 +1,6 @@
 import { StockStatus } from "@/app/scan/stock_status_enum";
 import { Pencil, SquarePen } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 interface EquipmentDetailInfoProps {
   equipment: {

@@ -2,14 +2,14 @@
 
 import { useRef, useEffect, useState } from "react";
 import { Download, Printer, Maximize } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { QRCodeCanvas } from "qrcode.react";
 import { useReactToPrint } from "react-to-print";
 import QrCodeModal from "@/components/equipment_detail/QrCodeModal";
 import { downloadQrCode } from "@/utils/downloadQrCode";
 import { getQrCodeUrl } from "@/utils/getQrCodeUrl";
-import { EquipmentItem } from "@/lib/api/equipements_list_info";
-
+import { EquipmentItem } from "@/types/equipment"
+ 
 interface EquipmentDetailQrCodeProps {
   equipment: EquipmentItem;
 }

@@ -7,7 +7,7 @@ import { PanelLeftIcon } from "lucide-react";
 
 import { useIsMobile } from "./use-mobile";
 import { cn } from "./utils";
-import { Button } from "./Button";
+import { Button } from "../figma_imports/button";
 import { Input } from "./input";
 import { Separator } from "./separator";
 import {

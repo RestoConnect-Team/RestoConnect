@@ -5,10 +5,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { QRCodeCanvas } from "qrcode.react";
-import { Button } from "../ui/Button";
+import { Button } from "../ui/button";
 import { Download } from "lucide-react";
-import { EquipmentItem } from "@/lib/api/equipements_list_info";
-
+import { EquipmentItem } from "@/types/equipment"
+ 
 type QrCodeModalsProps = {
   equipment: EquipmentItem;
   isOpen: boolean;
