@@ -90,3 +90,43 @@ Ajout de 29 tests d'intégration backend par domaine (44/44 pytest verts au tota
 ### Décision
 
 D8 : Le brain doit être vérifié contre le code réel avant chaque ticket (le brain peut être périmé). Ne pas se fier au statut "backend OK" du brain sans lire le controller + le schéma.
+
+## Session 2026-08-20 — Phase 1 : écrans manquants + seed enrichi + bugs UI
+
+Objectif : préparer une démo riche pour Christelle (données seed Seine-et-Marne + écrans fonctionnels). Plan : `PLAN-PHASE1-ECRANS-SEED.md`.
+
+### Bugs détectés (inspection Playwright)
+
+- "Invalid token" affiché au lieu d'une redirection login (cookie navigateur invalide après re-seed → 401 brute affichée).
+- `/inventaires` et `/notifications` → 404 (pages inexistantes, `routes.ts` pointe dessus).
+- Avatar utilisateur cassé (`uploads/avatars/` vide mais seed référence `user_1.png`…).
+- Ville profil incohérente (`Cityville`/`123 Main St` factice anglais vs centre "Melun").
+- "5 matériel(s) trouvé(s)" sur page Véhicules (libellé copié-collé).
+- Section "Matériels (3)" vide sur `all_centers/[id]` (equipments jamais fetché).
+- Historique équipement vide (aucun `stock_events` seedé).
+- `mailto:` vide sur profil ; `bg-[F5F5F5]` sans `#`.
+
+### Corrections apportées (6 commits sur dev)
+
+1. `fix(seed)` : localiser users en 77 + enrichir stocks (5→15), inventaires (2→4), `stock_events` (6, pour l'historique équipement).
+2. `fix(auth)` : helper `apiFetch` centralisé (`lib/api/client.ts`) qui intercepte 401 → nettoie cookie + redirige `/`. Câblé dans tous les fetch (services + lib/api + equipment/[id]).
+3. `fix(ui)` : libellé "véhicule(s)" (prop `itemLabel` sur `FooterTable`), `bg-[#F5F5F5]`, `mailto:{email}`, capitalisation historique (suppression du `.replace(/\b\w/g)` qui cassait les accents), bouton "Ajouter" câblé.
+4. `feat(ecrans)` : pages `/inventaires`, `/inventaires/[id]`, `/notifications` (backend existant).
+5. `feat(ui)` : formulaires création/édition matériel + véhicule (wizard 2 étapes, UI seule sans backend).
+6. `test(e2e)` : corriger `navbar-close` overlay (clic à position hors sidebar) + `rco-27` (doublon scan supprimé → clic normal).
+
+### Avatars
+
+Générés via Pillow (`uploads/avatars/user_1.png` … `user_6.png`, 256×256, initiales sur fond coloré). Le dossier était vide.
+
+### Tests
+
+- Backend : 44/44 pytest verts.
+- E2E : 11/11 Playwright verts (les 2 échecs préexistants — navbar-close overlay + rco-27 — sont corrigés).
+
+### Reste à faire (hors scope de cette session)
+
+- `all_centers/[id]` : section "Matériels" vide (equipments jamais fetché) + "Derniers inventaires" vide.
+- Historique véhicule codé en dur (`vehicule/[id]/page.tsx`).
+- Formulaires création/édition : UI seule, pas de câblage backend (POST/PUT manquants).
+- `delete_*_route` sans auth (documenté précédemment).

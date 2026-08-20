@@ -103,3 +103,23 @@ Plan détaillé : `PLAN-PHASE0-SOCLE-BACKEND.md`.
 
 ### Phase 5 — Brain keeper
 - [ ] `skill save` final (hot.md + log.md + todos.md)
+
+## Phase 7 — Écrans manquants + seed enrichi + bugs UI (2026-08-20)
+
+Plan : `PLAN-PHASE1-ECRANS-SEED.md`.
+
+- [x] Fix 401 → redirect login (`apiFetch` centralisé)
+- [x] Générer avatars placeholder (`uploads/avatars/user_1..6.png`)
+- [x] Localiser users seed en Seine-et-Marne
+- [x] Enrichir seed (stocks 15, inventaires 4, stock_events 6)
+- [x] Libellé "véhicule(s)", `bg-[#F5F5F5]`, `mailto:`, capitalisation historique
+- [x] Pages `/inventaires`, `/inventaires/[id]`, `/notifications`
+- [x] Formulaires création/édition matériel + véhicule (UI seule)
+- [x] Corriger tests E2E navbar-close + rco-27
+- [x] 44 pytest + 11 E2E verts
+- [x] 6 commits sur dev + insights.md mis à jour
+
+### Reste à faire (hors scope)
+- [ ] `all_centers/[id]` : section "Matériels" vide + "Derniers inventaires" vide
+- [ ] Historique véhicule codé en dur
+- [ ] Câblage backend POST/PUT pour formulaires création/édition
