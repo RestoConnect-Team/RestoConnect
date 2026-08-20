@@ -190,7 +190,7 @@ export default function Equipement() {
   return (
     <PageLayout
       title="Matériels"
-      onClick={() => {}}
+      onClick={() => router.push("/equipment/new")}
       buttonLabel={
         <>
           <Plus />

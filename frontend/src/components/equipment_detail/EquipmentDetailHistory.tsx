@@ -42,10 +42,7 @@ export function EquipmentDetailHistory({
               </div>
               <div>
                 <div className="text-[13px] font-medium text-gray-800">
-                  {item.event_type
-                    .replace(/_/g, " ")
-                    .toLowerCase()
-                    .replace(/\b\w/g, (char) => char.toUpperCase())}
+                  {item.event_type}
                 </div>
                 <div className="text-[12px] text-gray-400">
                   {item.details} ·{" "}

@@ -55,8 +55,7 @@ export default function Profil() {
                     {profil.name} {profil.lastname}
                   </h2>
                   <p className="text-gray-400">
-                    {/* TODO mailto et telto */}
-                    <a href="mailto:">{profil.email}</a> - {profil.telephone}
+                    <a href={`mailto:${profil.email}`}>{profil.email}</a> - {profil.telephone}
                   </p>
                   <p className="text-[rgb(230,0,126)] font-semibold text-lg">
                     {profil.status}
