@@ -1,3 +1,5 @@
+import { apiFetch } from "./client";
+
 export type VehiculeAlertLevel = "expired" | "will_expire_soon";
 
 export interface VehiculeAlert {
@@ -51,17 +53,5 @@ export const fetchVehiculeInfos = async (
     throw new Error("Véhicule invalide");
   }
 
-  const response = await fetch(`http://localhost:8000/api/vehicule/${vehiculeId}`, {
-    method: "GET",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.detail || "Failed to fetch vehicule infos");
-  }
-
-  return data as VehiculeDetailResponse;
+  return apiFetch<VehiculeDetailResponse>(`/api/vehicule/${vehiculeId}`);
 };
