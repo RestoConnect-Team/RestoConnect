@@ -22,7 +22,7 @@ export class AuthService {
   async logOut(): Promise<void> {
     try {
       await fetch("http://localhost:8000/api/deconnection", {
-        method: "GET",
+        method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
       });
