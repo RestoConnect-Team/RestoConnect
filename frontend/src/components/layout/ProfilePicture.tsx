@@ -1,6 +1,5 @@
 import { Profile } from "@/lib/api/my_profil_info";
 import { getInitials } from "@/utils/getInitials";
-import router from "next/navigation";
 
 export const ProfilePicture = ({
   profile,

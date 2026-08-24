@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
+import WelcomePage from "../welcome/WelcomePage";
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -30,6 +31,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
 
       {/* Desktop sidebar — hidden on mobile */}
       <div className="flex h-screen overflow-hidden bg-[var(--background)]">
+        <WelcomePage />
         <div className="hidden lg:block shrink-0 h-full">
           <Sidebar />
         </div>
