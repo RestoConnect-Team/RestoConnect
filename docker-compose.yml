@@ -24,6 +24,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
+      - ./backend:/app/backend
       - ./uploads:/app/uploads
       - ./uploads/avatars:/app/uploads/avatars
     depends_on:
@@ -38,6 +39,10 @@ services:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
     ports:
       - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
     depends_on:
       - backend
 
