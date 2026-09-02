@@ -27,3 +27,22 @@ export const fetchInventoryStocks = async (
     `/api/inventory/list_stocks_inventory/${inventoryId}`,
   );
 };
+
+export const createInventory = async (): Promise<InventoryStockItem[]> => {
+  return apiFetch<InventoryStockItem[]>("/api/inventory/create_inventory", {
+    method: "POST",
+  });
+};
+
+export const updateInventoryStockStatus = async (
+  inventoryStockId: number,
+  status: string,
+): Promise<InventoryStockItem> => {
+  return apiFetch<InventoryStockItem>(
+    `/api/inventory/inventory_stock/${inventoryStockId}/status`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    },
+  );
+};

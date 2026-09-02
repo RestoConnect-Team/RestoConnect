@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { use } from "react";
+import { use, useState } from "react";
 import { ArrowLeft, CheckCircle2, CircleAlert } from "lucide-react";
 
 import { useFetchData } from "@/hooks/useFetchData";
 import {
   fetchInventoryStocks,
+  updateInventoryStockStatus,
   InventoryStockItem,
 } from "@/lib/api/inventories";
 
@@ -41,9 +42,22 @@ export default function InventoryDetailPage({
     fetchInventoryStocks(inventoryId),
   );
   const stocks = data ?? [];
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
 
   const present = stocks.filter((s) => s.status_inventory_stock === "Présent");
   const absent = stocks.filter((s) => s.status_inventory_stock === "Absent");
+
+  const toggleStatus = async (stock: InventoryStockItem) => {
+    setUpdatingId(stock.inventory_stock_id);
+    const next =
+      stock.status_inventory_stock === "Présent" ? "Absent" : "Présent";
+    try {
+      await updateInventoryStockStatus(stock.inventory_stock_id, next);
+      window.location.reload();
+    } catch {
+      setUpdatingId(null);
+    }
+  };
 
   return (
     <PageLayout>
@@ -91,12 +105,16 @@ export default function InventoryDetailPage({
                     <th className="text-left px-4 py-3 font-semibold">
                       Statut
                     </th>
+                    <th className="text-left px-4 py-3 font-semibold">
+                      Action
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {stocks.map((stock) => {
                     const badge = statusBadge(stock.status_inventory_stock);
                     const Icon = badge.Icon;
+                    const isUpdating = updatingId === stock.inventory_stock_id;
                     return (
                       <tr
                         key={stock.inventory_stock_id}
@@ -116,6 +134,19 @@ export default function InventoryDetailPage({
                             <Icon size={14} />
                             {stock.status_inventory_stock}
                           </span>
+                        </td>
+                        <td className="px-4 py-4">
+                          <button
+                            onClick={() => toggleStatus(stock)}
+                            disabled={isUpdating}
+                            className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-50 transition-colors"
+                          >
+                            {isUpdating
+                              ? "…"
+                              : stock.status_inventory_stock === "Présent"
+                                ? "Marquer absent"
+                                : "Marquer présent"}
+                          </button>
                         </td>
                       </tr>
                     );

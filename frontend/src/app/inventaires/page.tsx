@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { CheckCircle2, Clock, Eye } from "lucide-react";
+import { CheckCircle2, Clock, Eye, Plus } from "lucide-react";
 
 import { useFetchData } from "@/hooks/useFetchData";
 import {
   fetchInventoriesList,
+  createInventory,
   InventoryItem,
 } from "@/lib/api/inventories";
 
@@ -34,6 +35,8 @@ export default function Inventaires() {
   const { data, loading, error } =
     useFetchData<InventoryItem[]>(fetchInventoriesList);
   const inventories = data ?? [];
+  const [creating, setCreating] = useState(false);
+  const [createError, setCreateError] = useState("");
 
   const sorted = useMemo(
     () =>
@@ -44,9 +47,31 @@ export default function Inventaires() {
     [inventories],
   );
 
+  const handleCreate = async () => {
+    setCreating(true);
+    setCreateError("");
+    try {
+      await createInventory();
+      window.location.reload();
+    } catch (err: any) {
+      setCreateError(err.message || "Erreur lors de la création de l'inventaire");
+      setCreating(false);
+    }
+  };
+
   return (
-    <PageLayout title="Inventaires">
+    <PageLayout
+      title="Inventaires"
+      onClick={handleCreate}
+      buttonLabel={
+        <>
+          <Plus size={16} />
+          {creating ? "Création..." : "Réaliser un inventaire"}
+        </>
+      }
+    >
       <div className="p-6 flex flex-col gap-4">
+        {createError && <PageError page_error={createError} />}
         {error && <PageError page_error={error} />}
         {loading && (
           <Loading loading_sentence="Chargement des inventaires..." />

@@ -55,3 +55,43 @@ def test_create_inventory_persists_inventory_and_stocks(client, db):
 
     assert count_after == count_before + 1, "Inventory non créé"
     assert stocks_after > stocks_before, "InventoryStock non créés"
+
+
+def test_update_inventory_stock_status_requires_token(client):
+    """PATCH /api/inventory/inventory_stock/{id}/status sans token → 401."""
+    r = client.patch(
+        "/api/inventory/inventory_stock/1/status", json={"status": "Présent"}
+    )
+    assert r.status_code == 401
+
+
+def test_update_inventory_stock_status_marks_found(client):
+    """PATCH /api/inventory/inventory_stock/{id}/status → marque Présent."""
+    _login(client, email="resp1@resto.com", password="1234")
+    # inventory_stock 2 = inventaire 1 (centre 1), stock 2, statut Absent
+    r = client.patch(
+        "/api/inventory/inventory_stock/2/status", json={"status": "Présent"}
+    )
+    assert r.status_code == 200, r.text
+    body = r.json()
+    assert body["status_inventory_stock"] == "Présent"
+    assert body["inventory_stock_id"] == 2
+
+
+def test_update_inventory_stock_status_cross_center_403(client):
+    """PATCH sur un inventory_stock d'un autre centre → 403."""
+    _login(client, email="resp1@resto.com", password="1234")
+    # inventory_stock 3 = inventaire 2 (centre 2), resp1 est au centre 1
+    r = client.patch(
+        "/api/inventory/inventory_stock/3/status", json={"status": "Présent"}
+    )
+    assert r.status_code == 403
+
+
+def test_update_inventory_stock_status_not_found(client):
+    """PATCH sur un inventory_stock inexistant → 404."""
+    _login(client, email="resp1@resto.com", password="1234")
+    r = client.patch(
+        "/api/inventory/inventory_stock/9999/status", json={"status": "Présent"}
+    )
+    assert r.status_code == 404
