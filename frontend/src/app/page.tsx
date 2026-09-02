@@ -21,7 +21,7 @@ export default function Home() {
 
     try {
       await authService.login(email, password);
-      router.push("/my_center");
+      router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
