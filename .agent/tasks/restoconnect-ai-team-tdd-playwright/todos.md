@@ -155,3 +155,14 @@ Plan : `PLAN-PHASE2-SECURITE-RCO22-CRUD.md`.
 ### Bilan
 - 65 pytest + 13 E2E verts (44 → 65 pytest, 11 → 13 E2E)
 - 4 branches mergées sur dev
+
+## Phase 8b — Audit de qualité (2026-09-02, sous-agents explore)
+
+Corrections post-audit (commit `fix(audit)` sur dev) :
+
+- [x] `delete_center` : 409 si dépendances (user/stock/vehicule/inventory) au lieu d'IntegrityError 500
+- [x] `create_stock` : StockEvent initial (AJOUT_SYSTEME) + last_scan_date
+- [x] `create_stock` / `create_vehicule` : doublon référence/immatriculation → 400
+- [x] `create_vehicule` : next_technical_inspection_date = +1 an
+- [x] RCO-22 : scan QR connecté à l'inventaire en cours (marque InventoryStock "Présent")
+- [x] 70 pytest + 13 E2E verts (65 → 70 pytest)

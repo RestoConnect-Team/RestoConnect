@@ -169,3 +169,31 @@ Plan : `PLAN-PHASE2-SECURITE-RCO22-CRUD.md`. 4 items livrés, 4 branches mergée
 - **65 pytest + 13 E2E verts** (44 → 65 pytest, 11 → 13 E2E).
 - 4 branches mergées sur dev (28 commits ahead origin).
 - Bugs sécurité `delete_*` sans auth : **corrigés** (plus de bug exposé).
+
+## Session 2026-09-02 (suite) — Audit de qualité (sous-agents explore)
+
+Après livraison des 4 items, un audit croisé (3 sous-agents `explore`) a révélé des trous et incohérences. Corrections apportées :
+
+### Bug critique — delete_center cascade
+- `delete_center_service` faisait `db.delete(center)` sans nettoyer `user`/`stock`/`vehicule`/`inventory` (FK vers `center.id` sans cascade) → `IntegrityError` 500 sur un centre réel.
+- **Fix** : `delete_center_controller` refuse désormais avec **409** si le centre possède des dépendances (users/stocks/vehicules/inventaires). Test `test_delete_center_with_dependencies_409`.
+
+### Incohérence — création stock sans StockEvent
+- `create_stock_service` ne créait pas de `StockEvent(AJOUT_SYSTEME)` → historique vide sur la fiche matériel (contrairement au seed).
+- **Fix** : création d'un `StockEvent` initial + `last_scan_date` renseigné. Test `test_create_stock_creates_initial_event`.
+
+### Risque 500 — doublon référence / immatriculation
+- `Stock.reference` et `Vehicule.immatriculation` sont `unique=True` mais la création ne gérait pas le doublon → `IntegrityError` 500.
+- **Fix** : contrôle préalable → **400** avec message clair. Tests `test_create_stock_duplicate_reference_400`, `test_create_vehicule_duplicate_immatriculation_400`.
+
+### Incohérence — dates techniques véhicule
+- `next_technical_inspection_date == last_technical_inspection_date == today` (logiquement faux).
+- **Fix** : `next_technical_inspection_date = today + 1 an`.
+
+### RCO-22 incomplet — scan non connecté à l'inventaire
+- Le scan (`/api/stock/scan`) mettait à jour le statut global du `Stock` (Disponible/Perdu), **pas** l'`InventoryStock` (Présent/Absent). Aucun câblage scan→inventaire.
+- **Fix** : `mark_stock_found_in_inventory_service` — lors d'un scan, marque l'`InventoryStock` correspondant "Présent" dans l'inventaire ON_GOING du centre. Test `test_scan_marks_stock_found_in_ongoing_inventory`.
+
+### Bilan final
+- **70 pytest + 13 E2E verts** (65 → 70 pytest).
+- 1 commit de correction `fix(audit)` sur dev.
