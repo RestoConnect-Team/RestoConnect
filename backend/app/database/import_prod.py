@@ -14,15 +14,17 @@ import unicodedata
 from datetime import date, datetime
 from pathlib import Path
 
+import bcrypt
 import openpyxl
 from sqlalchemy import text
 
 from app.database.connection import SessionLocal, engine
-from app.database.models import Center, Stock, Vehicule
+from app.database.models import Center, Stock, User, Vehicule
 from app.enums import (
     CenterStatus,
     StockCategory,
     StockStatus,
+    UserStatus,
     VehiculeCategory,
     VehiculeStatus,
 )
@@ -416,6 +418,97 @@ def import_materiels(data_dir: Path, db, name_to_id: dict) -> int:
 
 
 # ---------------------------------------------------------------------------
+# Import users (comptes de démonstration, rattachés aux centres réels)
+# ---------------------------------------------------------------------------
+def _hash_password(password: str) -> str:
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
+
+def import_users(db, name_to_id: dict) -> int:
+    """Crée les comptes de démo, rattachés aux centres réels importés.
+
+    Le superadmin/admin sont rattachés au Siège ; les responsables de centre
+    aux premiers centres réels disponibles.
+    """
+    centre_ids = sorted(set(name_to_id.values()))
+    # centres non-entrepôts en priorité
+    real_centres = [
+        cid
+        for cid in centre_ids
+        if (c := db.get(Center, cid)) is not None and not c.is_warehouse
+    ]
+    siege_id = name_to_id.get(_norm_key("Siège"))
+
+    def cid_or(i):
+        return (
+            real_centres[i] if i < len(real_centres) else (siege_id or real_centres[0])
+        )
+
+    users = [
+        User(
+            name="Antoine",
+            lastname="Lefebvre",
+            email="superadmin@resto.com",
+            password=_hash_password("1234"),
+            status=UserStatus.SUPER_ADMIN,
+            center_id=siege_id or cid_or(0),
+        ),
+        User(
+            name="Julie",
+            lastname="Moreau",
+            email="admin@resto.com",
+            password=_hash_password("1234"),
+            status=UserStatus.ADMIN,
+            center_id=siege_id or cid_or(0),
+        ),
+        User(
+            name="Marc",
+            lastname="Dubois",
+            email="resp1@resto.com",
+            password=_hash_password("1234"),
+            status=UserStatus.CENTER_ADMIN,
+            center_id=cid_or(0),
+        ),
+        User(
+            name="Sophie",
+            lastname="Bernard",
+            email="resp2@resto.com",
+            password=_hash_password("1234"),
+            status=UserStatus.CENTER_ADMIN,
+            center_id=cid_or(1),
+        ),
+        User(
+            name="Karim",
+            lastname="Benali",
+            email="vehicule1@resto.com",
+            password=_hash_password("1234"),
+            status=UserStatus.VEHICULE_ADMIN,
+            center_id=cid_or(0),
+        ),
+        User(
+            name="Hugo",
+            lastname="Petit",
+            email="stock1@resto.com",
+            password=_hash_password("1234"),
+            status=UserStatus.STOCK_ADMIN,
+            center_id=cid_or(0),
+        ),
+        User(
+            name="Paul",
+            lastname="Fontaine",
+            email="user@resto.com",
+            password=_hash_password("1234"),
+            status=UserStatus.User,
+            center_id=cid_or(0),
+        ),
+    ]
+    db.add_all(users)
+    db.commit()
+    print(f"[users] {len(users)} importés")
+    return len(users)
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 def main():
@@ -452,6 +545,7 @@ def main():
     name_to_id = import_centres(data_dir, db)
     import_vehicules(data_dir, db, name_to_id)
     import_materiels(data_dir, db, name_to_id)
+    import_users(db, name_to_id)
 
     db.close()
     print("Import terminé ✅")
