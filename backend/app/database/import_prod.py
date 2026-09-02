@@ -292,7 +292,12 @@ def resolve_center(location, name_to_id, db):
         if cid is not None:
             return cid
         is_wh = canonical in WAREHOUSE_NAMES
-        center = Center(name=canonical, status=CenterStatus.OPEN, is_warehouse=is_wh)
+        center = Center(
+            name=canonical,
+            city="Seine-et-Marne",
+            status=CenterStatus.OPEN,
+            is_warehouse=is_wh,
+        )
         db.add(center)
         db.flush()
         name_to_id[_norm_key(canonical)] = center.id
@@ -309,7 +314,12 @@ def resolve_center(location, name_to_id, db):
             return cid
 
     # 4. fallback : créer un entrepôt
-    center = Center(name=location.strip(), status=CenterStatus.OPEN, is_warehouse=True)
+    center = Center(
+        name=location.strip(),
+        city="Seine-et-Marne",
+        status=CenterStatus.OPEN,
+        is_warehouse=True,
+    )
     db.add(center)
     db.flush()
     name_to_id[key] = center.id
@@ -431,13 +441,15 @@ def import_users(db, name_to_id: dict) -> int:
     aux premiers centres réels disponibles.
     """
     centre_ids = sorted(set(name_to_id.values()))
-    # centres non-entrepôts en priorité
+    siege_id = name_to_id.get(_norm_key("Siège"))
+    # centres non-entrepôts en priorité, hors Siège (centre administratif)
     real_centres = [
         cid
         for cid in centre_ids
-        if (c := db.get(Center, cid)) is not None and not c.is_warehouse
+        if cid != siege_id
+        and (c := db.get(Center, cid)) is not None
+        and not c.is_warehouse
     ]
-    siege_id = name_to_id.get(_norm_key("Siège"))
 
     def cid_or(i):
         return (
