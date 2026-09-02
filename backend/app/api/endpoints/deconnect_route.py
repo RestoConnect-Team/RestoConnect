@@ -15,6 +15,12 @@ def deconnection_endpoint(
     response: Response = None,  # type: ignore[assignment]
     db: Session = Depends(get_db),
 ):
-    result = deconnect_user_controller(token, db)
+    # Supprime TOUJOURS le cookie, même si le token est invalide/absent,
+    # sinon un cookie HttpOnly périmé provoque une boucle de redirection infinie.
     response.delete_cookie(key="token")
-    return result
+    if not token:
+        return True
+    try:
+        return deconnect_user_controller(token, db)
+    except Exception:
+        return True

@@ -94,9 +94,12 @@ export default function Profil() {
               <Settings />
               <span>Paramètres</span>
             </div>
-            <button className="flex p-4 gap-4 w-full text-red-600 hover:bg-red-100 cursor-pointer transition-colors">
+            <button
+              onClick={handleLogOut}
+              className="flex p-4 gap-4 w-full text-red-600 hover:bg-red-100 cursor-pointer transition-colors"
+            >
               <LogOut />
-              <span onClick={handleLogOut}>Se déconnecter</span>
+              <span>Se déconnecter</span>
             </button>
           </div>
         </div>

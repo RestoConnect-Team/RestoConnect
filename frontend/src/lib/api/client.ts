@@ -9,10 +9,17 @@ export class ApiError extends Error {
   }
 }
 
-function redirectToLogin() {
+async function redirectToLogin() {
   if (typeof window === "undefined") return;
-  document.cookie =
-    "token=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+  // Le cookie `token` est HttpOnly : on ne peut pas le supprimer en JS.
+  // On appelle la route de déconnexion qui le supprime côté serveur.
+  try {
+    await fetch(`${API_BASE_URL}/api/deconnection`, {
+      credentials: "include",
+    });
+  } catch {
+    // ignore : on redirige quand même
+  }
   if (window.location.pathname !== "/") {
     window.location.href = "/";
   }
@@ -32,7 +39,7 @@ export async function apiFetch<T = unknown>(
   });
 
   if (response.status === 401) {
-    redirectToLogin();
+    void redirectToLogin();
     throw new ApiError("Session expirée", 401);
   }
 
