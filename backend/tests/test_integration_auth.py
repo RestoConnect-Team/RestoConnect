@@ -28,9 +28,17 @@ def test_deconnect_invalidates_token(client):
 
 
 def test_deconnect_without_token(client):
-    """GET /api/deconnection sans token → 401."""
+    """GET /api/deconnection sans token → 200 (idempotent) et supprime le cookie.
+
+    La déconnexion doit toujours supprimer le cookie HttpOnly, même sans token
+    valide, sinon un cookie périmé provoque une boucle de redirection infinie.
+    """
     r = client.get("/api/deconnection")
-    assert r.status_code == 401
+    assert r.status_code == 200
+    assert r.json() is True
+    # le cookie token est supprimé (Max-Age=0)
+    set_cookie = r.headers.get("set-cookie", "")
+    assert "token=" in set_cookie and "Max-Age=0" in set_cookie
 
 
 def test_profil_returns_full_user_profile(client):
