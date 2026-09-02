@@ -14,11 +14,13 @@ const INITIAL_VISIBLE = 4;
 
 function CenterCard({
   center,
-  isUserCenter,
+  user_center,
 }: {
   center: Center;
-  isUserCenter?: boolean;
+  user_center?: Center;
 }) {
+  const isUserCenter = center.center_id === user_center?.center_id;
+
   return (
     <Link
       href={`/all_centers/${center.center_id}`}
@@ -57,13 +59,13 @@ function CenterCard({
 function Section({
   title,
   items,
-  isUserCenter,
   loadMoreLabel,
+  user_center,
 }: {
   title: string;
   items: Center[];
-  isUserCenter?: boolean;
   loadMoreLabel?: string;
+  user_center?: Center;
 }) {
   const [visibleCount, setVisibleCount] = useState<number>(INITIAL_VISIBLE);
   const visible =
@@ -78,7 +80,7 @@ function Section({
           <CenterCard
             key={center.center_id}
             center={center}
-            isUserCenter={isUserCenter}
+            user_center={user_center}
           />
         ))}
       </div>
@@ -112,6 +114,7 @@ export default function AllCenters() {
         setLoading(true);
 
         const data = await centerService.fetchCentersList();
+        data.centers_list = [data.user_center].concat(data.centers_list);
         setData(data);
         setFilteredData(data);
         setSearchQuery("");
@@ -173,18 +176,13 @@ export default function AllCenters() {
               onSearch={(e) => setSearchQuery(e)}
               placeholder="Rechercher par nom, localisation..."
             />
-            {filteredData.user_center && (
-              <Section
-                title="Mon centre"
-                items={[filteredData.user_center]}
-                isUserCenter={true}
-              />
-            )}
-            {filteredData.centers_list.length > 0 && (
+            {(filteredData.centers_list.length > 0 ||
+              filteredData.user_center) && (
               <Section
                 title="Centres"
                 items={filteredData.centers_list}
                 loadMoreLabel="Charger plus de centres"
+                user_center={filteredData.user_center}
               />
             )}
             {filteredData.warehouses_list.length > 0 && (
