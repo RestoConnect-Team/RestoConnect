@@ -456,84 +456,60 @@ def import_users(db, name_to_id: dict) -> int:
             real_centres[i] if i < len(real_centres) else (siege_id or real_centres[0])
         )
 
+    def center_fields(cid):
+        """Dérive city/postal_code/street du centre rattaché (le profil les affiche)."""
+        c = db.get(Center, cid)
+        if c is None:
+            return {}, {}, {}
+        return (
+            {"city": c.city},
+            {"postal_code": c.postal_code},
+            {"street": c.street},
+        )
+
+    def make_user(name, lastname, email, status, cid):
+        city, postal, street = center_fields(cid)
+        return User(
+            name=name,
+            lastname=lastname,
+            email=email,
+            password=_hash_password("1234"),
+            telephone="0123456789",
+            status=status,
+            center_id=cid,
+            created_at=date.today(),
+            updated_at=date.today(),
+            **city,
+            **postal,
+            **street,
+        )
+
     users = [
-        User(
-            name="Antoine",
-            lastname="Lefebvre",
-            email="superadmin@resto.com",
-            password=_hash_password("1234"),
-            telephone="0123456789",
-            status=UserStatus.SUPER_ADMIN,
-            center_id=cid_or(0),
-            created_at=date.today(),
-            updated_at=date.today(),
+        make_user(
+            "Antoine",
+            "Lefebvre",
+            "superadmin@resto.com",
+            UserStatus.SUPER_ADMIN,
+            cid_or(0),
         ),
-        User(
-            name="Julie",
-            lastname="Moreau",
-            email="admin@resto.com",
-            password=_hash_password("1234"),
-            telephone="0123456789",
-            status=UserStatus.ADMIN,
-            center_id=cid_or(0),
-            created_at=date.today(),
-            updated_at=date.today(),
+        make_user("Julie", "Moreau", "admin@resto.com", UserStatus.ADMIN, cid_or(0)),
+        make_user(
+            "Marc", "Dubois", "resp1@resto.com", UserStatus.CENTER_ADMIN, cid_or(0)
         ),
-        User(
-            name="Marc",
-            lastname="Dubois",
-            email="resp1@resto.com",
-            password=_hash_password("1234"),
-            telephone="0123456789",
-            status=UserStatus.CENTER_ADMIN,
-            center_id=cid_or(0),
-            created_at=date.today(),
-            updated_at=date.today(),
+        make_user(
+            "Sophie", "Bernard", "resp2@resto.com", UserStatus.CENTER_ADMIN, cid_or(1)
         ),
-        User(
-            name="Sophie",
-            lastname="Bernard",
-            email="resp2@resto.com",
-            password=_hash_password("1234"),
-            telephone="0123456789",
-            status=UserStatus.CENTER_ADMIN,
-            center_id=cid_or(1),
-            created_at=date.today(),
-            updated_at=date.today(),
+        make_user(
+            "Karim",
+            "Benali",
+            "vehicule1@resto.com",
+            UserStatus.VEHICULE_ADMIN,
+            cid_or(0),
         ),
-        User(
-            name="Karim",
-            lastname="Benali",
-            email="vehicule1@resto.com",
-            password=_hash_password("1234"),
-            telephone="0123456789",
-            status=UserStatus.VEHICULE_ADMIN,
-            center_id=cid_or(0),
-            created_at=date.today(),
-            updated_at=date.today(),
+        make_user(
+            "Hugo", "Petit", "stock1@resto.com", UserStatus.STOCK_ADMIN, cid_or(0)
         ),
-        User(
-            name="Hugo",
-            lastname="Petit",
-            email="stock1@resto.com",
-            password=_hash_password("1234"),
-            telephone="0123456789",
-            status=UserStatus.STOCK_ADMIN,
-            center_id=cid_or(0),
-            created_at=date.today(),
-            updated_at=date.today(),
-        ),
-        User(
-            name="Paul",
-            lastname="Fontaine",
-            email="user@resto.com",
-            password=_hash_password("1234"),
-            telephone="0123456789",
-            status=UserStatus.User,
-            center_id=cid_or(0),
-            created_at=date.today(),
-            updated_at=date.today(),
-        ),
+        make_user("Paul", "Fontaine", "user@resto.com", UserStatus.User, cid_or(0)),
     ]
     db.add_all(users)
     db.commit()
