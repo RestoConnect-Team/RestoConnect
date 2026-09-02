@@ -123,3 +123,35 @@ Plan : `PLAN-PHASE1-ECRANS-SEED.md`.
 - [ ] `all_centers/[id]` : section "Matériels" vide + "Derniers inventaires" vide
 - [ ] Historique véhicule codé en dur
 - [ ] Câblage backend POST/PUT pour formulaires création/édition
+
+## Phase 8 — Fix sécurité + RCO-22 + CRUD + quick wins UI (2026-09-02)
+
+Plan : `PLAN-PHASE2-SECURITE-RCO22-CRUD.md`.
+
+### Item 1 — Fix sécurité delete_* (branche `fix/delete-routes-auth`)
+- [x] Auth (401) sur `delete_stock/vehicule/center` routes
+- [x] Filtre centre (403 cross-centre) sur `delete_stock` + `get_stock_detail`
+- [x] Corrige double appel service dans `delete_vehicule_controller` + `delete_center_controller`
+- [x] Tests : 3 `test_delete_*_without_token_bug` → 401 + tests filtre centre (7 nouveaux)
+- [x] 51 pytest verts + commit + merge dev
+
+### Item 2 — RCO-22 flow inventaire (branche `feat/rco-22-realiser-inventaire`)
+- [x] Bouton "Réaliser un inventaire" sur `/inventaires` → POST create_inventory
+- [x] Endpoint `PATCH /api/inventory/inventory_stock/{id}/status` (marquer Présent/Absent)
+- [x] Câblage UI marquage statut dans `/inventaires/[id]`
+- [x] 4 tests backend + 2 tests E2E + commit + merge dev
+
+### Item 3 — CRUD matériel + véhicule (branche `feat/crud-materiel-vehicule`)
+- [x] Endpoints `POST/PUT /api/stock` + `POST/PUT /api/vehicule` + schémas payload
+- [x] Câblage 4 formulaires UI (equipment new/edit, vehicule new/edit)
+- [x] Fix `use(params)` sur pages edit (params = Promise)
+- [x] 8 tests backend + commit + merge dev
+
+### Item 4 — Quick wins UI (branche `fix/ui-detail-centre-vehicule`)
+- [x] Route `GET /api/center/{id}/stocks` + fetch équipements dans `CenterDetailView`
+- [x] Historique véhicule dé-hardcodé (documents réels)
+- [x] 2 tests backend + commit + merge dev
+
+### Bilan
+- 65 pytest + 13 E2E verts (44 → 65 pytest, 11 → 13 E2E)
+- 4 branches mergées sur dev

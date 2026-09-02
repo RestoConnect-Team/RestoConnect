@@ -130,3 +130,42 @@ Générés via Pillow (`uploads/avatars/user_1.png` … `user_6.png`, 256×256, 
 - Historique véhicule codé en dur (`vehicule/[id]/page.tsx`).
 - Formulaires création/édition : UI seule, pas de câblage backend (POST/PUT manquants).
 - `delete_*_route` sans auth (documenté précédemment).
+
+## Session 2026-09-02 — Phase 2 : fix sécurité + RCO-22 + CRUD + quick wins UI
+
+Plan : `PLAN-PHASE2-SECURITE-RCO22-CRUD.md`. 4 items livrés, 4 branches mergées sur dev.
+
+### Item 1 — Fix sécurité delete_* (branche `fix/delete-routes-auth`)
+
+- **Auth 401** ajoutée sur `delete_stock_route`, `delete_vehicule_route`, `delete_center_route` (cookie token).
+- **Filtre centre 403** ajouté sur `delete_stock_controller` + `get_stock_detail` (cross-centre refusé, entrepôt autorisé).
+- **Double appel corrigé** : `delete_vehicule_controller` et `delete_center_controller` appelaient le service 2× (le 2e → 404 après suppression réussie).
+- `delete_center_controller` : SUPER_ADMIN/ADMIN peuvent supprimer n'importe quel centre, les autres uniquement le leur.
+- Tests : les 3 `test_delete_*_without_token_bug` (qui documentaient le bug) remplacés par des tests 401 + tests filtre centre (7 nouveaux tests).
+
+### Item 2 — RCO-22 flow inventaire (branche `feat/rco-22-realiser-inventaire`)
+
+- Bouton "Réaliser un inventaire" sur `/inventaires` → `POST /api/inventory/create_inventory` (endpoint déjà sain après Phase 0).
+- Nouvel endpoint `PATCH /api/inventory/inventory_stock/{id}/status` (marquer Présent/Absent) — n'existait pas. Schéma `InventoryStockStatusUpdate`, service `update_inventory_stock_status_service`, controller + route.
+- Câblage UI : bouton "Marquer présent/absent" dans `/inventaires/[id]`.
+- 4 tests backend + 2 tests E2E (`rco-22-realiser-inventaire.spec.ts`).
+
+### Item 3 — CRUD matériel + véhicule (branche `feat/crud-materiel-vehicule`)
+
+- Endpoints `POST/PUT /api/stock` + `POST/PUT /api/vehicule` (aucun n'existait). Schémas `StockCreate/StockUpdate`, `VehiculeCreate/VehiculeUpdate`.
+- QR code généré depuis la référence (cohérent avec le seed).
+- Câblage des 4 formulaires UI (`equipment/new`, `equipment/[id]/edit`, `vehicule/new`, `vehicule/[id]/edit`) — les `onClick={() => {}}` remplacés.
+- Bug préexistant corrigé : `params` était un `Promise` dans les pages edit → `use(params)`.
+- 8 tests backend.
+
+### Item 4 — Quick wins UI (branche `fix/ui-detail-centre-vehicule`)
+
+- Route `GET /api/center/{id}/stocks` (via `get_center_stocks_list_service`) + fetch des équipements dans `CenterDetailView` (le TODO "add in backend list of equipments" résolu).
+- Historique véhicule dé-hardcodé : utilise les documents réels (`data.documents`) au lieu des 3 lignes factices.
+- 2 tests backend.
+
+### Bilan
+
+- **65 pytest + 13 E2E verts** (44 → 65 pytest, 11 → 13 E2E).
+- 4 branches mergées sur dev (28 commits ahead origin).
+- Bugs sécurité `delete_*` sans auth : **corrigés** (plus de bug exposé).
