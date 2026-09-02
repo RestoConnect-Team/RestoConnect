@@ -95,3 +95,56 @@ def test_update_inventory_stock_status_not_found(client):
         "/api/inventory/inventory_stock/9999/status", json={"status": "Présent"}
     )
     assert r.status_code == 404
+
+
+def test_scan_marks_stock_found_in_ongoing_inventory(client, db):
+    """GET /api/stock/scan sur un stock d'un inventaire en cours → marque Présent."""
+    from app.database.models import InventoryStock, Stock
+    from app.enums import StockStatus, StockCategory
+    from conftest import TestSessionLocal
+    from datetime import date
+
+    _login(client, email="resp1@resto.com", password="1234")
+
+    _db = TestSessionLocal()
+    try:
+        s = Stock(
+            reference="REF_SCAN_INV_TEST",
+            name="Stock scan inventaire",
+            category=StockCategory.INFORMATIQUE,
+            status=StockStatus.AVAILABLE,
+            qr_code="REF_SCAN_INV_TEST",
+            creation_date=date(2025, 1, 1),
+            center_id=1,
+        )
+        _db.add(s)
+        _db.commit()
+        _db.refresh(s)
+        sid = s.id
+    finally:
+        _db.close()
+
+    r = client.post("/api/inventory/create_inventory")
+    assert r.status_code in (200, 201), r.text
+
+    db.expire_all()
+    inv_stock = (
+        db.query(InventoryStock)
+        .filter(InventoryStock.stock_id == sid)
+        .order_by(InventoryStock.id.desc())
+        .first()
+    )
+    assert inv_stock is not None
+    assert inv_stock.status.value == "Absent"
+
+    r = client.get("/api/stock/scan", params={"reference": "REF_SCAN_INV_TEST"})
+    assert r.status_code == 200, r.text
+
+    db.expire_all()
+    inv_stock = (
+        db.query(InventoryStock)
+        .filter(InventoryStock.stock_id == sid)
+        .order_by(InventoryStock.id.desc())
+        .first()
+    )
+    assert inv_stock.status.value == "Présent"

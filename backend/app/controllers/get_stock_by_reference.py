@@ -4,6 +4,9 @@ from sqlalchemy.orm import Session
 from app.schemas import ProductScanResponse
 from app.services.get_stock_by_reference_service import get_stock_by_reference_service
 from app.services.get_user_service import get_user_by_token_service
+from app.services.mark_stock_found_in_inventory_service import (
+    mark_stock_found_in_inventory_service,
+)
 from app.database.models import User, Center
 
 
@@ -30,6 +33,8 @@ def get_stock_by_reference(reference: str, token: str, db: Session):
 
     if not _user_can_access_center(user, db, product.center_id):
         raise HTTPException(status_code=403, detail="Accès refusé à ce matériel")
+
+    mark_stock_found_in_inventory_service(product.id, user.center_id, db)
 
     return ProductScanResponse(
         id=product.id,

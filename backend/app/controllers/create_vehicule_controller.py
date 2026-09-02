@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.services import get_user_by_token_service
 from app.services.create_vehicule_service import create_vehicule_service
 from app.schemas import VehiculeCreate, OneVehiculeFromList
+from app.database.models import Vehicule
 
 
 def create_vehicule_controller(
@@ -14,6 +15,14 @@ def create_vehicule_controller(
     user = get_user_by_token_service(db, token)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")
+
+    existing = (
+        db.query(Vehicule)
+        .filter(Vehicule.immatriculation == payload.immatriculation)
+        .first()
+    )
+    if existing:
+        raise HTTPException(status_code=400, detail="Cette immatriculation existe déjà")
 
     vehicule = create_vehicule_service(payload, user.center_id, db)
 

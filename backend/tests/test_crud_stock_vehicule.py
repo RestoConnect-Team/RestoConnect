@@ -79,6 +79,37 @@ def test_update_stock_cross_center_403(client):
     assert r.status_code == 403
 
 
+def test_create_stock_duplicate_reference_400(client):
+    _login(client)
+    # REF001_c1 existe déjà (seed)
+    r = client.post(
+        "/api/stock",
+        json={"name": "Doublon", "category": "Informatique", "reference": "REF001_c1"},
+    )
+    assert r.status_code == 400
+
+
+def test_create_stock_creates_initial_event(client, db):
+    from app.database.models import StockEvent
+
+    _login(client)
+    r = client.post(
+        "/api/stock",
+        json={
+            "name": "Avec event",
+            "category": "Informatique",
+            "reference": "REF_EVENT_TEST",
+        },
+    )
+    assert r.status_code == 200, r.text
+    sid = r.json()["id"]
+
+    db.expire_all()
+    events = db.query(StockEvent).filter(StockEvent.stock_id == sid).all()
+    assert len(events) == 1
+    assert events[0].event_type.value == "Ajouté au système"
+
+
 def test_create_vehicule_requires_token(client):
     r = client.post(
         "/api/vehicule",
@@ -156,3 +187,18 @@ def test_update_vehicule_cross_center_403(client):
     # véhicule 3 = centre 2, resp1 est au centre 1
     r = client.put("/api/vehicule/3", json={"name": "X"})
     assert r.status_code == 403
+
+
+def test_create_vehicule_duplicate_immatriculation_400(client):
+    _login(client)
+    # AA-123-AA existe déjà (seed)
+    r = client.post(
+        "/api/vehicule",
+        json={
+            "name": "Doublon",
+            "immatriculation": "AA-123-AA",
+            "category": "voiture",
+            "status": "en service",
+        },
+    )
+    assert r.status_code == 400

@@ -123,6 +123,14 @@ def test_delete_center_cross_center_403(client):
     assert r.status_code == 403
 
 
+def test_delete_center_with_dependencies_409(client):
+    """DELETE /api/center/{id} sur un centre avec users/stocks → 409."""
+    _login(client, email="superadmin@resto.com", password="1234")
+    # centre 1 = Melun, a des users + stocks + vehicules + inventaires
+    r = client.delete("/api/center/1")
+    assert r.status_code == 409
+
+
 def test_warehouse_infos(client):
     """GET /api/warehouse/{id} → infos entrepôt (centre 6 = Entrepôt Torcy)."""
     _login(client, email="superadmin@resto.com", password="1234")
