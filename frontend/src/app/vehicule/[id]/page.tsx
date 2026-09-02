@@ -379,17 +379,24 @@ export default function VehiculeDetailPage() {
           <h2 className="text-sm font-semibold text-slate-800 mb-3">
             Historique d'utilisation
           </h2>
-          <ul className="space-y-2 text-sm text-slate-600">
-            <li className="flex items-center gap-2">
-              <FileText size={14} /> Sortie distribution - aujourd'hui
-            </li>
-            <li className="flex items-center gap-2">
-              <ShieldAlert size={14} /> Retour entrepôt - il y a 2 jours
-            </li>
-            <li className="flex items-center gap-2">
-              <FileText size={14} /> Révision effectuée - il y a 14 jours
-            </li>
-          </ul>
+          {!data?.documents || data.documents.length === 0 ? (
+            <div className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600">
+              Aucun historique disponible pour ce véhicule.
+            </div>
+          ) : (
+            <ul className="space-y-2 text-sm text-slate-600">
+              {data.documents.map((document) => (
+                <li
+                  key={document.id}
+                  className="flex items-center gap-2"
+                >
+                  <FileText size={14} />
+                  {document.description || document.file_name} -{" "}
+                  {formatDate(document.upload_date)}
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
       </div>
     </PageLayout>

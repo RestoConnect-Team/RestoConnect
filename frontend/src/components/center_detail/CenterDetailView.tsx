@@ -1,6 +1,6 @@
 import { Row } from "@/app/my_center/page";
 import { ContactInfo } from "@/lib/api/center_detail_info";
-import { EquipmentService } from "@/services/equipment.service";
+import { apiFetch } from "@/lib/api/client";
 import { CenterDetails } from "@/types/center";
 import { EquipmentItem } from "@/types/equipment";
 import { renderCategoryIcon } from "@/utils/equipmentCategory";
@@ -27,8 +27,21 @@ export function CenterDetailView({
   center,
   isDashboard = false,
 }: CenterDetailViewProps) {
-  // TODO: add in backend list of equipments in center details
   const [equipments, setEquipements] = useState<EquipmentItem[]>([]);
+
+  useEffect(() => {
+    const fetchEquipments = async () => {
+      try {
+        const data = await apiFetch<EquipmentItem[]>(
+          `/api/center/${center.center_id}/stocks`,
+        );
+        setEquipements(data);
+      } catch {
+        setEquipements([]);
+      }
+    };
+    fetchEquipments();
+  }, [center.center_id]);
 
   const router = useRouter();
   const address = [
