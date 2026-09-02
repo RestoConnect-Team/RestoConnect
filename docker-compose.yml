@@ -21,9 +21,11 @@ services:
       dockerfile: backend/Dockerfile
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-restos_connect}
+      WATCHFILES_FORCE_POLLING: "true"
     ports:
       - "8000:8000"
     volumes:
+      - ./backend:/app/backend
       - ./uploads:/app/uploads
       - ./uploads/avatars:/app/uploads/avatars
     depends_on:
@@ -36,8 +38,13 @@ services:
       dockerfile: frontend/Dockerfile
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+        WATCHFILES_FORCE_POLLING: "true"
     ports:
       - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
     depends_on:
       - backend
 

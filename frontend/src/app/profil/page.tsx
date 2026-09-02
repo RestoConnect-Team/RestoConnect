@@ -58,7 +58,6 @@ export default function Profil() {
                     {profil.name} {profil.lastname}
                   </h2>
                   <p className="text-gray-400">
-                    {/* TODO mailto et telto */}
                     {profil.email} - {profil.telephone}
                   </p>
                   <p className="text-[rgb(230,0,126)] font-semibold text-lg">
@@ -101,9 +100,12 @@ export default function Profil() {
               <Settings />
               <span>Paramètres</span>
             </button>
-            <button className="flex p-4 gap-4 w-full text-red-600 hover:bg-red-100 cursor-pointer transition-colors">
+            <button
+              onClick={handleLogOut}
+              className="flex p-4 gap-4 w-full text-red-600 hover:bg-red-100 cursor-pointer transition-colors"
+            >
               <LogOut />
-              <span onClick={handleLogOut}>Se déconnecter</span>
+              <span>Se déconnecter</span>
             </button>
           </div>
         </div>

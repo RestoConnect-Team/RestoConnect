@@ -7,6 +7,8 @@ from app.core.config import BASE_URL
 
 
 def get_user_profile(token: str, db: Session) -> UserProfile:
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
     user = get_user_by_token_service(db, token)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")

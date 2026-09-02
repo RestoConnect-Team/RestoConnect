@@ -7,32 +7,38 @@ from .vehicule_infos import VehiculeInfos
 from .vehicule_document_infos import VehiculeDocumentInfos
 from .vehicule_alert import VehiculeAlert
 from .vehicule_infos_detail_response import VehiculeDetailResponse
-from .equipement_list_schema import OneEquipementFromList 
+from .equipement_list_schema import OneEquipementFromList
 from .one_center_from_list_schema import OneCenterFromList
 from .center_schedule_schema import TimeSlot, WeeklySchedule
-from .center_infos_schema import CenterInfos, ContactInfo, CenterAlert, ClosingPeriodSchema, UpdateCenterRequest, TimeSlotInput
+from .center_infos_schema import (
+    CenterInfos,
+    ContactInfo,
+    CenterAlert,
+    ClosingPeriodSchema,
+    UpdateCenterRequest,
+    TimeSlotInput,
+)
 from .warehouse_infos_schema import WarehouseInfos
 from .product_reference_scan import ProductScanResponse, ProductStatusUpdate
 from .get_list_centers_response_schema import ListCentersResponse
 
 from .one_stock_from_inventory import OneStockFromInventory
 from .one_inventory_from_inventorys import OneInventoryFromInventorys
+from .inventory_stock_status_update import InventoryStockStatusUpdate
+from .stock_create_update import StockCreate, StockUpdate
+from .vehicule_create_update import VehiculeCreate, VehiculeUpdate
 
 __all__ = [
     "LoginRequest",
     "LoginResponse",
-    
     "UserProfile",
-
     "OneVehiculeFromList",
     "VehiculeListGrouped",
     "VehiculeDetailResponse",
     "VehiculeInfos",
     "VehiculeDocumentInfos",
     "VehiculeAlert",
-
     "OneEquipementFromList",
-    
     "OneCenterFromList",
     "TimeSlot",
     "WeeklySchedule",
@@ -46,7 +52,11 @@ __all__ = [
     "ListCentersResponse",
     "ProductScanResponse",
     "ProductStatusUpdate",
-
     "OneStockFromInventory",
-    "OneInventoryFromInventorys"
-    ]
+    "OneInventoryFromInventorys",
+    "InventoryStockStatusUpdate",
+    "StockCreate",
+    "StockUpdate",
+    "VehiculeCreate",
+    "VehiculeUpdate",
+]

@@ -9,17 +9,8 @@ export interface Center {
     responsable_number: string;
   }
 
-  export const fetchCenterInfo = async () => {
-    const response = await fetch('http://localhost:8000/api/my_center', {
-        method: 'GET',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-    });
-    const data = await response.json();
+  import { apiFetch } from "./client";
 
-    if (!response.ok) {
-        throw new Error(data.detail || 'Failed to fetch center info');
-      }
-    
-      return data as Center;
-};
+  export const fetchCenterInfo = async () => {
+    return apiFetch<Center>('/api/my_center');
+  };

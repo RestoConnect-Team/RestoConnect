@@ -12,17 +12,8 @@ export interface VehiculeData {
   vehicules_other: VehiculeItem[];
 }
 
+import { apiFetch } from "./client";
+
 export const fetchVehiculeList = async (): Promise<VehiculeData> => {
-  const response = await fetch("http://localhost:8000/api/list_vehicules", {
-    method: "GET",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-  });
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.detail || "Failed to fetch vehicules");
-  }
-
-  return data as VehiculeData;
+  return apiFetch<VehiculeData>("/api/list_vehicules");
 };

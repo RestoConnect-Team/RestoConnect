@@ -8,6 +8,7 @@ type FooterTableProps = {
   numberPerPageList?: number[];
   numberPerPage: number;
   setNumberPerPage: (value: number) => void;
+  itemLabel?: string;
 };
 
 export function FooterTable({
@@ -18,6 +19,7 @@ export function FooterTable({
   numberPerPage = 10,
   numberPerPageList = [10, 20, 50, 100],
   setNumberPerPage,
+  itemLabel = "matériel(s)",
 }: FooterTableProps) {
   return (
     <div className="border border-slate-200 rounded-b-xl bg-white ">
@@ -73,7 +75,7 @@ export function FooterTable({
           </select>
           éléments par page
         </div>
-        {listLength} matériel(s) trouvé(s)
+        {listLength} {itemLabel} trouvé(s)
       </div>
     </div>
   );
