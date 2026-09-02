@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, use } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PageLayout } from "@/components/layout/PageLayout";
 import { Button } from "@/components/ui/Button";
+import { updateVehicule } from "@/lib/api/vehicule_crud";
 
 const CATEGORIES = [
   "frigorifique",
@@ -68,12 +70,33 @@ export default function EditVehiculePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = params;
+  const { id } = use(params);
+  const router = useRouter();
   const [name, setName] = useState("Véhicule 1");
   const [immatriculation, setImmatriculation] = useState("AA-123-AA");
   const [category, setCategory] = useState<string>("voiture");
   const [status, setStatus] = useState<string>("en service");
   const [nbKm, setNbKm] = useState("120000");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSave = async () => {
+    setSubmitting(true);
+    setError("");
+    try {
+      await updateVehicule(Number(id), {
+        name,
+        immatriculation,
+        category,
+        status,
+        nb_km: nbKm ? Number(nbKm) : 0,
+      });
+      router.push(`/vehicule/${id}`);
+    } catch (err: any) {
+      setError(err.message || "Erreur lors de la modification du véhicule");
+      setSubmitting(false);
+    }
+  };
 
   return (
     <PageLayout>
@@ -132,6 +155,10 @@ export default function EditVehiculePage({
           </div>
         </div>
 
+        {error && (
+          <p className="text-[13px] text-red-600">{error}</p>
+        )}
+
         <div className="flex gap-3">
           <Link
             href={`/vehicule/${id}`}
@@ -139,8 +166,8 @@ export default function EditVehiculePage({
           >
             Annuler
           </Link>
-          <Button className="flex-1" onClick={() => {}}>
-            Enregistrer
+          <Button className="flex-1" disabled={submitting} onClick={handleSave}>
+            {submitting ? "Enregistrement..." : "Enregistrer"}
           </Button>
         </div>
       </div>

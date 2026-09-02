@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, use } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PageLayout } from "@/components/layout/PageLayout";
 import { Button } from "@/components/ui/Button";
 import { EquipmentCategory } from "@/types/categoryStatus";
+import { updateEquipment } from "@/lib/api/equipment_crud";
 
 const CATEGORIES = Object.values(EquipmentCategory);
 
@@ -49,11 +51,26 @@ export default function EditEquipmentPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = params;
+  const { id } = use(params);
+  const router = useRouter();
   const [name, setName] = useState("Pc");
   const [category, setCategory] = useState<string>(EquipmentCategory.IT);
   const [reference, setReference] = useState("REF001_c1");
   const [description, setDescription] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSave = async () => {
+    setSubmitting(true);
+    setError("");
+    try {
+      await updateEquipment(Number(id), { name, category, reference, description });
+      router.push(`/equipment/${id}`);
+    } catch (err: any) {
+      setError(err.message || "Erreur lors de la modification du matériel");
+      setSubmitting(false);
+    }
+  };
 
   return (
     <PageLayout>
@@ -103,6 +120,10 @@ export default function EditEquipmentPage({
           </div>
         </div>
 
+        {error && (
+          <p className="text-[13px] text-red-600">{error}</p>
+        )}
+
         <div className="flex gap-3">
           <Link
             href={`/equipment/${id}`}
@@ -110,8 +131,8 @@ export default function EditEquipmentPage({
           >
             Annuler
           </Link>
-          <Button className="flex-1" onClick={() => {}}>
-            Enregistrer
+          <Button className="flex-1" disabled={submitting} onClick={handleSave}>
+            {submitting ? "Enregistrement..." : "Enregistrer"}
           </Button>
         </div>
       </div>

@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PageLayout } from "@/components/layout/PageLayout";
 import { Button } from "@/components/ui/Button";
 import { EquipmentCategory } from "@/types/categoryStatus";
+import { createEquipment } from "@/lib/api/equipment_crud";
 
 const CATEGORIES = Object.values(EquipmentCategory);
 
@@ -47,13 +49,28 @@ function Input({
 }
 
 export default function NewEquipmentPage() {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
   const [category, setCategory] = useState<string>(CATEGORIES[0]);
   const [reference, setReference] = useState("");
   const [description, setDescription] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const canNext = step === 1 ? name.trim() !== "" && reference.trim() !== "" : true;
+
+  const handleCreate = async () => {
+    setSubmitting(true);
+    setError("");
+    try {
+      await createEquipment({ name, category, reference, description });
+      router.push("/equipment");
+    } catch (err: any) {
+      setError(err.message || "Erreur lors de la création du matériel");
+      setSubmitting(false);
+    }
+  };
 
   return (
     <PageLayout>
@@ -145,6 +162,10 @@ export default function NewEquipmentPage() {
           </div>
         )}
 
+        {error && (
+          <p className="text-[13px] text-red-600">{error}</p>
+        )}
+
         <div className="flex gap-3">
           {step === 2 && (
             <Button
@@ -164,8 +185,12 @@ export default function NewEquipmentPage() {
               Suivant
             </Button>
           ) : (
-            <Button className="flex-1" onClick={() => {}}>
-              Créer le matériel
+            <Button
+              className="flex-1"
+              disabled={submitting}
+              onClick={handleCreate}
+            >
+              {submitting ? "Création..." : "Créer le matériel"}
             </Button>
           )}
         </div>

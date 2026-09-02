@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { PageLayout } from "@/components/layout/PageLayout";
 import { Button } from "@/components/ui/Button";
+import { createVehicule } from "@/lib/api/vehicule_crud";
 
 const CATEGORIES = [
   "frigorifique",
@@ -64,17 +66,38 @@ function Input({
 }
 
 export default function NewVehiculePage() {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [name, setName] = useState("");
   const [immatriculation, setImmatriculation] = useState("");
   const [category, setCategory] = useState<string>(CATEGORIES[0]);
   const [status, setStatus] = useState<string>(STATUSES[0]);
   const [nbKm, setNbKm] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const canNext =
     step === 1
       ? name.trim() !== "" && immatriculation.trim() !== ""
       : true;
+
+  const handleCreate = async () => {
+    setSubmitting(true);
+    setError("");
+    try {
+      await createVehicule({
+        name,
+        immatriculation,
+        category,
+        status,
+        nb_km: nbKm ? Number(nbKm) : 0,
+      });
+      router.push("/vehicule");
+    } catch (err: any) {
+      setError(err.message || "Erreur lors de la création du véhicule");
+      setSubmitting(false);
+    }
+  };
 
   return (
     <PageLayout>
@@ -180,6 +203,10 @@ export default function NewVehiculePage() {
           </div>
         )}
 
+        {error && (
+          <p className="text-[13px] text-red-600">{error}</p>
+        )}
+
         <div className="flex gap-3">
           {step === 2 && (
             <Button
@@ -199,8 +226,12 @@ export default function NewVehiculePage() {
               Suivant
             </Button>
           ) : (
-            <Button className="flex-1" onClick={() => {}}>
-              Créer le véhicule
+            <Button
+              className="flex-1"
+              disabled={submitting}
+              onClick={handleCreate}
+            >
+              {submitting ? "Création..." : "Créer le véhicule"}
             </Button>
           )}
         </div>
