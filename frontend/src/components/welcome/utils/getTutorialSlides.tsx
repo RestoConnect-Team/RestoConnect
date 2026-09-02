@@ -3,20 +3,24 @@ import { Profile, fetchProfilInfo } from "@/lib/api/my_profil_info";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "../../ui/button";
 import { ReactNode } from "react";
+import { useSettings } from "@/contexts/SettingsContext";
+import { useRouter } from "next/navigation";
 
-interface WelcomeSlide {
+interface TutorialSlide {
   bgColor: string;
   node: ReactNode;
   img?: ReactNode;
 }
 
-export default function getWelcomeSlides(
+export default function getTutorialSlides(
   index: number,
   setIndex: (i: number) => void,
 ) {
   const { data: profile } = useFetchData<Profile>(fetchProfilInfo);
+  const { setIsTutorialOpen } = useSettings();
+  const router = useRouter();
 
-  const slides: WelcomeSlide[] = [
+  const slides: TutorialSlide[] = [
     {
       bgColor: "bg-gradient-to-r from-[#CB006B] to-[#960050]",
       node: (
@@ -93,18 +97,20 @@ export default function getWelcomeSlides(
             manquant ou endommagé. Vous pouvez faire une pause et reprendre plus
             tard.
           </p>
-          <div className="flex gap-5 w-[75%]">
-            <Button
-              onClick={() => setIndex(index - 1)}
-              variant="discreet"
-              className="!h-10 flex-1 !text-gray-400 hover:!text-[#cb006b]"
-            >
-              <ArrowLeft />
-            </Button>
-            <Button className="flex-1" onClick={() => setIndex(index + 1)}>
-              Suivant
-              <ArrowRight />
-            </Button>
+          <div className="w-full flex justify-center">
+            <div className="flex gap-5 w-[75%]">
+              <Button
+                onClick={() => setIndex(index - 1)}
+                variant="discreet"
+                className="!h-10 flex-1 !text-gray-400 hover:!text-[#cb006b]"
+              >
+                <ArrowLeft />
+              </Button>
+              <Button className="flex-1" onClick={() => setIndex(index + 1)}>
+                Suivant
+                <ArrowRight />
+              </Button>
+            </div>
           </div>
         </>
       ),
@@ -126,17 +132,25 @@ export default function getWelcomeSlides(
             Matériel abîmé, introuvable ou étiquette illisible ? Envoyez un
             signalement directement au responsable de votre centre.
           </p>
-          <div className="flex gap-5 w-[75%]">
-            <Button
-              onClick={() => setIndex(index - 1)}
-              variant="discreet"
-              className="!h-10 flex-1 !text-gray-400 hover:!text-[#cb006b]"
-            >
-              <ArrowLeft />
-            </Button>
-            <Button className="flex-1" onClick={() => {}}>
-              C'est parti !
-            </Button>
+          <div className="w-full flex justify-center">
+            <div className="flex gap-5 w-[75%]">
+              <Button
+                onClick={() => setIndex(index - 1)}
+                variant="discreet"
+                className="!h-10 flex-1 !text-gray-400 hover:!text-[#cb006b]"
+              >
+                <ArrowLeft />
+              </Button>
+              <Button
+                className="flex-1"
+                onClick={() => {
+                  setIsTutorialOpen(false);
+                  router.push("/dashboard");
+                }}
+              >
+                C'est parti !
+              </Button>
+            </div>
           </div>
         </>
       ),

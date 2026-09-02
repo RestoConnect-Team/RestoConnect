@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 export const routes = [
-  { href: "/my_center", label: "Mon tableau de bord", Icon: LayoutDashboard },
+  { href: "/dashboard", label: "Mon tableau de bord", Icon: LayoutDashboard },
   { href: "/equipment", label: "Matériels", Icon: Package },
   { href: "/inventaires", label: "Inventaires", Icon: ClipboardList },
   { href: "/vehicule", label: "Véhicules", Icon: Truck },
