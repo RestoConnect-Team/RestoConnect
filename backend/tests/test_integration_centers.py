@@ -82,12 +82,14 @@ def test_center_detail_marks_user_center_flag(client):
     assert r2.json()["is_user_center"] is False
 
 
-def test_delete_center_without_token_bug(client):
-    """BUG EXPOSÉ — DELETE /api/center/{id} sans auth réussit (devrait être 401).
+def test_delete_center_without_token_401(client):
+    """DELETE /api/center/{id} sans token → 401."""
+    r = client.delete("/api/center/1")
+    assert r.status_code == 401
 
-    Ce test documente un bug de sécurité connu (cf. insights.md).
-    On crée un centre jetable, on vérifie qu'on peut le supprimer sans token.
-    """
+
+def test_delete_center_same_center_ok(client):
+    """DELETE /api/center/{id} sur son propre centre → 200."""
     from app.enums import CenterStatus
     from conftest import TestSessionLocal
 
@@ -108,11 +110,17 @@ def test_delete_center_without_token_bug(client):
     finally:
         db.close()
 
+    _login(client, email="superadmin@resto.com", password="1234")
     r = client.delete(f"/api/center/{cid}")
-    # Bug documenté : 200 au lieu de 401 (route delete sans auth).
-    assert r.status_code == 200, (
-        "DELETE center sans token devrait échouer (bug à corriger)"
-    )
+    assert r.status_code == 200, r.text
+
+
+def test_delete_center_cross_center_403(client):
+    """DELETE /api/center/{id} sur un centre d'un autre centre → 403."""
+    _login(client, email="resp1@resto.com", password="1234")
+    # resp1 est au centre 1, centre 2 = Meaux
+    r = client.delete("/api/center/2")
+    assert r.status_code == 403
 
 
 def test_warehouse_infos(client):

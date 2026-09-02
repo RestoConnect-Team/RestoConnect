@@ -56,6 +56,14 @@ def test_stock_detail_not_found(client):
     assert r.status_code == 404
 
 
+def test_stock_detail_cross_center_403(client):
+    """GET /api/stock/{id} sur un stock d'un autre centre → 403."""
+    _login(client, email="resp1@resto.com", password="1234")
+    # stock 3 = REF001_c2 (centre 2), resp1 est au centre 1
+    r = client.get("/api/stock/3")
+    assert r.status_code == 403
+
+
 def test_scan_unknown_reference_returns_404(client):
     """GET /api/stock/scan?reference=INEXISTANT → 404."""
     _login(client, email="resp1@resto.com", password="1234")
@@ -77,11 +85,14 @@ def test_update_stock_status_unknown_stock_404(client):
     assert r.status_code == 404
 
 
-def test_delete_stock_without_token_bug(client):
-    """BUG EXPOSÉ — DELETE /api/stock/{id} sans auth réussit (devrait être 401).
+def test_delete_stock_without_token_401(client):
+    """DELETE /api/stock/{id} sans token → 401."""
+    r = client.delete("/api/stock/1")
+    assert r.status_code == 401
 
-    Bug de sécurité connu (cf. insights.md). On crée un stock jetable.
-    """
+
+def test_delete_stock_same_center_ok(client):
+    """DELETE /api/stock/{id} sur un stock de son centre → 200."""
     from app.enums import StockStatus, StockCategory
     from conftest import TestSessionLocal
     from datetime import date
@@ -104,14 +115,21 @@ def test_delete_stock_without_token_bug(client):
     finally:
         db.close()
 
+    _login(client, email="resp1@resto.com", password="1234")
     r = client.delete(f"/api/stock/{sid}")
-    # Bug documenté : 200 au lieu de 401 (route delete sans auth).
-    assert r.status_code == 200, (
-        "DELETE stock sans token devrait échouer (bug à corriger)"
-    )
+    assert r.status_code == 200, r.text
+
+
+def test_delete_stock_cross_center_403(client):
+    """DELETE /api/stock/{id} sur un stock d'un autre centre → 403."""
+    _login(client, email="resp1@resto.com", password="1234")
+    # stock 3 = REF001_c2 (centre 2), resp1 est au centre 1
+    r = client.delete("/api/stock/3")
+    assert r.status_code == 403
 
 
 def test_delete_stock_not_found(client):
-    """DELETE /api/stock/9999 sans auth → 404 (le service retourne False)."""
+    """DELETE /api/stock/9999 avec token → 404 (le service retourne False)."""
+    _login(client, email="resp1@resto.com", password="1234")
     r = client.delete("/api/stock/9999")
     assert r.status_code == 404

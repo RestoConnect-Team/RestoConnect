@@ -54,12 +54,14 @@ def test_vehicule_detail_not_found(client):
     assert r.status_code == 404
 
 
-def test_delete_vehicule_without_token_bug(client):
-    """BUG EXPOSÉ — DELETE /api/vehicule/{id} sans auth réussit (devrait être 401).
+def test_delete_vehicule_without_token_401(client):
+    """DELETE /api/vehicule/{id} sans token → 401."""
+    r = client.delete("/api/vehicule/1")
+    assert r.status_code == 401
 
-    Bug de sécurité connu (cf. insights.md). On crée un véhicule jetable.
-    Note : delete_vehicule_controller appelle le service 2 fois (bug logique).
-    """
+
+def test_delete_vehicule_same_center_ok(client):
+    """DELETE /api/vehicule/{id} sur un véhicule de son centre → 200."""
     from app.enums import VehiculeCategory, VehiculeStatus
     from conftest import TestSessionLocal
     from datetime import date
@@ -85,8 +87,14 @@ def test_delete_vehicule_without_token_bug(client):
     finally:
         db.close()
 
+    _login(client, email="resp1@resto.com", password="1234")
     r = client.delete(f"/api/vehicule/{vid}")
-    # Bug documenté : 200 au lieu de 401 (route delete sans auth).
-    assert r.status_code == 200, (
-        "DELETE vehicule sans token devrait échouer (bug à corriger)"
-    )
+    assert r.status_code == 200, r.text
+
+
+def test_delete_vehicule_cross_center_403(client):
+    """DELETE /api/vehicule/{id} sur un véhicule d'un autre centre → 403."""
+    _login(client, email="resp1@resto.com", password="1234")
+    # véhicule 3 = centre 2, resp1 est au centre 1
+    r = client.delete("/api/vehicule/3")
+    assert r.status_code == 403
