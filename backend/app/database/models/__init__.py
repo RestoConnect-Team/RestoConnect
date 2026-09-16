@@ -16,6 +16,9 @@ from .inventory_stock import InventoryStock
 
 from .comment import Comment
 
+from .vehicule_inventory import VehiculeInventory
+from .vehicule_inventory_item import VehiculeInventoryItem
+
 
 __all__ = [
     "User",
@@ -30,4 +33,6 @@ __all__ = [
     "Inventory",
     "InventoryStock",
     "Comment",
+    "VehiculeInventory",
+    "VehiculeInventoryItem",
 ]

@@ -25,6 +25,7 @@ from app.api.endpoints import (
     get_center_stocks_route,
     export_centers_route,
     comment_route,
+    vehicule_inventory_route,
     create_inventory_route,
     get_list_inventories_route,
     get_list_stocks_inventory_route,
@@ -78,6 +79,11 @@ api_router.include_router(
     export_centers_route.router, prefix="/center", tags=["Center"]
 )
 api_router.include_router(comment_route.router, tags=["Comment"])
+api_router.include_router(
+    vehicule_inventory_route.router,
+    prefix="/vehicule_inventory",
+    tags=["VehiculeInventory"],
+)
 
 api_router.include_router(get_list_stocks_route.router, tags=["Stock"])
 api_router.include_router(get_stock_by_scan.router, prefix="/stock", tags=["Stock"])

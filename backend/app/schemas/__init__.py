@@ -31,6 +31,10 @@ from .vehicule_create_update import VehiculeCreate, VehiculeUpdate
 from .user_create import UserCreate
 from .center_export_request import CenterExportRequest
 from .comment import CommentCreate, CommentModerate, CommentResponse
+from .vehicule_inventory_schemas import (
+    OneVehiculeFromInventory,
+    VehiculeInventoryResponse,
+)
 
 __all__ = [
     "LoginRequest",
@@ -69,4 +73,6 @@ __all__ = [
     "CommentCreate",
     "CommentModerate",
     "CommentResponse",
+    "OneVehiculeFromInventory",
+    "VehiculeInventoryResponse",
 ]
