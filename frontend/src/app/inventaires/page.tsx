@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { CheckCircle2, Clock, Eye, Plus } from "lucide-react";
+import { CheckCircle2, Clock, Eye, Pause, Play, Plus } from "lucide-react";
 
 import { useFetchData } from "@/hooks/useFetchData";
 import {
   fetchInventoriesList,
   createInventory,
+  updateInventoryStatus,
   InventoryItem,
 } from "@/lib/api/inventories";
 
@@ -24,6 +25,13 @@ function statusBadge(status: string) {
       Icon: CheckCircle2,
     };
   }
+  if (status === "en pause") {
+    return {
+      className:
+        "inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-3 py-1 text-slate-600 font-medium",
+      Icon: Pause,
+    };
+  }
   return {
     className:
       "inline-flex items-center gap-1.5 rounded-md border border-amber-300 bg-amber-50 px-3 py-1 text-amber-800 font-medium",
@@ -37,6 +45,7 @@ export default function Inventaires() {
   const inventories = data ?? [];
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState("");
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
 
   const sorted = useMemo(
     () =>
@@ -56,6 +65,17 @@ export default function Inventaires() {
     } catch (err: any) {
       setCreateError(err.message || "Erreur lors de la création de l'inventaire");
       setCreating(false);
+    }
+  };
+
+  const togglePause = async (inv: InventoryItem) => {
+    setUpdatingId(inv.inventory_id);
+    const next = inv.status_inventory_stock === "en pause" ? "en cours" : "en pause";
+    try {
+      await updateInventoryStatus(inv.inventory_id, next);
+      window.location.reload();
+    } catch {
+      setUpdatingId(null);
     }
   };
 
@@ -131,6 +151,24 @@ export default function Inventaires() {
                             >
                               <Eye size={16} />
                             </Link>
+                            {inv.status_inventory_stock !== "terminé" && (
+                              <button
+                                onClick={() => togglePause(inv)}
+                                disabled={updatingId === inv.inventory_id}
+                                className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors disabled:opacity-50"
+                                aria-label={
+                                  inv.status_inventory_stock === "en pause"
+                                    ? "Reprendre l'inventaire"
+                                    : "Mettre en pause l'inventaire"
+                                }
+                              >
+                                {inv.status_inventory_stock === "en pause" ? (
+                                  <Play size={16} />
+                                ) : (
+                                  <Pause size={16} />
+                                )}
+                              </button>
+                            )}
                           </td>
                         </tr>
                       );

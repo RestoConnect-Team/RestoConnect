@@ -46,3 +46,13 @@ export const updateInventoryStockStatus = async (
     },
   );
 };
+
+export const updateInventoryStatus = async (
+  inventoryId: number,
+  status: string,
+): Promise<InventoryItem> => {
+  return apiFetch<InventoryItem>(`/api/inventory/${inventoryId}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({ status }),
+  });
+};

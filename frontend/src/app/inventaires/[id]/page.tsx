@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { use, useState } from "react";
-import { ArrowLeft, CheckCircle2, CircleAlert } from "lucide-react";
+import { ArrowLeft, CheckCircle2, CircleAlert, CircleCheck } from "lucide-react";
 
 import { useFetchData } from "@/hooks/useFetchData";
 import {
   fetchInventoryStocks,
   updateInventoryStockStatus,
+  updateInventoryStatus,
   InventoryStockItem,
 } from "@/lib/api/inventories";
 
@@ -43,6 +44,7 @@ export default function InventoryDetailPage({
   );
   const stocks = data ?? [];
   const [updatingId, setUpdatingId] = useState<number | null>(null);
+  const [validating, setValidating] = useState(false);
 
   const present = stocks.filter((s) => s.status_inventory_stock === "Présent");
   const absent = stocks.filter((s) => s.status_inventory_stock === "Absent");
@@ -56,6 +58,16 @@ export default function InventoryDetailPage({
       window.location.reload();
     } catch {
       setUpdatingId(null);
+    }
+  };
+
+  const validateInventory = async () => {
+    setValidating(true);
+    try {
+      await updateInventoryStatus(inventoryId, "terminé");
+      window.location.href = "/inventaires";
+    } catch {
+      setValidating(false);
     }
   };
 
@@ -90,6 +102,15 @@ export default function InventoryDetailPage({
                 <p className="text-sm text-red-700">Absents</p>
               </div>
             </div>
+
+            <button
+              onClick={validateInventory}
+              disabled={validating}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-[rgb(230,0,126)] px-4 py-2 text-sm font-medium text-white hover:bg-[rgb(200,0,110)] disabled:opacity-50 transition-colors"
+            >
+              <CircleCheck size={16} />
+              {validating ? "Validation..." : "Valider l'inventaire"}
+            </button>
 
             <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
               <table className="w-full text-sm">

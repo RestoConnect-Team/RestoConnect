@@ -25,6 +25,7 @@ from .get_list_centers_response_schema import ListCentersResponse
 from .one_stock_from_inventory import OneStockFromInventory
 from .one_inventory_from_inventorys import OneInventoryFromInventorys
 from .inventory_stock_status_update import InventoryStockStatusUpdate
+from .inventory_status_update import InventoryStatusUpdate
 from .stock_create_update import StockCreate, StockUpdate
 from .vehicule_create_update import VehiculeCreate, VehiculeUpdate
 
@@ -55,6 +56,7 @@ __all__ = [
     "OneStockFromInventory",
     "OneInventoryFromInventorys",
     "InventoryStockStatusUpdate",
+    "InventoryStatusUpdate",
     "StockCreate",
     "StockUpdate",
     "VehiculeCreate",
