@@ -15,6 +15,7 @@ export interface ProductInfo {
   reference: string;
   status: StockStatus;
   center_name: string;
+  already_found?: boolean;
 }
 
 interface ProductInfoFooterProps {
@@ -29,6 +30,7 @@ export function ProductInfoFooter({
   onViewDetails,
 }: ProductInfoFooterProps) {
   const isError = product.status === StockStatus.ERROR;
+  const isDuplicate = product.already_found === true;
 
   if (isError) {
     return (
@@ -51,6 +53,46 @@ export function ProductInfoFooter({
           <Button onClick={() => console.log("Signaler un problème")}>
             <Send size={14} />
             Signaler
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  if (isDuplicate) {
+    return (
+      <div className="bg-white rounded-t-2xl p-5 shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)]">
+        <div className="flex items-center gap-3 mb-4 p-3 rounded-xl bg-[#FFF4E5] border border-[#E6A23C]">
+          <CircleAlert size={18} className="text-[#8B5A00] shrink-0" />
+          <div>
+            <div className="text-[14px] font-semibold text-[#8B5A00]">
+              Matériel déjà scanné
+            </div>
+            <div className="text-[12px] text-[#8B5A00]/80">
+              Ce matériel a déjà été marqué présent dans cet inventaire.
+            </div>
+          </div>
+        </div>
+        <div className="flex items-start gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border bg-blue-50 text-blue-700 border-blue-200">
+            <Monitor size={18} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[15px] font-bold text-gray-900">
+              {product.name}
+            </div>
+            <div className="text-[12px] text-gray-400 font-mono">
+              {product.reference}
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={onNewScan}>
+            Scanner autre
+          </Button>
+          <Button onClick={onViewDetails}>
+            <Eye size={14} />
+            Voir la fiche
           </Button>
         </div>
       </div>

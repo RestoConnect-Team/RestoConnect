@@ -34,7 +34,9 @@ def get_stock_by_reference(reference: str, token: str, db: Session):
     if not _user_can_access_center(user, db, product.center_id):
         raise HTTPException(status_code=403, detail="Accès refusé à ce matériel")
 
-    mark_stock_found_in_inventory_service(product.id, user.center_id, db)
+    already_found = mark_stock_found_in_inventory_service(
+        product.id, user.center_id, db
+    )
 
     return ProductScanResponse(
         id=product.id,
@@ -42,4 +44,5 @@ def get_stock_by_reference(reference: str, token: str, db: Session):
         reference=product.reference,
         status=product.status,
         center_name=product.center.name,
+        already_found=already_found,
     )
