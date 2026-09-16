@@ -4,6 +4,7 @@ from app.api.endpoints import (
     get_login_connection_route,
     deconnect_route,
     get_user_route,
+    create_user_route,
     get_list_vehicules_route,
     get_vehicule_infos_route,
     delete_vehicule_route,
@@ -43,6 +44,7 @@ api_router.include_router(
 
 api_router.include_router(get_user_route.router)
 api_router.include_router(get_user_route.router, prefix="/user", tags=["User"])
+api_router.include_router(create_user_route.router, prefix="/user", tags=["User"])
 
 api_router.include_router(get_list_vehicules_route.router, tags=["Vehicule"])
 api_router.include_router(

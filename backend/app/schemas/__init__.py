@@ -28,6 +28,7 @@ from .inventory_stock_status_update import InventoryStockStatusUpdate
 from .inventory_status_update import InventoryStatusUpdate
 from .stock_create_update import StockCreate, StockUpdate
 from .vehicule_create_update import VehiculeCreate, VehiculeUpdate
+from .user_create import UserCreate
 
 __all__ = [
     "LoginRequest",
@@ -61,4 +62,5 @@ __all__ = [
     "StockUpdate",
     "VehiculeCreate",
     "VehiculeUpdate",
+    "UserCreate",
 ]
