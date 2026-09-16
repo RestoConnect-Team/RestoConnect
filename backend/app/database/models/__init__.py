@@ -2,7 +2,7 @@ from .user import User
 
 from .stock import Stock
 from .scan import Scan
-from .stock_event import StockEvent 
+from .stock_event import StockEvent
 
 from .center import Center
 from .center_scheduale import CenterSchedule
@@ -14,21 +14,20 @@ from .vehicule_document import VehiculeDocument
 from .inventory import Inventory
 from .inventory_stock import InventoryStock
 
+from .comment import Comment
+
 
 __all__ = [
     "User",
-
     "Stock",
-    "StockEvent", 
-
+    "StockEvent",
     "Scan",
-
     "Center",
     "CenterSchedule",
     "ClosingPeriod",
-
     "Vehicule",
     "VehiculeDocument",
-    
     "Inventory",
-    "InventoryStock"]
+    "InventoryStock",
+    "Comment",
+]

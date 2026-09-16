@@ -9,18 +9,19 @@ from .user_status_enum import UserStatus
 
 from .inventory_status_enum import InventoryStatus
 from .inventory_stock_status_enum import InventoryStockStatus
+from .comment_status_enum import CommentStatus
 
 
-__all__=[
+__all__ = [
     "VehiculeCategory",
     "VehiculeStatus",
     "VehiculeAlertLevel",
     "StockCategory",
     "StockStatus",
     "WeekDays",
-    "CenterStatus" ,
+    "CenterStatus",
     "UserStatus",
-
     "InventoryStatus",
-    "InventoryStockStatus"
+    "InventoryStockStatus",
+    "CommentStatus",
 ]

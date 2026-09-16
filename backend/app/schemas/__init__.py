@@ -30,6 +30,7 @@ from .stock_create_update import StockCreate, StockUpdate
 from .vehicule_create_update import VehiculeCreate, VehiculeUpdate
 from .user_create import UserCreate
 from .center_export_request import CenterExportRequest
+from .comment import CommentCreate, CommentModerate, CommentResponse
 
 __all__ = [
     "LoginRequest",
@@ -65,4 +66,7 @@ __all__ = [
     "VehiculeUpdate",
     "UserCreate",
     "CenterExportRequest",
+    "CommentCreate",
+    "CommentModerate",
+    "CommentResponse",
 ]
