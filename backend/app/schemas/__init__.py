@@ -35,6 +35,7 @@ from .vehicule_inventory_schemas import (
     OneVehiculeFromInventory,
     VehiculeInventoryResponse,
 )
+from .stock_transfer import StockTransferRequest
 
 __all__ = [
     "LoginRequest",
@@ -75,4 +76,5 @@ __all__ = [
     "CommentResponse",
     "OneVehiculeFromInventory",
     "VehiculeInventoryResponse",
+    "StockTransferRequest",
 ]
