@@ -4,7 +4,6 @@ import {
   Truck,
   ClipboardList,
   Building2,
-  Users,
   Bell,
   User,
 } from "lucide-react";
@@ -14,7 +13,7 @@ import {
 const ADMIN_ROLES = ["Super administrateur", "Administrateur"];
 
 export const routes = [
-  { href: "/my_center", label: "Mon tableau de bord", Icon: LayoutDashboard },
+  { href: "/dashboard", label: "Mon tableau de bord", Icon: LayoutDashboard },
   { href: "/equipment", label: "Matériels", Icon: Package },
   { href: "/inventaires", label: "Inventaires", Icon: ClipboardList },
   { href: "/vehicule", label: "Véhicules", Icon: Truck },

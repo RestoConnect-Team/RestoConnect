@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "../styles/index.css";
 import { ClientLayout } from "@/components/layout";
+import ContextProviders from "@/components/layout/ContextProviders";
 
 export const metadata: Metadata = {
   title: "RestoConnect",
@@ -16,7 +17,9 @@ export default function RootLayout({
   return (
     <html lang="fr" className="h-full antialiased">
       <body className="min-h-screen">
-        <ClientLayout>{children}</ClientLayout>
+        <ContextProviders>
+          <ClientLayout>{children}</ClientLayout>
+        </ContextProviders>
       </body>
     </html>
   );

@@ -1,4 +1,4 @@
-import { Row } from "@/app/my_center/page";
+import { Row } from "@/app/dashboard/page";
 import { ContactInfo } from "@/lib/api/center_detail_info";
 import { apiFetch } from "@/lib/api/client";
 import { CenterDetails } from "@/types/center";
@@ -211,11 +211,9 @@ export function CenterDetailView({
         <>
           {center.alerts.length > 0 && (
             <Section className="gap-3" title="Dernières alertes">
-              <div className="flex items-center justify-between">
-                <button className="cursor-pointer absolute top-5 right-5 text-[12px] text-[rgb(230,0,126)] hover:underline">
-                  Voir tout
-                </button>
-              </div>
+              <button className="cursor-pointer absolute top-5 right-5 text-[12px] text-[rgb(230,0,126)] hover:underline">
+                Voir tout
+              </button>
               <div>
                 {center.alerts.map((alert, idx) => (
                   <AlertRow key={idx} alert={alert} idx={idx} />

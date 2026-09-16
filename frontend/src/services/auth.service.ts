@@ -10,7 +10,9 @@ export class AuthService {
         body: JSON.stringify({ email, password }),
       });
 
-      if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error("wrong_credentials");
+      } else if (!response.ok) {
         const data = await response.json();
         throw new Error(data.detail || "Login failed");
       }

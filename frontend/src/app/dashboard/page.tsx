@@ -23,7 +23,7 @@ export function Row({
   );
 }
 
-export default function MyCenter() {
+export default function Dashboard() {
   const {
     data: center,
     loading,

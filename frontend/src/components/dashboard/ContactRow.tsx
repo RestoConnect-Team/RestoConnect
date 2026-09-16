@@ -1,4 +1,4 @@
-import { Row } from "@/app/my_center/page";
+import { Row } from "@/app/dashboard/page";
 import { ContactInfo } from "@/lib/api/center_detail_info";
 import { getInitials } from "@/utils/getInitials";
 
@@ -53,7 +53,7 @@ export function ContactRow({
   const online = idx % 2 === 0;
   return (
     <div
-      className={`${isHead ? "" : "border-t border-gray-100"} flex flex-col gap-3 pt-3 first:pt-0 first:mt-0 first:border-0`}
+      className={`${isHead ? "" : "border-t border-gray-100 pt-3"} flex flex-col gap-3 first:pt-0 first:mt-0 first:border-0`}
     >
       <div className="flex w-full gap-3">
         <div

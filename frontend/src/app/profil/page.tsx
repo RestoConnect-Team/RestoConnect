@@ -9,8 +9,11 @@ import { ProfilePicture } from "@/components/layout/ProfilePicture";
 import { Info, LogOut, Settings } from "lucide-react";
 import { AuthService } from "@/services/auth.service";
 import { useRouter } from "next/navigation";
+import { useSettings } from "@/contexts/SettingsContext";
 
 export default function Profil() {
+  const { setIsTutorialOpen } = useSettings();
+
   const {
     data: profil,
     loading,
@@ -86,14 +89,17 @@ export default function Profil() {
           </div>
 
           <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-            <div className="flex p-4 gap-4 text-gray-600 hover:bg-[var(--muted)] border-1 border-gray-100 cursor-pointer transition-colors">
+            <button
+              className="flex w-full p-4 gap-4 text-gray-600 hover:bg-[var(--muted)] border-1 border-gray-100 cursor-pointer transition-colors"
+              onClick={() => setIsTutorialOpen(true)}
+            >
               <Info />
               <span>Revoir le guide de démarrage</span>
-            </div>
-            <div className="flex p-4 gap-4 text-gray-600 hover:bg-[var(--muted)] border-1 border-gray-100 cursor-pointer transition-colors">
+            </button>
+            <button className="flex w-full p-4 gap-4 text-gray-600 hover:bg-[var(--muted)] border-1 border-gray-100 cursor-pointer transition-colors">
               <Settings />
               <span>Paramètres</span>
-            </div>
+            </button>
             <button
               onClick={handleLogOut}
               className="flex p-4 gap-4 w-full text-red-600 hover:bg-red-100 cursor-pointer transition-colors"
