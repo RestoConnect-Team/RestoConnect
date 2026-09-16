@@ -6,7 +6,7 @@ import PageError from "@/components/page_error/page_error";
 import SearchBar from "@/components/searchbar/Searchbar";
 import { CenterService } from "@/services/center.service";
 import { Center, ListCentersResponse } from "@/types/center";
-import { Building2, MapPin, Package, Plus, Users } from "lucide-react";
+import { Building2, MapPin, Package, Plus, Users, Download } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -105,8 +105,30 @@ export default function AllCenters() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [mustReload, setMustReload] = useState<boolean>(true);
+  const [exporting, setExporting] = useState<boolean>(false);
+  const [exportError, setExportError] = useState<string>("");
 
   const centerService = new CenterService();
+
+  const handleExport = async () => {
+    if (!data) return;
+    setExporting(true);
+    setExportError("");
+    try {
+      const allIds = [
+        data.user_center,
+        ...data.centers_list,
+        ...data.warehouses_list,
+      ]
+        .filter((c) => c && c.center_id != null)
+        .map((c) => c.center_id);
+      await centerService.exportCenters(allIds);
+    } catch (e: any) {
+      setExportError(e.message || "Export impossible");
+    } finally {
+      setExporting(false);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -176,6 +198,17 @@ export default function AllCenters() {
               onSearch={(e) => setSearchQuery(e)}
               placeholder="Rechercher par nom, localisation..."
             />
+            <button
+              onClick={handleExport}
+              disabled={exporting}
+              className="inline-flex items-center gap-2 self-start rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-50 transition-colors"
+            >
+              <Download size={16} />
+              {exporting ? "Export..." : "Exporter les centres"}
+            </button>
+            {exportError && (
+              <p className="text-[13px] text-red-600">{exportError}</p>
+            )}
             {(filteredData.centers_list.length > 0 ||
               filteredData.user_center) && (
               <Section
