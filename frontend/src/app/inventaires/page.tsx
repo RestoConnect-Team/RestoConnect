@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { CheckCircle2, Clock, Eye, Pause, Play, Plus } from "lucide-react";
+import { CheckCircle2, Clock, Eye, Pause, Play, Plus, RotateCcw } from "lucide-react";
 
 import { useFetchData } from "@/hooks/useFetchData";
 import {
   fetchInventoriesList,
   createInventory,
   updateInventoryStatus,
+  restartInventory,
   InventoryItem,
 } from "@/lib/api/inventories";
 
@@ -73,6 +74,16 @@ export default function Inventaires() {
     const next = inv.status_inventory_stock === "en pause" ? "en cours" : "en pause";
     try {
       await updateInventoryStatus(inv.inventory_id, next);
+      window.location.reload();
+    } catch {
+      setUpdatingId(null);
+    }
+  };
+
+  const handleRestart = async (inv: InventoryItem) => {
+    setUpdatingId(inv.inventory_id);
+    try {
+      await restartInventory(inv.inventory_id);
       window.location.reload();
     } catch {
       setUpdatingId(null);
@@ -169,6 +180,14 @@ export default function Inventaires() {
                                 )}
                               </button>
                             )}
+                            <button
+                              onClick={() => handleRestart(inv)}
+                              disabled={updatingId === inv.inventory_id}
+                              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors disabled:opacity-50"
+                              aria-label="Recommencer l'inventaire"
+                            >
+                              <RotateCcw size={16} />
+                            </button>
                           </td>
                         </tr>
                       );

@@ -56,3 +56,11 @@ export const updateInventoryStatus = async (
     body: JSON.stringify({ status }),
   });
 };
+
+export const restartInventory = async (
+  inventoryId: number,
+): Promise<InventoryItem> => {
+  return apiFetch<InventoryItem>(`/api/inventory/${inventoryId}/restart`, {
+    method: "POST",
+  });
+};

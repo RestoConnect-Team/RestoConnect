@@ -27,6 +27,7 @@ from app.api.endpoints import (
     get_list_stocks_inventory_route,
     update_inventory_stock_status_route,
     update_inventory_status_route,
+    restart_inventory_route,
     get_qr_code_route,
 )
 
@@ -92,5 +93,8 @@ api_router.include_router(
 )
 api_router.include_router(
     update_inventory_status_route.router, prefix="/inventory", tags=["Inventory"]
+)
+api_router.include_router(
+    restart_inventory_route.router, prefix="/inventory", tags=["Inventory"]
 )
 api_router.include_router(get_qr_code_route.router, prefix="/qr_code", tags=["QR Code"])
