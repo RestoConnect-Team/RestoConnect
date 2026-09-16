@@ -6,6 +6,7 @@ export interface VehiculePayload {
   category: string;
   status: string;
   nb_km?: number;
+  parking_location?: string;
 }
 
 export const createVehicule = async (

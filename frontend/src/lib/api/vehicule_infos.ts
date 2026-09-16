@@ -33,6 +33,7 @@ export interface VehiculeInfos {
   last_service_date: string | null;
   next_service_date: string | null;
   center_name: string;
+  parking_location: string | null;
   responsable_name: string | null;
   responsable_lastname: string | null;
   responsable_email: string | null;

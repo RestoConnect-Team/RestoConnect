@@ -18,6 +18,8 @@ def update_vehicule_service(vehicule_id: int, payload, db: Session) -> Vehicule 
         vehicule.status = payload.status
     if payload.nb_km is not None:
         vehicule.nb_km = payload.nb_km
+    if payload.parking_location is not None:
+        vehicule.parking_location = payload.parking_location
 
     db.commit()
     db.refresh(vehicule)

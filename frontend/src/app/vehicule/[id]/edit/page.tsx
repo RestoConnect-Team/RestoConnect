@@ -77,6 +77,7 @@ export default function EditVehiculePage({
   const [category, setCategory] = useState<string>("voiture");
   const [status, setStatus] = useState<string>("en service");
   const [nbKm, setNbKm] = useState("120000");
+  const [parkingLocation, setParkingLocation] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -90,6 +91,7 @@ export default function EditVehiculePage({
         category,
         status,
         nb_km: nbKm ? Number(nbKm) : 0,
+        parking_location: parkingLocation || null,
       });
       router.push(`/vehicule/${id}`);
     } catch (err: any) {
@@ -152,6 +154,14 @@ export default function EditVehiculePage({
           <div>
             <FieldLabel>Kilométrage</FieldLabel>
             <Input value={nbKm} onChange={setNbKm} type="number" />
+          </div>
+          <div>
+            <FieldLabel>Emplacement de stationnement</FieldLabel>
+            <Input
+              value={parkingLocation}
+              onChange={setParkingLocation}
+              placeholder="Ex : parking nord, garage B…"
+            />
           </div>
         </div>
 

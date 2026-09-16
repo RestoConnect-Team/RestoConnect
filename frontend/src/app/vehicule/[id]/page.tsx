@@ -228,6 +228,12 @@ export default function VehiculeDetailPage() {
               </dd>
             </div>
             <div>
+              <dt className="text-slate-500">Emplacement de stationnement</dt>
+              <dd className="font-medium text-slate-800">
+                {vehicule.parking_location || "Non renseigné"}
+              </dd>
+            </div>
+            <div>
               <dt className="text-slate-500">Dernier contrôle technique</dt>
               <dd className="font-medium text-slate-800">
                 {formatDate(vehicule.last_technical_inspection_date)}

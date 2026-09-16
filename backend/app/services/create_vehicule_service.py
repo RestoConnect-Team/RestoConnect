@@ -16,6 +16,7 @@ def create_vehicule_service(payload, center_id: int, db: Session) -> Vehicule:
         nb_km=payload.nb_km or 0,
         last_technical_inspection_date=today,
         next_technical_inspection_date=next_year,
+        parking_location=payload.parking_location,
         center_id=center_id,
     )
     db.add(vehicule)

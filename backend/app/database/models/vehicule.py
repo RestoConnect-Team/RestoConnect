@@ -1,12 +1,8 @@
-
 from sqlalchemy import Column, Integer, String, ForeignKey, Date, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from ..connection import Base
 
 from app.enums import VehiculeCategory, VehiculeStatus
-
-
-
 
 
 class Vehicule(Base):
@@ -26,18 +22,18 @@ class Vehicule(Base):
     # Pour la révision
     last_service_date = Column(Date, nullable=True)
     next_service_date = Column(Date, nullable=True)
-        
 
+    parking_location = Column(String, nullable=True)
 
-    center_id = Column(Integer, ForeignKey('center.id'))
+    center_id = Column(Integer, ForeignKey("center.id"))
     center = relationship("Center")
 
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=True)
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=True)
     user = relationship("User")
 
     vehicule_documents = relationship(
         "VehiculeDocument",
         back_populates="vehicule",
         lazy="selectin",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
     )

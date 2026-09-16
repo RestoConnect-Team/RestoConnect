@@ -13,27 +13,17 @@ from app.schemas import (
 )
 
 
-
 def get_vehicule_infos_service(vehicule_id: int, db: Session):
-    vehicule_info_query = (
-        select(
-            Vehicule
-        )
-        .where(Vehicule.id == vehicule_id)
-    )
+    vehicule_info_query = select(Vehicule).where(Vehicule.id == vehicule_id)
     vehicule = db.execute(vehicule_info_query).scalar_one_or_none()
 
-    vehicule_documents_query = (
-        select(
-            VehiculeDocument
-        )
-        .where(VehiculeDocument.vehicule_id == vehicule_id)
+    vehicule_documents_query = select(VehiculeDocument).where(
+        VehiculeDocument.vehicule_id == vehicule_id
     )
     vehicule_documents = db.execute(vehicule_documents_query).scalars().all()
 
     if not vehicule:
         return None
-
 
     ## Création des document_alertes pour les documents du véhicule
     document_alertes = []
@@ -42,33 +32,33 @@ def get_vehicule_infos_service(vehicule_id: int, db: Session):
         if document.expiration_date is None:
             continue
 
-        delta_days = ( document.expiration_date - date.today() ).days
+        delta_days = (document.expiration_date - date.today()).days
 
-        if delta_days < 0 :
+        if delta_days < 0:
             document_alertes.append(
                 VehiculeAlert(
-                    level = "expired",
-                    name = vehicule.name,
-                    description = document.description,
-                    expire_date = document.expiration_date,
-                    expired_since = abs(delta_days)
+                    level="expired",
+                    name=vehicule.name,
+                    description=document.description,
+                    expire_date=document.expiration_date,
+                    expired_since=abs(delta_days),
                 )
             )
 
-        elif delta_days <= 30 :
+        elif delta_days <= 30:
             document_alertes.append(
                 VehiculeAlert(
-                    level = "will_expire_soon",
-                    name = vehicule.name,
-                    description = document.description,
-                    expire_date = document.expiration_date,
-                    will_expire_in = abs(delta_days)
+                    level="will_expire_soon",
+                    name=vehicule.name,
+                    description=document.description,
+                    expire_date=document.expiration_date,
+                    will_expire_in=abs(delta_days),
                 )
             )
 
     # ## Création des km_alertes pour le kilométrage du véhicule:
     # km_alertes = []
-    # if vehicule.nb_km > 
+    # if vehicule.nb_km >
 
     ## Création de l'alerte contrôle technique basée sur le document correspondant
     technical_inspection_alerte = None
@@ -86,7 +76,9 @@ def get_vehicule_infos_service(vehicule_id: int, db: Session):
 
     if technical_documents:
         # If multiple technical docs exist, use the one expiring first.
-        technical_document = min(technical_documents, key=lambda doc: doc.expiration_date)
+        technical_document = min(
+            technical_documents, key=lambda doc: doc.expiration_date
+        )
         delta_technical_inspection_days = (
             technical_document.expiration_date - date.today()
         ).days
@@ -120,6 +112,7 @@ def get_vehicule_infos_service(vehicule_id: int, db: Session):
         last_service_date=vehicule.last_service_date,
         next_service_date=vehicule.next_service_date,
         center_name=vehicule.center.name,
+        parking_location=vehicule.parking_location,
         responsable_name=vehicule.user.name if vehicule.user else None,
         responsable_lastname=vehicule.user.lastname if vehicule.user else None,
         responsable_email=vehicule.user.email if vehicule.user else None,
@@ -138,7 +131,6 @@ def get_vehicule_infos_service(vehicule_id: int, db: Session):
         )
         for document in vehicule_documents
     ]
-    
 
     return VehiculeDetailResponse(
         vehicule=vehicule_infos,

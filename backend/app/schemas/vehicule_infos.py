@@ -2,6 +2,7 @@ from typing import Optional
 import datetime
 from pydantic import BaseModel
 
+
 class VehiculeInfos(BaseModel):
     id: int
     name: str
@@ -14,10 +15,11 @@ class VehiculeInfos(BaseModel):
     last_service_date: Optional[datetime.date] = None
     next_service_date: Optional[datetime.date] = None
 
-    center_name : str
+    center_name: str
+
+    parking_location: Optional[str] = None
 
     responsable_name: Optional[str] = None
     responsable_lastname: Optional[str] = None
     responsable_email: Optional[str] = None
     responsable_phone: Optional[str] = None
-

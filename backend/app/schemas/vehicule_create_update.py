@@ -11,6 +11,7 @@ class VehiculeCreate(BaseModel):
     category: VehiculeCategory
     status: VehiculeStatus
     nb_km: Optional[int] = 0
+    parking_location: Optional[str] = None
 
 
 class VehiculeUpdate(BaseModel):
@@ -19,3 +20,4 @@ class VehiculeUpdate(BaseModel):
     category: Optional[VehiculeCategory] = None
     status: Optional[VehiculeStatus] = None
     nb_km: Optional[int] = None
+    parking_location: Optional[str] = None
