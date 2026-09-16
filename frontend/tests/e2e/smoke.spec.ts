@@ -12,14 +12,14 @@ test("page d'accueil affiche le formulaire de login", async ({ page }) => {
   await expect(page.getByPlaceholder("••••••••")).toBeVisible();
 });
 
-test("login avec bons identifiants → redirigé vers /my_center", async ({
+test("login avec bons identifiants → redirigé vers /dashboard", async ({
   page,
 }) => {
   await page.goto("/");
   await page.getByPlaceholder("utilisateur@email.com").fill("superadmin@resto.com");
   await page.getByPlaceholder("••••••••").fill("1234");
   await page.getByRole("button", { name: "Se connecter" }).click();
-  await expect(page).toHaveURL(/\/my_center/, { timeout: 15000 });
+  await expect(page).toHaveURL(/\/dashboard/, { timeout: 15000 });
 });
 
 test("login avec mauvais identifiants → message d'erreur", async ({ page }) => {
@@ -27,7 +27,7 @@ test("login avec mauvais identifiants → message d'erreur", async ({ page }) =>
   await page.getByPlaceholder("utilisateur@email.com").fill("superadmin@resto.com");
   await page.getByPlaceholder("••••••••").fill("wrongpassword");
   await page.getByRole("button", { name: "Se connecter" }).click();
-  await expect(page.getByText(/identifiants invalides/i)).toBeVisible({
+  await expect(page.getByText(/Email ou mot de passe incorrect/i)).toBeVisible({
     timeout: 10000,
   });
 });

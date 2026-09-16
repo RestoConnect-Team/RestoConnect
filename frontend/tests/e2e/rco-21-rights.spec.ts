@@ -17,7 +17,7 @@ test("RED: CENTER_ADMIN ne doit pas voir le lien Centres dans la sidebar", async
   await page.getByPlaceholder("utilisateur@email.com").fill("resp1@resto.com");
   await page.getByPlaceholder("••••••••").fill("1234");
   await page.getByRole("button", { name: "Se connecter" }).click();
-  await expect(page).toHaveURL(/\/my_center/, { timeout: 30000 });
+  await expect(page).toHaveURL(/\/dashboard/, { timeout: 30000 });
 
   // Attendre que la sidebar soit rendue avec le profil chargé
   await expect(page.getByRole("link", { name: "Mon tableau de bord" })).toBeVisible({
@@ -41,7 +41,7 @@ test("GREEN check: SUPER_ADMIN voit le lien Centres dans la sidebar", async ({
   await page.getByPlaceholder("utilisateur@email.com").fill("superadmin@resto.com");
   await page.getByPlaceholder("••••••••").fill("1234");
   await page.getByRole("button", { name: "Se connecter" }).click();
-  await expect(page).toHaveURL(/\/my_center/, { timeout: 30000 });
+  await expect(page).toHaveURL(/\/dashboard/, { timeout: 30000 });
 
   // Le lien "Centres" doit être visible pour un SUPER_ADMIN
   await expect(page.getByRole("link", { name: "Centres" })).toBeVisible({

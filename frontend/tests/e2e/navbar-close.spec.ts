@@ -12,7 +12,7 @@ async function loginAndGoMobile(page, context) {
   await page.getByPlaceholder("utilisateur@email.com").fill("superadmin@resto.com");
   await page.getByPlaceholder("••••••••").fill("1234");
   await page.getByRole("button", { name: "Se connecter" }).click();
-  await expect(page).toHaveURL(/\/my_center/, { timeout: 30000 });
+  await expect(page).toHaveURL(/\/dashboard/, { timeout: 30000 });
   await page.setViewportSize({ width: 375, height: 812 });
   await page.waitForTimeout(500);
 }

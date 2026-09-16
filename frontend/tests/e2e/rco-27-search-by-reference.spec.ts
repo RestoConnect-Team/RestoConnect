@@ -16,7 +16,7 @@ async function loginAndGoToScan(page: import("@playwright/test").Page) {
   await page.getByPlaceholder("utilisateur@email.com").fill("superadmin@resto.com");
   await page.getByPlaceholder("••••••••").fill("1234");
   await page.getByRole("button", { name: "Se connecter" }).click();
-  await expect(page).toHaveURL(/\/my_center/, { timeout: 15000 });
+  await expect(page).toHaveURL(/\/dashboard/, { timeout: 15000 });
   await page.goto("/scan");
 }
 
@@ -30,11 +30,13 @@ test("RCO-27: recherche par référence valide → affiche la fiche produit", as
     .click();
   const input = page.getByPlaceholder("Rechercher par référence");
   await expect(input).toBeVisible({ timeout: 5000 });
-  await input.fill("REF001_c1");
+  await input.fill("99-101-I-PC1");
   await input.press("Enter");
 
-  await expect(page.getByText("Pc").first()).toBeVisible({ timeout: 10000 });
-  await expect(page.getByText("REF001_c1").first()).toBeVisible();
+  await expect(page.getByText("PC Portable").first()).toBeVisible({
+    timeout: 10000,
+  });
+  await expect(page.getByText("99-101-I-PC1").first()).toBeVisible();
 });
 
 test("RCO-27: recherche par référence inexistante → affiche 'Étiquette non reconnue'", async ({

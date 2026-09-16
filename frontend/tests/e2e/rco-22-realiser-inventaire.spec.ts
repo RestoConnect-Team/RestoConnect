@@ -15,7 +15,7 @@ async function login(page: import("@playwright/test").Page) {
   await page.getByPlaceholder("utilisateur@email.com").fill("superadmin@resto.com");
   await page.getByPlaceholder("••••••••").fill("1234");
   await page.getByRole("button", { name: "Se connecter" }).click();
-  await expect(page).toHaveURL(/\/my_center/, { timeout: 15000 });
+  await expect(page).toHaveURL(/\/dashboard/, { timeout: 15000 });
 }
 
 test("RCO-22: la page inventaires affiche le bouton 'Réaliser un inventaire'", async ({
