@@ -36,3 +36,15 @@ build/
 .env.local
 .env.production
 
+# Brain local (notes perso Yohann — pattern Karpathy, pas pour l'équipe)
+_brain/
+.serena/
+
+# Documents internes (réunions, notes perso — pas pour l'équipe)
+REUNION-*.md
+note.md
+
+
+# Artefacts tests et MCP
+.playwright-mcp/
+test-results/

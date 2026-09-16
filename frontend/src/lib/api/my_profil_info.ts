@@ -14,18 +14,8 @@ export interface Profile {
   photo_url?: string | null;
 }
 
+import { apiFetch } from "./client";
+
 export const fetchProfilInfo = async (): Promise<Profile> => {
-  const response = await fetch('http://localhost:8000/api/profil', {
-    method: 'GET',
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.detail || 'Failed to fetch profil');
-  }
-
-  return data as Profile;
+  return apiFetch<Profile>("/api/profil");
 };

@@ -12,7 +12,7 @@ export function PageLayout({
   buttonLabel?: string | React.ReactNode;
 }) {
   return (
-    <main className="flex-1 bg-[F5F5F5] min-h-[calc(100vh-14rem)] flex flex-col">
+    <main className="flex-1 bg-[#F5F5F5] min-h-[calc(100vh-14rem)] flex flex-col">
       {(onClick || title) && (
         <div className="flex w-full justify-between items-center p-6 pb-0">
           {title && <Title title={title} />}

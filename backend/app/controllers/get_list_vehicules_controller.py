@@ -6,6 +6,8 @@ from app.schemas import OneVehiculeFromList, VehiculeListGrouped
 
 
 def get_list_vehicules(token: str, db: Session) -> VehiculeListGrouped:
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
     user = get_user_by_token_service(db, token)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")
@@ -22,7 +24,7 @@ def get_list_vehicules(token: str, db: Session) -> VehiculeListGrouped:
             immatriculation=vehicule.immatriculation,
             center_name=vehicule.center.name if vehicule.center else None,
             category=vehicule.category,
-            status=vehicule.status
+            status=vehicule.status,
         )
 
         if vehicule.center_id == user.center_id:

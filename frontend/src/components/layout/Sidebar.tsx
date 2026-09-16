@@ -25,6 +25,7 @@ export function Sidebar({
   const { data: profile } = useFetchData<Profile>(fetchProfilInfo);
 
   const centerName = profile?.center ?? "Mon centre";
+  const userRole = profile?.status ?? "";
 
   const authService = new AuthService();
 
@@ -36,6 +37,11 @@ export function Sidebar({
       throw error;
     }
   };
+
+  // Filtrer les routes selon le rôle de l'utilisateur
+  const visibleRoutes = routes.filter(
+    (r) => !r.roles || r.roles.includes(userRole)
+  );
 
   return (
     <aside className="flex flex-col w-64 shrink-0 bg-[var(--sidebar)] border-r border-[var(--sidebar-border)] h-full overflow-hidden">
@@ -87,7 +93,7 @@ export function Sidebar({
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-3 overflow-y-auto space-y-0.5">
-        {routes.map(({ href, label, Icon, badge }) => {
+        {visibleRoutes.map(({ href, label, Icon, badge }) => {
           const active = pathname === href;
           return (
             <Link

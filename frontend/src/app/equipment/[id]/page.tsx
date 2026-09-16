@@ -13,6 +13,7 @@ import {
 } from "@/components/equipment_detail/EquipmentDetailHistory";
 import { EquipmentDetailStatus } from "@/components/equipment_detail/EquipmentDetailStatus";
 import { PageLayout } from "@/components/layout/PageLayout";
+import { apiFetch } from "@/lib/api/client";
 
 interface EquipmentDetailData {
   id: number;
@@ -43,21 +44,10 @@ export default function EquipmentDetailPage({
     const fetchEquipmentDetails = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:8000/api/stock/${id}`, {
-          credentials: "include",
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(
-            errorData.detail || "Failed to fetch Equipment details",
-          );
-        }
-
-        const data: {
+        const data = await apiFetch<{
           details: EquipmentDetailData;
           history: EquipmentHistoryItem[];
-        } = await response.json();
+        }>(`/api/stock/${id}`);
         setEquipment(data.details);
         setHistory(data.history);
       } catch (err: any) {

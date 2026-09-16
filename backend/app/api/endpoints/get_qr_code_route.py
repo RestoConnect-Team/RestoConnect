@@ -4,7 +4,8 @@ from io import BytesIO
 
 router = APIRouter()
 
-@router.get("/qr_code/{reference}")
+
+@router.get("/{reference}")
 async def get_qr_code_image(reference: str):
     # Générer le QR code à partir de la référence
     img = qrcode.make(reference)

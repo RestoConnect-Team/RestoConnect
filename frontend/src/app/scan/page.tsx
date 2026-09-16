@@ -16,6 +16,7 @@ interface Product {
   reference: string;
   status: StockStatus;
   center_name: string;
+  already_found?: boolean;
 }
 
 export default function ScanQrPage() {

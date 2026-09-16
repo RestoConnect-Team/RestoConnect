@@ -1,4 +1,5 @@
 import { CenterDetails } from "@/types/center";
+import { apiFetch } from "./client";
 
 export interface TimeSlot {
   opening_time: string;
@@ -33,27 +34,11 @@ export interface ClosingPeriod {
 
 export const fetchCenterDetail =
   (id: number) => async (): Promise<CenterDetails> => {
-    const response = await fetch(`http://localhost:8000/api/center/${id}`, {
-      method: "GET",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-    });
-    const data = await response.json();
-    if (!response.ok)
-      throw new Error(data.detail || "Failed to fetch center details");
-    return data as CenterDetails;
+    return apiFetch<CenterDetails>(`/api/center/${id}`);
   };
 
 export const fetchMyCenterDetail = async (): Promise<CenterDetails> => {
-  const response = await fetch("http://localhost:8000/api/my_center", {
-    method: "GET",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-  });
-  const data = await response.json();
-  if (!response.ok)
-    throw new Error(data.detail || "Failed to fetch my center details");
-  return data as CenterDetails;
+  return apiFetch<CenterDetails>("/api/my_center");
 };
 
 export interface UpdateCenterPayload {
@@ -76,12 +61,8 @@ export const updateCenter = async (
   id: number,
   payload: UpdateCenterPayload,
 ): Promise<void> => {
-  const response = await fetch(`http://localhost:8000/api/center/${id}`, {
+  await apiFetch(`/api/center/${id}`, {
     method: "PUT",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.detail || "Failed to update center");
 };

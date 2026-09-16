@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { CheckCircle2, CircleAlert, Eye } from "lucide-react";
+import { CheckCircle2, CircleAlert, Eye, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { useFetchData } from "@/hooks/useFetchData";
 import {
@@ -47,6 +48,7 @@ function getStatusBadge(status: string | null) {
 }
 
 export default function Vehicule() {
+  const router = useRouter();
   const { data, loading, error } =
     useFetchData<VehiculeData>(fetchVehiculeList);
   const vehiculesData = data ?? { vehicules_center: [], vehicules_other: [] };
@@ -101,7 +103,16 @@ export default function Vehicule() {
   }, [filteredList, pageIndex, numberPerPage]);
 
   return (
-    <PageLayout title="Véhicules">
+    <PageLayout
+      title="Véhicules"
+      onClick={() => router.push("/vehicule/new")}
+      buttonLabel={
+        <>
+          <Plus />
+          Ajouter
+        </>
+      }
+    >
       <div className="p-6 flex flex-col gap-4">
         {error && <PageError page_error={error} />}
         {loading && <Loading loading_sentence="Chargement des véhicules..." />}
@@ -192,6 +203,7 @@ export default function Vehicule() {
                 listLength={filteredList.length}
                 numberPerPage={numberPerPage}
                 setNumberPerPage={setNumberPerPage}
+                itemLabel="véhicule(s)"
               />
             </div>
 

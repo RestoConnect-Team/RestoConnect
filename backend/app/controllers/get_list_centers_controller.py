@@ -12,16 +12,18 @@ from app.database.models import Stock, User
 
 
 def _get_counts(center_id: int, db: Session):
-    materials_count = db.scalar(
-        select(func.count(Stock.id)).where(Stock.center_id == center_id)
-    ) or 0
-    contacts_count = db.scalar(
-        select(func.count(User.id)).where(User.center_id == center_id)
-    ) or 0
+    materials_count = (
+        db.scalar(select(func.count(Stock.id)).where(Stock.center_id == center_id)) or 0
+    )
+    contacts_count = (
+        db.scalar(select(func.count(User.id)).where(User.center_id == center_id)) or 0
+    )
     return materials_count, contacts_count
 
 
 def get_list_centers_controller(token: str, db: Session) -> ListCentersResponse:
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
     list_centers = get_list_centers_service(db)
 
     user = get_user_by_token_service(db, token)
@@ -82,4 +84,6 @@ def get_list_centers_controller(token: str, db: Session) -> ListCentersResponse:
             detail="Aucun centre avec un administrateur assigné n'a été trouvé",
         )
 
-    return ListCentersResponse(user_center=user_center_item, centers_list=centers, warehouses_list=warehouses)
+    return ListCentersResponse(
+        user_center=user_center_item, centers_list=centers, warehouses_list=warehouses
+    )

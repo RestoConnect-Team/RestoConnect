@@ -10,7 +10,7 @@ from app.services import (
 from app.schemas import WarehouseInfos, OneEquipementFromList
 
 
-def get_warehouse_infos_controller(warehouse_id : int, db: Session) -> WarehouseInfos:
+def get_warehouse_infos_controller(warehouse_id: int, db: Session) -> WarehouseInfos:
 
     warehouse = get_center_service(warehouse_id, db)
     if not warehouse:
@@ -20,20 +20,26 @@ def get_warehouse_infos_controller(warehouse_id : int, db: Session) -> Warehouse
     warehouse_admin = get_center_admin_service(warehouse, db)
 
     if warehouse_admin is None:
-        raise HTTPException(status_code=404, detail="Aucun administrateur pour ce centre")
+        raise HTTPException(
+            status_code=404, detail="Aucun administrateur pour ce centre"
+        )
 
-    stock = get_center_stocks_list_service(warehouse, db)
+    stocks = get_center_stocks_list_service(warehouse, db)
 
-    warehouse_stock = OneEquipementFromList(
-        id=stock.id,
-        name=stock.name,
-        reference=stock.reference,
-        category=stock.category,
-        status=stock.status,
-        qr_code=stock.qr_code,
-    )
+    stocks_list = [
+        OneEquipementFromList(
+            id=s.id,
+            name=s.name,
+            reference=s.reference,
+            category=s.category,
+            status=s.status,
+            qr_code=s.qr_code,
+            center_name=warehouse.name,
+        )
+        for s in stocks
+    ]
 
-    return   WarehouseInfos(
+    return WarehouseInfos(
         warehouse_id=warehouse.id,
         name=warehouse.name,
         status=warehouse.status,
@@ -46,6 +52,6 @@ def get_warehouse_infos_controller(warehouse_id : int, db: Session) -> Warehouse
         center_headmaster_lastname=warehouse_admin.lastname,
         center_headmaster_email=warehouse_admin.email,
         center_headmaster_telephone=warehouse_admin.telephone,
-        warehouse_schedule=warehouse_schedule,
-        stocks_list= warehouse_stock,
+        center_schedule=warehouse_schedule,
+        stocks_list=stocks_list,
     )
