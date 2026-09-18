@@ -3,10 +3,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Date, Enum as SQLEnu
 from sqlalchemy.orm import relationship
 from ..connection import Base
 
-from app.enums import VehiculeCategory, VehiculeStatus
-
-
-
+from app.domains.vehicule.enums import VehiculeCategory, VehiculeStatus
 
 
 class Vehicule(Base):

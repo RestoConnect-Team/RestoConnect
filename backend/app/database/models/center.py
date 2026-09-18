@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, Boolean, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from ..connection import Base
 
-from app.enums import CenterStatus
+from app.domains.center.enums import CenterStatus
 
 class Center(Base):
     __tablename__ = "center"

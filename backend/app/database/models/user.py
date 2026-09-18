@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey,Date, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from ..connection import Base
 
-from app.enums import UserStatus
+from app.domains.user.enums import UserStatus
 
 class User(Base):
     __tablename__ = "user"

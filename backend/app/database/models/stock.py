@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from ..connection import Base
 
 
-from app.enums import StockStatus,StockCategory
+from app.domains.stock.enums import StockStatus,StockCategory
 
 class Stock(Base):
     __tablename__ = "stock"

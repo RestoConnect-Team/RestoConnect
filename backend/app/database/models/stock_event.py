@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Enum
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from ..connection import Base
-from app.enums.stock_event_type_enum import StockEventType
+from app.domains.stock.enums import StockEventType
 
 class StockEvent(Base):
     __tablename__ = "stock_events"

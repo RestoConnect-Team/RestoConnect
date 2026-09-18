@@ -1,63 +1,36 @@
 from fastapi import APIRouter
 
-from app.api.endpoints import (
-    get_login_connection_route,
-    deconnect_route,
+from app.api.endpoints import get_qr_code_route  # ou déplacé dans stock, selon ta décision
 
-    get_user_route,
-
-    get_list_vehicules_route,
-    get_vehicule_infos_route,
-    delete_vehicule_route,
-
-    get_list_stocks_route,
-    delete_stock_route,
-    get_stock_by_scan,
-    update_stock_status,
-    get_stock_detail,
-    
-
-    get_my_center_infos_route,
-    get_list_centers_route,
-    get_center_infos_route,
-    get_warehouse_infos_route,
-    delete_center_route,
-
-   
-    create_inventory_route,
-    get_list_inventories_route,
-    get_list_stocks_inventory_route,
-
-    get_qr_code_route
-)
+from app.domains.stock import routes as stock_routes
+from app.domains.inventory import routes as inventory_routes
+from app.domains.center import routes as center_routes
+from app.domains.vehicule import routes as vehicule_routes
+from app.domains.auth import routes as auth_routes
+from app.domains.user import routes as user_routes
 
 api_router = APIRouter()
 
+# --- auth ---
+api_router.include_router(auth_routes.router, tags=["Login", "Deconnection"])
 
+# --- user ---
+api_router.include_router(user_routes.router, tags=["User"])
 
-api_router.include_router(get_login_connection_route.router) #, prefix="/login", tags=["Login"])
-api_router.include_router(deconnect_route.router) #, prefix="/deconnection", tags=["Deconnection"])
+# --- vehicule ---
+api_router.include_router(vehicule_routes.router, tags=["Vehicule"])
+api_router.include_router(vehicule_routes.vehicule_router, prefix="/vehicule", tags=["Vehicule"])
 
-api_router.include_router(get_user_route.router)
-api_router.include_router(get_user_route.router, prefix="/user", tags=["User"])
+# --- center ---
+api_router.include_router(center_routes.router, tags=["Center"])
+api_router.include_router(center_routes.center_router, prefix="/center", tags=["Center"])
+api_router.include_router(center_routes.warehouse_router, prefix="/warehouse", tags=["Warehouse", "Center"])
 
-api_router.include_router(get_list_vehicules_route.router, tags=["Vehicule"])
-api_router.include_router(get_vehicule_infos_route.router, prefix="/vehicule", tags=["Vehicule"])
-api_router.include_router(delete_vehicule_route.router, prefix="/vehicule", tags=["Vehicule"])
+# --- stock ---
+api_router.include_router(stock_routes.router, tags=["Stock", "Center"])
 
-api_router.include_router(get_list_centers_route.router, tags=["Center"])
-api_router.include_router(get_my_center_infos_route.router, tags=["Center"])
-api_router.include_router(get_center_infos_route.router, prefix="/center", tags=["Center"])
-api_router.include_router(get_warehouse_infos_route.router, prefix="/warehouse", tags=["Warehouse", "Center"])
-api_router.include_router(delete_center_route.router, prefix="/center", tags=["Center"])
+# --- inventory ---
+api_router.include_router(inventory_routes.router, prefix="/inventory", tags=["Inventory"])
 
-api_router.include_router(get_list_stocks_route.router, tags=["Stock"])
-api_router.include_router(get_stock_by_scan.router, prefix="/stock", tags=["Stock"])
-api_router.include_router(update_stock_status.router, prefix="/stock", tags=["Stock"])
-api_router.include_router(delete_stock_route.router, prefix="/stock", tags=["Stock"])
-api_router.include_router(get_stock_detail.router, prefix="/stock", tags=["Stock"])
-
-api_router.include_router(create_inventory_route.router, prefix="/inventory", tags=["Inventory"])
-api_router.include_router(get_list_inventories_route.router, prefix="/inventory", tags=["Inventory"])
-api_router.include_router(get_list_stocks_inventory_route.router, prefix="/inventory", tags=["Inventory"])
+# --- qr code---
 api_router.include_router(get_qr_code_route.router, prefix="/qr_code", tags=["QR Code"])

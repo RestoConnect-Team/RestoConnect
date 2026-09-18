@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from ..connection import Base
 
-from app.enums import InventoryStockStatus
+from app.domains.inventory.enums import InventoryStockStatus
 
 class InventoryStock (Base):
     __tablename__="inventory_stock"

@@ -5,7 +5,7 @@ from .scan import Scan
 from .stock_event import StockEvent 
 
 from .center import Center
-from .center_scheduale import CenterSchedule
+from .center_schedule import CenterSchedule
 from .closing_period import ClosingPeriod
 
 from .vehicule import Vehicule

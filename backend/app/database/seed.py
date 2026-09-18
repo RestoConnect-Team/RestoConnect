@@ -2,8 +2,11 @@ from datetime import date, time
 
 from .connection import SessionLocal
 from .models import User, Stock, Center, Vehicule, VehiculeDocument, CenterSchedule, ClosingPeriod, Inventory, InventoryStock
-from app.enums import VehiculeCategory, VehiculeStatus, UserStatus, CenterStatus, WeekDays, StockStatus, StockCategory, InventoryStatus, InventoryStockStatus
-
+from app.domains.stock.enums import StockStatus, StockCategory
+from app.domains.vehicule.enums import VehiculeCategory, VehiculeStatus
+from app.domains.center.enums import CenterStatus, WeekDays
+from app.domains.inventory.enums import InventoryStatus, InventoryStockStatus
+from app.domains.user.enums import UserStatus
 #crypt context for password hashing
 import bcrypt
 

@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from ..connection import Base
 from datetime import date
 
-from app.enums import InventoryStatus
+from app.domains.inventory.enums import InventoryStatus
 
 class Inventory (Base):
     __tablename__="inventory"
