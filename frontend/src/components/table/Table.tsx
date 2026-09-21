@@ -1,0 +1,121 @@
+import { ReactNode, useEffect, useMemo, useState } from "react";
+import { FooterTable } from "./FooterTable";
+import SearchBar from "../searchbar/Searchbar";
+import { FilterOption } from "../searchbar/SearchbarFilters";
+import { SelectOption } from "../searchbar/Select";
+
+interface TableProps {
+  data: any[];
+  defaultNumberPerPage: number;
+  labels: string[];
+  renderRow: (element: any) => ReactNode;
+  filters?: FilterOption[];
+  setFilters?: (filters: FilterOption[]) => void;
+  options?: SelectOption[];
+}
+
+export function Table({
+  data,
+  defaultNumberPerPage,
+  labels,
+  renderRow,
+  filters = [],
+  setFilters,
+  options = [],
+}: TableProps) {
+  const [pageIndex, setPageIndex] = useState<number>(0);
+  const [numberPerPage, setNumberPerPage] =
+    useState<number>(defaultNumberPerPage);
+
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const [selectValue, setSelectValue] = useState<SelectOption>(options[0]);
+
+  const filteredList = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
+    // Search
+    let result = data;
+
+    if (query) {
+      result = result.filter(
+        (element) =>
+          element.name.toLowerCase().includes(query) ||
+          element.reference.toLowerCase().includes(query),
+      );
+    }
+
+    // Category filter
+    if (selectValue.value !== "all") {
+      result = result.filter(
+        (element) => element.category === selectValue.value,
+      );
+    }
+
+    // Status filters
+    const activeFilters = filters.filter((filter) => filter.isActive);
+
+    if (activeFilters.length > 0) {
+      result = result.filter((element) =>
+        activeFilters.some((filter) => filter.filter(element.status)),
+      );
+    }
+
+    return result;
+  }, [data, searchQuery, selectValue.value, filters]);
+
+  const numberOfPages = useMemo(() => {
+    return Math.ceil(data.length / numberPerPage);
+  }, [data.length, numberPerPage]);
+
+  useEffect(() => {
+    setPageIndex(0);
+  }, [searchQuery, selectValue?.value, filters, numberPerPage]);
+
+  return (
+    <>
+      <SearchBar
+        onSearch={(e) => setSearchQuery(e)}
+        filters={filters}
+        setFilters={setFilters}
+        placeholder="Rechercher par nom, référence..."
+        selectValue={selectValue}
+        setSelectValue={setSelectValue}
+        options={options}
+      />
+      <div className="flex flex-col flex-1 overflow-y-auto">
+        <div className="flex-1 border border-b-0 border-slate-200 rounded-t-xl bg-white overflow-x-auto">
+          <table className="w-full overflow-hidden border-b border-slate-200">
+            <thead className="uppercase border-b-1 border-slate-200 text-slate-400 bg-[#F9FAFB]">
+              <tr>
+                {labels.map((label) => (
+                  <th
+                    className="py-2 px-3 text-[12px] text-left font-semibold"
+                    key={label}
+                  >
+                    {label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filteredList.map((element) => (
+                <tr className={`border-t-1`} key={element.id}>
+                  {renderRow(element)}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <FooterTable
+            numberOfPages={numberOfPages}
+            pageIndex={pageIndex}
+            setPageIndex={setPageIndex}
+            listLength={filteredList.length}
+            numberPerPage={numberPerPage}
+            setNumberPerPage={setNumberPerPage}
+          />
+        </div>
+      </div>
+    </>
+  );
+}
