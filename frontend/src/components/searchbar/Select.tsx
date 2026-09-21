@@ -1,19 +1,20 @@
-import { Boxes } from "lucide-react";
 import Select, {
   components,
   OptionProps,
   SingleValueProps,
 } from "react-select";
 
+export interface OptionStyle {
+  color: string;
+  borderColor: string;
+  bg: string;
+}
+
 export interface SelectOption {
   label: string;
   value: string;
   icon: React.ReactNode;
-  style: {
-    color: string;
-    borderColor: string;
-    bg: string;
-  };
+  style: OptionStyle;
 }
 
 type SelectProps = {

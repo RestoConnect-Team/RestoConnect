@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Search, X } from "lucide-react";
 
 import { Select, SelectOption } from "@/components/searchbar/Select";
+import { capitalizeString } from "@/utils/capitalizeString";
 
 export interface FilterOption {
   id: string;
@@ -130,7 +131,7 @@ export default function SearchBar({
             ${filter.isActive ? "bg-[#e6007e] text-white hover:bg-[#e6007e]/80" : "bg-white border-slate-200 hover:text-gray-900"}`}
                   key={filter.id}
                 >
-                  {filter.label}
+                  {capitalizeString(filter.label)}
                 </button>
               ))}
             </div>
