@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import { Boxes, Eye } from "lucide-react";
 import { useMemo, useState } from "react";
-import { CheckCircle2, CircleAlert, Eye } from "lucide-react";
 
 import { useFetchData } from "@/hooks/useFetchData";
 import {
@@ -11,11 +10,19 @@ import {
   VehiculeItem,
 } from "@/lib/api/vehicules_list_info";
 
-import PageError from "@/components/page_error/page_error";
-import Loading from "@/components/loading/loading";
 import { PageLayout } from "@/components/layout/PageLayout";
-import SearchBar from "@/components/searchbar/Searchbar";
+import Loading from "@/components/loading/loading";
+import PageError from "@/components/page_error/page_error";
+import SearchBar, { FilterOption } from "@/components/searchbar/Searchbar";
 import { FooterTable } from "@/components/table/FooterTable";
+import TableActions from "@/components/table/TableActions";
+import { renderVehiculeCategory } from "@/utils/vehiculeCategory";
+import {
+  getVehiculeStatusConfig,
+  renderVehiculeStatus,
+  VehiculeStatus,
+} from "@/utils/vehiculeStatus";
+import { useRouter } from "next/navigation";
 
 const DEFAULT_NUMBER_PER_PAGE = 10;
 
@@ -30,23 +37,8 @@ function getStatusLabel(status: string | null): VehiculeRow["statusLabel"] {
   return status.charAt(0).toUpperCase() + status.slice(1);
 }
 
-function getStatusBadge(status: string | null) {
-  if (status === "en service") {
-    return {
-      className:
-        "inline-flex items-center gap-1.5 rounded-md border border-green-200 bg-green-50 px-3 py-1 text-green-700 font-medium",
-      Icon: CheckCircle2,
-    };
-  }
-
-  return {
-    className:
-      "inline-flex items-center gap-1.5 rounded-md border border-amber-300 bg-amber-50 px-3 py-1 text-amber-800 font-medium",
-    Icon: CircleAlert,
-  };
-}
-
 export default function Vehicule() {
+  const router = useRouter();
   const { data, loading, error } =
     useFetchData<VehiculeData>(fetchVehiculeList);
   const vehiculesData = data ?? { vehicules_center: [], vehicules_other: [] };
@@ -57,6 +49,61 @@ export default function Vehicule() {
     DEFAULT_NUMBER_PER_PAGE,
   );
   const [pageIndex, setPageIndex] = useState<number>(0);
+
+  const labels = ["Véhicule", "Immatriculation", "Type", "Statut", "Actions"];
+
+  const [filters, setFilters] = useState<FilterOption[]>([
+    {
+      id: "working",
+      label: VehiculeStatus.WORKING,
+      isActive: false,
+      filter: (value: string) => {
+        return value === VehiculeStatus.WORKING;
+      },
+    },
+    {
+      id: "in maintenance",
+      label: VehiculeStatus.IN_MAINTENANCE,
+      isActive: false,
+      filter: (value: string) => {
+        return value === VehiculeStatus.IN_MAINTENANCE;
+      },
+    },
+    {
+      id: "out of order",
+      label: VehiculeStatus.OUT_OF_ORDER,
+      isActive: false,
+      filter: (value: string) => {
+        return value === VehiculeStatus.OUT_OF_ORDER;
+      },
+    },
+  ]);
+
+  const categories = useMemo(() => {
+    return Array.from(
+      new Set(
+        vehiculesData.vehicules_center.map((vehicule) => vehicule.category),
+      ),
+    );
+  }, [vehiculesData.vehicules_center]);
+
+  const categoriesOptions = categories.map((category) => ({
+    label: category,
+    value: category,
+    icon: getVehiculeStatusConfig(category).icon,
+    style: getVehiculeStatusConfig(category).style,
+  }));
+
+  categoriesOptions.unshift({
+    label: "Toutes les catégories",
+    value: "all",
+    icon: <Boxes className="h-4 w-4 min-h-4 min-w-4" />,
+    style: {
+      color: "text-gray-400",
+      borderColor: "border-gray-400",
+      bg: "gray-400",
+    },
+  });
 
   const rows = useMemo<VehiculeRow[]>(() => {
     const centerRows = vehiculesData.vehicules_center.map((vehicule) => ({
@@ -102,7 +149,7 @@ export default function Vehicule() {
 
   return (
     <PageLayout title="Véhicules">
-      <div className="p-6 flex flex-col gap-4">
+      <div className="p-6 h-full flex flex-col gap-4">
         {error && <PageError page_error={error} />}
         {loading && <Loading loading_sentence="Chargement des véhicules..." />}
 
@@ -111,31 +158,24 @@ export default function Vehicule() {
             <SearchBar
               onSearch={(e) => setSearchQuery(e)}
               placeholder="Rechercher par nom, immatriculation..."
+              filters={filters}
+              setFilters={setFilters}
+              options={categoriesOptions}
             />
 
-            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-              <div className="overflow-x-auto">
+            <div className="flex flex-col overflow-hidden h-full rounded-2xl border border-slate-200 bg-white">
+              <div className="overflow-x-auto h-full">
                 <table className="w-full min-w-[860px] text-sm">
                   <thead>
                     <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wide text-xs">
-                      <th className="text-left px-4 py-3 font-semibold">
-                        Véhicule
-                      </th>
-                      <th className="text-left px-4 py-3 font-semibold">
-                        Immatriculation
-                      </th>
-                      <th className="text-left px-4 py-3 font-semibold">
-                        Type
-                      </th>
-                      <th className="text-left px-4 py-3 font-semibold">
-                        Centre
-                      </th>
-                      <th className="text-left px-4 py-3 font-semibold">
-                        Statut
-                      </th>
-                      <th className="text-left px-4 py-3 font-semibold">
-                        Actions
-                      </th>
+                      {labels.map((label) => (
+                        <th
+                          className="py-2 px-3 text-[12px] text-left font-semibold"
+                          key={label}
+                        >
+                          {label}
+                        </th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
@@ -146,39 +186,34 @@ export default function Vehicule() {
                       >
                         <td className="px-4 py-4 font-semibold text-slate-900">
                           {vehicule.name}
+                          <div className="text-xs font-medium text-gray-400">
+                            {vehicule.center_name}
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 text-slate-600">
+                          {renderVehiculeCategory(
+                            vehicule.category,
+                            "py-1 px-2",
+                          )}
                         </td>
                         <td className="px-4 py-4 text-slate-600">
                           {vehicule.immatriculationLabel}
                         </td>
-                        <td className="px-4 py-4 text-slate-600">
-                          {vehicule.category || "Non défini"}
-                        </td>
-                        <td
-                          className="px-4 py-4 text-slate-600 max-w-[180px] truncate"
-                          title={vehicule.center_name || "Non assigné"}
-                        >
-                          {vehicule.center_name || "Non assigné"}
+                        <td className="py-4 px-4">
+                          {renderVehiculeStatus(vehicule.status, "py-1 px-2")}
                         </td>
                         <td className="px-4 py-4">
-                          {(() => {
-                            const badge = getStatusBadge(vehicule.status);
-                            const Icon = badge.Icon;
-                            return (
-                              <span className={badge.className}>
-                                <Icon size={14} />
-                                {vehicule.statusLabel}
-                              </span>
-                            );
-                          })()}
-                        </td>
-                        <td className="px-4 py-4">
-                          <Link
-                            href={`/vehicule/${vehicule.id}`}
-                            className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
-                            aria-label={`Voir ${vehicule.name}`}
-                          >
-                            <Eye size={16} />
-                          </Link>
+                          <TableActions
+                            actions={[
+                              {
+                                icon: (className) => (
+                                  <Eye className={className} />
+                                ),
+                                onClick: () =>
+                                  router.push(`/vehicule/${vehicule.id}`),
+                              },
+                            ]}
+                          />
                         </td>
                       </tr>
                     ))}

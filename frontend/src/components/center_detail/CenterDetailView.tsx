@@ -40,6 +40,8 @@ export function CenterDetailView({
     .filter(Boolean)
     .join(" ");
 
+  console.log(center);
+
   const activityTags = (center.activities ?? "")
     .split(",")
     .map((a) => a.trim())
@@ -211,7 +213,7 @@ export function CenterDetailView({
         </>
       ) : (
         <>
-          <Section title={`Matériels (${center.materials_count})`}>
+          {/* <Section title={`Matériels (${center.materials_count})`}>
             <div>
               {equipments.map((equipment) => {
                 return (
@@ -242,11 +244,10 @@ export function CenterDetailView({
                 );
               })}
             </div>
-          </Section>
-          <Section title="Derniers inventaires">
+          </Section> */}
+          {/* <Section title="Derniers inventaires">
             <></>
-            {/* //TODO */}
-          </Section>
+          </Section> */}
         </>
       )}
     </div>

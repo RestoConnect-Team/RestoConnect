@@ -1,10 +1,10 @@
 export interface VehiculeItem {
   id: number;
   name: string;
-  immatriculation: string | null;
-  center_name: string | null;
-  category: string | null;
-  status: string | null;
+  immatriculation: string;
+  center_name: string;
+  category: string;
+  status: string;
 }
 
 export interface VehiculeData {
