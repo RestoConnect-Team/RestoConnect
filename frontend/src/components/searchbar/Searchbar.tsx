@@ -4,14 +4,7 @@ import { useState } from "react";
 import { Search, X } from "lucide-react";
 
 import { Select, SelectOption } from "@/components/searchbar/Select";
-import { capitalizeString } from "@/utils/capitalizeString";
-
-export interface FilterOption {
-  id: string;
-  label: string;
-  filter: (value: string) => boolean;
-  isActive?: boolean;
-}
+import { FilterOption, SearchbarFilters } from "./SearchbarFilters";
 
 export interface SearchBarProps {
   placeholder?: string;
@@ -33,15 +26,6 @@ export default function SearchBar({
   options = [],
 }: SearchBarProps) {
   const [searchQuery, setSearchQuery] = useState("");
-
-  const [noFilterOption, setNoFilterOption] = useState<FilterOption>({
-    id: "0",
-    label: "Tous",
-    filter: () => {
-      return true;
-    },
-    isActive: true,
-  });
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -85,56 +69,8 @@ export default function SearchBar({
           )}
 
           {/* Bouton filtres */}
-          {filters.length > 0 && (
-            <div className="flex gap-2">
-              <button
-                onClick={() => {
-                  const areFiltersActive = filters.some((f) => f.isActive);
-                  if (areFiltersActive && setFilters) {
-                    setFilters(
-                      filters.map((f) => ({
-                        ...f,
-                        isActive: false,
-                      })),
-                    );
-                  }
-                  setNoFilterOption({
-                    ...noFilterOption,
-                    isActive: true,
-                  });
-                }}
-                className={`cursor-pointer py-2 px-4 border rounded-full w-fit flex items-center gap-1 
-            text-sm font-medium transition-colors 
-            ${noFilterOption.isActive ? "bg-[#e6007e] text-white hover:bg-[#e6007e]/80" : "bg-white border-slate-200 hover:text-gray-900"}`}
-              >
-                Tous
-              </button>
-
-              {filters.map((filter) => (
-                <button
-                  onClick={() => {
-                    const filtersTemp = filters.map((f) => ({
-                      ...f,
-                      isActive: f.id === filter.id ? !f.isActive : f.isActive,
-                    }));
-                    const areFiltersActive = filtersTemp.some(
-                      (f) => f.isActive,
-                    );
-                    setFilters?.(filtersTemp);
-                    setNoFilterOption({
-                      ...noFilterOption,
-                      isActive: !areFiltersActive,
-                    });
-                  }}
-                  className={`cursor-pointer py-2 px-4 border rounded-full w-fit flex items-center gap-1 
-            text-sm font-medium transition-colors 
-            ${filter.isActive ? "bg-[#e6007e] text-white hover:bg-[#e6007e]/80" : "bg-white border-slate-200 hover:text-gray-900"}`}
-                  key={filter.id}
-                >
-                  {capitalizeString(filter.label)}
-                </button>
-              ))}
-            </div>
+          {filters.length > 0 && setFilters && (
+            <SearchbarFilters filters={filters} setFilters={setFilters} />
           )}
         </div>
       )}

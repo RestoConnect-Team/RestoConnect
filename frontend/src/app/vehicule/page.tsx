@@ -13,7 +13,7 @@ import {
 import { PageLayout } from "@/components/layout/PageLayout";
 import Loading from "@/components/loading/loading";
 import PageError from "@/components/page_error/page_error";
-import SearchBar, { FilterOption } from "@/components/searchbar/Searchbar";
+import SearchBar from "@/components/searchbar/Searchbar";
 import { FooterTable } from "@/components/table/FooterTable";
 import TableActions from "@/components/table/TableActions";
 import { renderVehiculeCategory } from "@/utils/vehiculeCategory";
@@ -23,6 +23,7 @@ import {
   VehiculeStatus,
 } from "@/utils/vehiculeStatus";
 import { useRouter } from "next/navigation";
+import { FilterOption } from "@/components/searchbar/SearchbarFilters";
 
 const DEFAULT_NUMBER_PER_PAGE = 10;
 
@@ -41,7 +42,7 @@ export default function Vehicule() {
   const router = useRouter();
   const { data, loading, error } =
     useFetchData<VehiculeData>(fetchVehiculeList);
-  const vehiculesData = data ?? { vehicules_center: [], vehicules_other: [] };
+  const vehicules = data?.vehicules_center ?? [];
 
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -80,12 +81,8 @@ export default function Vehicule() {
   ]);
 
   const categories = useMemo(() => {
-    return Array.from(
-      new Set(
-        vehiculesData.vehicules_center.map((vehicule) => vehicule.category),
-      ),
-    );
-  }, [vehiculesData.vehicules_center]);
+    return Array.from(new Set(vehicules.map((vehicule) => vehicule.category)));
+  }, [vehicules]);
 
   const categoriesOptions = categories.map((category) => ({
     label: category,
@@ -106,14 +103,14 @@ export default function Vehicule() {
   });
 
   const rows = useMemo<VehiculeRow[]>(() => {
-    const centerRows = vehiculesData.vehicules_center.map((vehicule) => ({
+    const centerRows = vehicules.map((vehicule) => ({
       ...vehicule,
       source: "center" as const,
       immatriculationLabel: vehicule.immatriculation || "Non renseignée",
       statusLabel: getStatusLabel(vehicule.status),
     }));
 
-    const otherRows = vehiculesData.vehicules_other.map((vehicule) => ({
+    const otherRows = vehicules.map((vehicule) => ({
       ...vehicule,
       source: "other" as const,
       immatriculationLabel: vehicule.immatriculation || "Non renseignée",
@@ -121,21 +118,33 @@ export default function Vehicule() {
     }));
 
     return [...centerRows, ...otherRows];
-  }, [vehiculesData]);
+  }, [vehicules]);
 
   const filteredList = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
-    if (!q) return rows;
+    const query = searchQuery.trim().toLowerCase();
 
-    return rows.filter((vehicule) => {
-      return (
-        vehicule.name.toLowerCase().includes(q) ||
-        vehicule.immatriculationLabel.toLowerCase().includes(q) ||
-        (vehicule.center_name || "").toLowerCase().includes(q) ||
-        (vehicule.category || "").toLowerCase().includes(q)
+    // Search
+    let result = vehicules;
+
+    if (query) {
+      result = result.filter(
+        (vehicule) =>
+          vehicule.name.toLowerCase().includes(query) ||
+          vehicule.immatriculation.toLowerCase().includes(query),
       );
-    });
-  }, [rows, searchQuery]);
+    }
+
+    // Status filters
+    const activeFilters = filters.filter((filter) => filter.isActive);
+
+    if (activeFilters.length > 0) {
+      result = result.filter((element) =>
+        activeFilters.some((filter) => filter.filter(element.status)),
+      );
+    }
+
+    return result;
+  }, [rows, searchQuery, filters]);
 
   const numberOfPages = useMemo(() => {
     return Math.ceil(filteredList.length / numberPerPage);
@@ -181,7 +190,7 @@ export default function Vehicule() {
                   <tbody>
                     {slicedList.map((vehicule) => (
                       <tr
-                        key={`${vehicule.source}-${vehicule.id}`}
+                        key={vehicule.id}
                         className="border-b border-slate-100 last:border-b-0 hover:bg-slate-50/70"
                       >
                         <td className="px-4 py-4 font-semibold text-slate-900">
@@ -197,7 +206,7 @@ export default function Vehicule() {
                           )}
                         </td>
                         <td className="px-4 py-4 text-slate-600">
-                          {vehicule.immatriculationLabel}
+                          {vehicule.immatriculation}
                         </td>
                         <td className="py-4 px-4">
                           {renderVehiculeStatus(vehicule.status, "py-1 px-2")}
