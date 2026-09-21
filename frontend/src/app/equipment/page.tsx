@@ -174,15 +174,10 @@ export default function Equipement() {
     setMustReload(true);
   }
 
-  const renderLabel = (label: string, status: string): ReactNode => {
+  const renderLabel = (label: string): ReactNode => {
     return (
       <td className="relative max-w-[200px]">
-        <div
-          className={`w-[5px] h-16 ${getStatusConfig(status).rowStyle.bgColor} absolute top-0`}
-        ></div>
-        <div className="px-5">
-          <div className="font-semibold truncate">{label}</div>
-        </div>
+        <div className="px-4 font-semibold truncate">{label}</div>
       </td>
     );
   };
@@ -248,11 +243,8 @@ export default function Equipement() {
                   </thead>
                   <tbody>
                     {slicedList.map((equipment) => (
-                      <tr
-                        className={`border-t-1 ${getStatusConfig(equipment.status).rowStyle.borderColor}`}
-                        key={equipment.id}
-                      >
-                        {renderLabel(equipment.name, equipment.status)}
+                      <tr className={`border-t-1`} key={equipment.id}>
+                        {renderLabel(equipment.name)}
                         {renderCategory(equipment.category)}
                         <td className="py-5 px-3 text-slate-500 font-mono">
                           {equipment.reference}
