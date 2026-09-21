@@ -1,0 +1,42 @@
+﻿1;REF001_c1;Pc;Informatique;Perdu;REF001_c1;01/01/2025;01/06/2026;1
+2;REF002_c1;Réfrigérateur;Réfrigéré;Disponible;REF002_c1;01/06/2025;01/06/2026;1
+3;REF001_c2;Pc;Informatique;Disponible;REF001_c2;01/01/2025;01/03/2026;1
+4;REF002_c2;Réfrigérateur;Réfrigéré;Disponible;REF002_c2;01/09/2025;01/04/2026;1
+5;REF003_c2;Table;Bureau;Disponible;REF003_c2;01/01/2025;01/06/2026;1
+6;REF004_c1;Chaise;Bureau;Disponible;REF004_c1;15/02/2025;20/05/2026;1
+7;REF005_c1;Pc;Informatique;Disponible;REF005_c1;10/03/2025;03/06/2026;1
+8;REF006_c1;Imprimante;Informatique;Perdu;REF006_c1;05/04/2025;15/02/2026;1
+9;REF007_c2;Micro-ondes;Réfrigéré;Disponible;REF007_c2;12/05/2025;30/05/2026;1
+10;REF008_c2;Armoire;Bureau;Disponible;REF008_c2;20/02/2025;02/06/2026;1
+11;REF009_c2;Table pliante;Bureau;Disponible;REF009_c2;01/07/2025;15/05/2026;1
+12;REF010_c3;Pc;Informatique;Disponible;REF010_c3;25/01/2025;10/04/2026;1
+13;REF011_c3;Réfrigérateur;Réfrigéré;Perdu;REF011_c3;18/03/2025;20/01/2026;1
+14;REF012_c3;Chaise;Bureau;Disponible;REF012_c3;12/08/2025;22/03/2026;1
+15;REF013_c4;Pc;Informatique;Disponible;REF013_c4;01/02/2025;05/06/2026;1
+16;REF014_c4;Réfrigérateur;Réfrigéré;Disponible;REF014_c4;17/04/2025;28/05/2026;2
+17;REF015_c4;Bureau;Bureau;Disponible;REF015_c4;10/01/2025;01/06/2026;2
+18;REF016_c4;Chaise;Bureau;Perdu;REF016_c4;25/06/2025;28/02/2026;2
+19;REF017_c5;Pc;Informatique;Disponible;REF017_c5;05/03/2025;18/04/2026;2
+20;REF018_c5;Imprimante;Informatique;Disponible;REF018_c5;20/05/2025;12/01/2026;2
+24;REF022_c6;Réfrigérateur;Réfrigéré;Disponible;REF022_c6;14/04/2025;04/06/2026;3
+25;REF023_c7;Pc;Informatique;Disponible;REF023_c7;28/02/2025;25/05/2026;3
+26;REF024_c7;Table;Bureau;Disponible;REF024_c7;15/03/2025;02/06/2026;4
+27;REF025_c7;Chaise;Bureau;Perdu;REF025_c7;10/05/2025;05/02/2026;5
+28;REF026_c8;Pc;Informatique;Disponible;REF026_c8;18/01/2025;29/05/2026;5
+29;REF027_c8;Réfrigérateur;Réfrigéré;Disponible;REF027_c8;10/06/2025;03/06/2026;6
+30;REF028_c8;Armoire métallique;Bureau;Disponible;REF028_c8;22/04/2025;17/05/2026;7
+31;REF029_c9;Pc;Informatique;Perdu;REF029_c9;14/02/2025;30/01/2026;8
+32;REF030_c9;Table pliante;Bureau;Disponible;REF030_c9;20/07/2025;15/03/2026;8
+33;REF031_c10;Micro-ondes;Réfrigéré;Disponible;REF031_c10;11/03/2025;01/06/2026;9
+34;REF032_c10;Chaise;Bureau;Disponible;REF032_c10;02/04/2025;20/05/2026;10
+35;REF033_c10;Pc;Informatique;Disponible;REF033_c10;01/08/2025;05/06/2026;10
+36;REF034_c11;Imprimante;Informatique;Disponible;REF034_c11;30/01/2025;10/05/2026;11
+37;REF035_c11;Bureau;Bureau;Disponible;REF035_c11;05/05/2025;30/05/2026;12
+38;REF036_c12;Pc;Informatique;Perdu;REF036_c12;18/02/2025;25/01/2026;13
+39;REF037_c12;Réfrigérateur;Réfrigéré;Disponible;REF037_c12;28/04/2025;28/03/2026;13
+40;REF038_c13;Table;Bureau;Disponible;REF038_c13;03/03/2025;01/06/2026;14
+41;REF039_c13;Chaise;Bureau;Disponible;REF039_c13;18/06/2025;22/05/2026;15
+42;REF040_c14;Pc;Informatique;Disponible;REF040_c14;15/01/2025;04/06/2026;15
+43;REF041_c14;Imprimante;Informatique;Disponible;REF041_c14;14/05/2025;26/05/2026;15
+44;REF042_c14;Réfrigérateur;Réfrigéré;Perdu;REF042_c14;02/07/2025;14/02/2026;16
+48;REF046_c15;Réfrigérateur;Réfrigéré;Disponible;REF046_c15;15/06/2025;05/06/2026;20
