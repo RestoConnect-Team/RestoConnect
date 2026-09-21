@@ -7,7 +7,7 @@ import SearchBar, { FilterOption } from "@/components/searchbar/Searchbar";
 import { FooterTable } from "@/components/table/FooterTable";
 import TableActions from "@/components/table/TableActions";
 import { InventoryService } from "@/services/inventory.service";
-import { InventoryStatus } from "@/types/inventoryStatus";
+import { Inventory, InventoryStatus } from "@/types/inventoryStatus";
 import { renderInventoryStatus } from "@/utils/inventoryStatus";
 import { Eye, PenBox, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -15,9 +15,9 @@ import { useEffect, useMemo, useState } from "react";
 
 const DEFAULT_NUMBER_PER_PAGE = 10;
 
-export default function Inventory() {
+export default function InventoryPage() {
   const router = useRouter();
-  const [inventories, setInventories] = useState<any>([
+  const [inventories, setInventories] = useState<Inventory[]>([
     {
       reference: "INV-2026-042",
       start_date: "06/02/2026",
@@ -103,10 +103,8 @@ export default function Inventory() {
     let result = inventories;
 
     if (query) {
-      result = result.filter(
-        (element) =>
-          element.name.toLowerCase().includes(query) ||
-          element.reference.toLowerCase().includes(query),
+      result = result.filter((element) =>
+        element.reference.toLowerCase().includes(query),
       );
     }
 
@@ -190,8 +188,8 @@ export default function Inventory() {
                     </tr>
                   </thead>
                   <tbody>
-                    {slicedList.map((inventory) => (
-                      <tr className={`border-t-1`} key={inventory.id}>
+                    {slicedList.map((inventory: Inventory) => (
+                      <tr className={`border-t-1`} key={inventory.reference}>
                         <td className="py-3 px-3 font-semibold">
                           {inventory.reference}
                           <div className="text-xs font-medium text-gray-400">
@@ -210,7 +208,9 @@ export default function Inventory() {
                                   <Eye className={className} />
                                 ),
                                 onClick: () =>
-                                  router.push("/inventory/" + inventory.id),
+                                  router.push(
+                                    "/inventory/" + inventory.reference,
+                                  ),
                               },
                               {
                                 icon: (className) => (
