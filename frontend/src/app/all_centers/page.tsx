@@ -10,7 +10,7 @@ import { Building2, MapPin, Package, Plus, Users } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-const INITIAL_VISIBLE = 4;
+const INITIAL_VISIBLE = 16;
 
 function CenterCard({
   center,
