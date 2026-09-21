@@ -40,8 +40,6 @@ export function CenterDetailView({
     .filter(Boolean)
     .join(" ");
 
-  console.log(center);
-
   const activityTags = (center.activities ?? "")
     .split(",")
     .map((a) => a.trim())

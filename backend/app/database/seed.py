@@ -1,12 +1,11 @@
 from datetime import date, time
 
 from .connection import SessionLocal
-from .models import User, Stock, Center, Vehicule, VehiculeDocument, CenterSchedule, ClosingPeriod, Inventory, InventoryStock
-from app.domains.stock.enums import StockStatus, StockCategory
+from .models import User, Vehicule, VehiculeDocument, CenterSchedule, ClosingPeriod, Inventory, InventoryStock
 from app.domains.vehicule.enums import VehiculeCategory, VehiculeStatus
-from app.domains.center.enums import CenterStatus, WeekDays
+from app.domains.center.enums import WeekDays
 from app.domains.inventory.enums import InventoryStatus, InventoryStockStatus
-from app.domains.user.enums import UserStatusfrom 
+from app.domains.user.enums import UserStatus 
 from .centerParser import CsvParser
 
 from pathlib import Path
