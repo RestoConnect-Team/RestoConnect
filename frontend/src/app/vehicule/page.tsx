@@ -118,24 +118,16 @@ export default function Vehicule() {
         {loading && <Loading loading_sentence="Chargement des véhicules..." />}
 
         {!loading && !error && (
-          <>
-            <Table
-              data={vehicules}
-              defaultNumberPerPage={DEFAULT_NUMBER_PER_PAGE}
-              labels={labels}
-              renderRow={renderRow}
-              searchKeys={["name", "immatriculation"]}
-              filters={filters}
-              setFilters={setFilters}
-              options={typesOptions}
-            />
-
-            {/* {filteredList.length === 0 && (
-              <div className="text-center py-10 text-slate-500 text-sm">
-                Aucun véhicule trouvé pour cette recherche.
-              </div>
-            )} */}
-          </>
+          <Table
+            data={vehicules}
+            defaultNumberPerPage={DEFAULT_NUMBER_PER_PAGE}
+            labels={labels}
+            renderRow={renderRow}
+            searchKeys={["name", "immatriculation"]}
+            filters={filters}
+            setFilters={setFilters}
+            options={typesOptions}
+          />
         )}
       </div>
     </PageLayout>

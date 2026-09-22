@@ -84,7 +84,7 @@ export function Table({
         options={options}
       />
       <div className="flex flex-col flex-1 overflow-y-auto">
-        <div className="flex-1 border border-b-0 border-slate-200 rounded-t-xl bg-white overflow-x-auto">
+        <div className="flex-1 border border-b-0 border-slate-200 rounded-t-xl bg-white overflow-x-auto relative">
           <table className="w-full overflow-hidden border-b border-slate-200">
             <thead className="uppercase border-b-1 border-slate-200 text-slate-400 bg-[#F9FAFB]">
               <tr>
@@ -109,6 +109,11 @@ export function Table({
               ))}
             </tbody>
           </table>
+          {filteredList.length === 0 && (
+            <div className="text-center text-slate-500 text-sm absolute top-[50%] left-[50%] z-99 -translate-[50%]">
+              Aucun élément trouvé pour cette recherche.
+            </div>
+          )}
         </div>
         <FooterTable
           numberOfPages={numberOfPages}
