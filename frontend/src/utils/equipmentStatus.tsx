@@ -50,10 +50,10 @@ export const getStatusConfig = (category: string): StatusConfig => {
     case StockStatus.LOST:
       return {
         icon: <TriangleAlert className="h-4 w-4 min-h-4 min-w-4" />,
-        style: "text-[#8B1A18] border-[#EE443F] bg-[#FDECEA]",
+        style: "text-[#8B1A18] border-[#f98380] bg-[#FDECEA]",
         rowStyle: {
           bgColor: "bg-[#EE443F]",
-          borderColor: "border-[#EE443F]",
+          borderColor: "border-[#f98380]",
         },
       };
     case StockStatus.LOST:

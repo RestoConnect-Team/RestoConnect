@@ -53,7 +53,7 @@ export function Sidebar({
                 priority
               />
               <span className="text-[14px] font-semibold text-[var(--sidebar-foreground)]">
-                RestoGestion
+                RestoConnect
               </span>
             </div>
             <button
@@ -75,7 +75,7 @@ export function Sidebar({
             />
             <div className="mt-2">
               <div className="text-[13px] font-semibold text-[var(--sidebar-foreground)] leading-none">
-                RestoGestion
+                RestoConnect
               </div>
               <div className="text-[11px] text-[var(--muted-foreground)] mt-0.5">
                 {centerName}

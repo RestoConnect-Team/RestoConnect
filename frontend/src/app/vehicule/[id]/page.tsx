@@ -22,6 +22,7 @@ import Loading from "@/components/loading/loading";
 import PageError from "@/components/page_error/page_error";
 import { PageLayout } from "@/components/layout/PageLayout";
 import { formatDate } from "@/utils/formatDate";
+import { renderVehiculeCategory } from "@/utils/vehiculeCategory";
 
 function alertStyles(level: VehiculeAlert["level"]) {
   if (level === "expired") {
@@ -171,12 +172,10 @@ export default function VehiculeDetailPage() {
 
         <section className="rounded-xl border border-slate-200 bg-white p-4">
           <h1 className="text-2xl font-bold text-slate-900">{vehicule.name}</h1>
-          <div className="mt-3 flex flex-wrap gap-2 text-xs">
-            <span className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-slate-600">
-              {vehicule.category || "Type non défini"}
-            </span>
+          <div className="mt-3 flex flex-wrap gap-2 text-sm">
+            {renderVehiculeCategory(vehicule.category, "py-1 px-2")}
             <span
-              className={`rounded-md border px-2.5 py-1 ${
+              className={`rounded-md border py-1 px-2 ${
                 documentAlerts.some((a) => a.level === "expired")
                   ? "border-red-200 bg-red-50 text-red-700"
                   : "border-green-200 bg-green-50 text-green-700"
@@ -188,7 +187,7 @@ export default function VehiculeDetailPage() {
             </span>
           </div>
           <p className="mt-3 text-sm text-slate-500">
-            Centre: {vehicule.center_name || "Non assigné"}
+            {vehicule.center_name || "Non assigné"}
           </p>
         </section>
 

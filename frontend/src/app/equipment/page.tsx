@@ -6,15 +6,14 @@ import { PageLayout } from "@/components/layout/PageLayout";
 import Loading from "@/components/loading/loading";
 import { ConfirmModal } from "@/components/modals/ConfirmModal";
 import PageError from "@/components/page_error/page_error";
-import SearchBar, { FilterOption } from "@/components/searchbar/Searchbar";
-import { SelectOption } from "@/components/searchbar/Select";
-import { FooterTable } from "@/components/table/FooterTable";
+import { FilterOption } from "@/components/searchbar/SearchbarFilters";
+import { Table } from "@/components/table/Table";
 import TableActions from "@/components/table/TableActions";
 import { EquipmentService } from "@/services/equipment.service";
 import { EquipmentItem } from "@/types/equipment";
 import { downloadQrCode } from "@/utils/downloadQrCode";
 import { getCategoryConfig, renderCategory } from "@/utils/equipmentCategory";
-import { getStatusConfig, renderStatus } from "@/utils/equipmentStatus";
+import { renderStatus } from "@/utils/equipmentStatus";
 import { getQrCodeUrl } from "@/utils/getQrCodeUrl";
 import { Boxes, Eye, PenBox, Plus, QrCode, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -32,13 +31,6 @@ export default function Equipement() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [mustReload, setMustReload] = useState<boolean>(true);
-
-  const [numberPerPage, setNumberPerPage] = useState<number>(
-    DEFAULT_NUMBER_PER_PAGE,
-  );
-  const [pageIndex, setPageIndex] = useState<number>(0);
-
-  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const qrCodeRef = useRef<HTMLDivElement>(null);
 
@@ -117,73 +109,60 @@ export default function Equipement() {
     },
   });
 
-  const [selectValue, setSelectValue] = useState<SelectOption>(
-    categoriesOptions[0],
-  );
-
-  const filteredList = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
-
-    // Search
-    let result = equipments;
-
-    if (query) {
-      result = result.filter(
-        (element) =>
-          element.name.toLowerCase().includes(query) ||
-          element.reference.toLowerCase().includes(query),
-      );
-    }
-
-    // Category filter
-    if (selectValue.value !== "all") {
-      result = result.filter(
-        (element) => element.category === selectValue.value,
-      );
-    }
-
-    // Status filters
-    const activeFilters = filters.filter((filter) => filter.isActive);
-
-    if (activeFilters.length > 0) {
-      result = result.filter((element) =>
-        activeFilters.some((filter) => filter.filter(element.status)),
-      );
-    }
-
-    return result;
-  }, [equipments, searchQuery, selectValue.value, filters]);
-
-  const numberOfPages = useMemo(() => {
-    return Math.ceil(filteredList.length / numberPerPage);
-  }, [filteredList.length, numberPerPage]);
-
-  const slicedList = useMemo(() => {
-    const start = pageIndex * numberPerPage;
-
-    return filteredList.slice(start, start + numberPerPage);
-  }, [filteredList, pageIndex, numberPerPage]);
-
-  useEffect(() => {
-    setPageIndex(0);
-  }, [searchQuery, selectValue.value, filters, numberPerPage]);
-
   function handleDelete(equipment: EquipmentItem) {
     equipmentService.deleteEquipment(equipment.id);
     setEquipmentToDelete(null);
     setMustReload(true);
   }
 
-  const renderLabel = (label: string, status: string): ReactNode => {
+  const renderRow = (equipment: EquipmentItem): ReactNode => {
     return (
-      <td className="relative max-w-[200px]">
-        <div
-          className={`w-[5px] h-16 ${getStatusConfig(status).rowStyle.bgColor} absolute top-0`}
-        ></div>
-        <div className="px-5">
-          <div className="font-semibold truncate">{label}</div>
-        </div>
-      </td>
+      <>
+        <td className="relative max-w-[200px]">
+          <div className="px-4 font-semibold truncate">{equipment.name}</div>
+        </td>
+        {renderCategory(equipment.category)}
+        <td className="py-5 px-3 text-slate-500 font-mono">
+          {equipment.reference}
+        </td>
+        <td className="py-2 px-3">
+          {equipment.qr_code && equipment.qr_code.length > 0 ? (
+            <QrCode
+              className="text-slate-400 cursor-pointer hover:text-slate-500 transition-colors"
+              onClick={() => setSelectedEquipment(equipment)}
+            />
+          ) : (
+            <span className="py-1 px-2 text-[#FF6900] bg-[#FFF7ED] border-1 border-[#FFD6A8] text-sm rounded-md">
+              Manquante
+            </span>
+          )}
+        </td>
+        <td className="py-2 px-3 w-50">
+          {renderStatus(equipment.status, "py-1 px-2")}
+        </td>
+        <td className="py-2 pl-3 pr-5">
+          <TableActions
+            actions={[
+              {
+                icon: (className) => <Eye className={className} />,
+                onClick: () => {
+                  router.push("/equipment/" + equipment.id);
+                },
+              },
+              {
+                icon: (className) => <PenBox className={className} />,
+                onClick: () => {},
+              },
+              {
+                icon: (className) => <Trash2 className={className} />,
+                onClick: () => {
+                  setEquipmentToDelete(equipment);
+                },
+              },
+            ]}
+          />
+        </td>
+      </>
     );
   };
 
@@ -221,99 +200,16 @@ export default function Equipement() {
         )}
 
         {!loading && equipments.length > 0 && !error && (
-          <>
-            <SearchBar
-              onSearch={(e) => setSearchQuery(e)}
-              filters={filters}
-              setFilters={setFilters}
-              placeholder="Rechercher par nom, référence..."
-              selectValue={selectValue}
-              setSelectValue={setSelectValue}
-              options={categoriesOptions}
-            />
-            <div className="flex flex-col flex-1 overflow-y-auto">
-              <div className="flex-1 border border-b-0 border-slate-200 rounded-t-xl bg-white overflow-x-auto">
-                <table className="w-full overflow-hidden border-b border-slate-200">
-                  <thead className="uppercase border-b-1 border-slate-200 text-slate-400 bg-[#F9FAFB]">
-                    <tr>
-                      {labels.map((label) => (
-                        <th
-                          className="py-2 px-3 text-[12px] text-left font-semibold"
-                          key={label}
-                        >
-                          {label}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {slicedList.map((equipment) => (
-                      <tr
-                        className={`border-t-1 ${getStatusConfig(equipment.status).rowStyle.borderColor}`}
-                        key={equipment.id}
-                      >
-                        {renderLabel(equipment.name, equipment.status)}
-                        {renderCategory(equipment.category)}
-                        <td className="py-5 px-3 text-slate-500 font-mono">
-                          {equipment.reference}
-                        </td>
-                        <td className="py-2 px-3">
-                          {equipment.qr_code && equipment.qr_code.length > 0 ? (
-                            <QrCode
-                              className="text-slate-400 cursor-pointer hover:text-slate-500 transition-colors"
-                              onClick={() => setSelectedEquipment(equipment)}
-                            />
-                          ) : (
-                            <span className="py-1 px-2 text-[#FF6900] bg-[#FFF7ED] border-1 border-[#FFD6A8] text-sm rounded-md">
-                              Manquante
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-2 px-3 w-50">
-                          {renderStatus(equipment.status, "py-1 px-2")}
-                        </td>
-                        <td className="py-2 pl-3 pr-5">
-                          <TableActions
-                            actions={[
-                              {
-                                icon: (className) => (
-                                  <Eye className={className} />
-                                ),
-                                onClick: () =>
-                                  router.push("/equipment/" + equipment.id),
-                              },
-                              {
-                                icon: (className) => (
-                                  <PenBox className={className} />
-                                ),
-                                onClick: () => {},
-                              },
-                              {
-                                icon: (className) => (
-                                  <Trash2 className={className} />
-                                ),
-                                onClick: () => {
-                                  setEquipmentToDelete(equipment);
-                                },
-                              },
-                            ]}
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <FooterTable
-                numberOfPages={numberOfPages}
-                pageIndex={pageIndex}
-                setPageIndex={setPageIndex}
-                listLength={filteredList.length}
-                numberPerPage={numberPerPage}
-                setNumberPerPage={setNumberPerPage}
-              />
-            </div>
-          </>
+          <Table
+            data={equipments}
+            defaultNumberPerPage={DEFAULT_NUMBER_PER_PAGE}
+            labels={labels}
+            renderRow={renderRow}
+            searchKeys={["name", "reference"]}
+            filters={filters}
+            setFilters={setFilters}
+            options={categoriesOptions}
+          />
         )}
       </div>
       {selectedEquipment && (

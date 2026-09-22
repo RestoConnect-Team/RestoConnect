@@ -10,12 +10,16 @@ import { formatTime } from "@/utils/formatTime";
 import { ChevronRight, SquarePen } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { AlertRow } from "../dashboard/AlertRow";
-import { CenterHeaderDashboard } from "../dashboard/CenterHeaderDashboard";
-import { ContactRow, renderMail, renderPhone } from "../dashboard/ContactRow";
-import { Stats } from "../dashboard/Stats";
-import { Section } from "../layout/Section";
-import { Button } from "../ui/button";
+import { AlertRow } from "../../dashboard/AlertRow";
+import { CenterHeaderDashboard } from "../../dashboard/CenterHeaderDashboard";
+import {
+  ContactRow,
+  renderMail,
+  renderPhone,
+} from "../../dashboard/ContactRow";
+import { Stats } from "../../dashboard/Stats";
+import { Section } from "../../layout/Section";
+import { Button } from "../../ui/button";
 import { CenterHeader } from "./CenterHeader";
 
 interface CenterDetailViewProps {
@@ -211,7 +215,7 @@ export function CenterDetailView({
         </>
       ) : (
         <>
-          <Section title={`Matériels (${center.materials_count})`}>
+          {/* <Section title={`Matériels (${center.materials_count})`}>
             <div>
               {equipments.map((equipment) => {
                 return (
@@ -242,11 +246,10 @@ export function CenterDetailView({
                 );
               })}
             </div>
-          </Section>
-          <Section title="Derniers inventaires">
+          </Section> */}
+          {/* <Section title="Derniers inventaires">
             <></>
-            {/* //TODO */}
-          </Section>
+          </Section> */}
         </>
       )}
     </div>

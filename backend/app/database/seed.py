@@ -1,12 +1,15 @@
 from datetime import date, time
 
 from .connection import SessionLocal
-from .models import User, Stock, Center, Vehicule, VehiculeDocument, CenterSchedule, ClosingPeriod, Inventory, InventoryStock
-from app.domains.stock.enums import StockStatus, StockCategory
+from .models import User, Vehicule, VehiculeDocument, CenterSchedule, ClosingPeriod, Inventory, InventoryStock
 from app.domains.vehicule.enums import VehiculeCategory, VehiculeStatus
-from app.domains.center.enums import CenterStatus, WeekDays
+from app.domains.center.enums import WeekDays
 from app.domains.inventory.enums import InventoryStatus, InventoryStockStatus
-from app.domains.user.enums import UserStatus
+from app.domains.user.enums import UserStatus 
+from .centerParser import CsvParser
+
+from pathlib import Path
+
 #crypt context for password hashing
 import bcrypt
 
@@ -124,132 +127,13 @@ def seed():
         )
     ]
 
-    stocks = [
-        Stock(
-            reference="REF001_c1",
-            name="Pc",
-            category=StockCategory.INFORMATIQUE,
-            status = StockStatus.LOST,
-            qr_code = "REF001_c1",
-            creation_date = date(2025,1,1),
-            last_scan_date = date(2026,6,1),
-            center_id=1
-            ),
-        Stock(
-            reference="REF002_c1",
-            name="Frigo",
-            category=StockCategory.REFRIGIRE,
-            status = StockStatus.AVAILABLE,
-            qr_code = "REF002_c1",
-            creation_date = date(2025,6,1),
-            last_scan_date = date(2026,6,1),
-            center_id=1
-            ),
-        Stock(
-            reference="REF001_c2",
-            name="Pc",
-            category=StockCategory.INFORMATIQUE,
-            status = StockStatus.LOST,
-            qr_code = "REF001_c2",
-            creation_date = date(2025,1,1),
-            last_scan_date = date(2026,3,1),
-            center_id=2
-            ),
-        Stock(
-            reference="REF002_c2",
-            name="Frigo",
-            category=StockCategory.REFRIGIRE,
-            status = StockStatus.AVAILABLE,
-            qr_code = "REF002_c2",
-            creation_date = date(2025,9,1),
-            last_scan_date = date(2026,4,1),
-            center_id=2
-            ),
-        Stock(
-            reference="REF003_c2",
-            name="Table",
-            category=StockCategory.BUREAU,
-            status = StockStatus.AVAILABLE,
-            qr_code = "REF003_c2",
-            creation_date = date(2025,1,1),
-            last_scan_date = date(2026,6,1),
-            center_id=2
-            )
-    ]
-
-    centers = [
-        Center(
-            name="Centre Lyon Part-Dieu",
-            street_number=17,
-            street="Rue Servient",
-            city="Lyon",
-            postal_code="69003",
-            telephone="04 72 00 11 22",
-            email="partdieu@restosducoeur.org",
-            status=CenterStatus.OPEN,
-            description="Centre principal situé au cœur du quartier d'affaires de Lyon.",
-            activities="Restauration rapide, livraison",
-        ),
-        Center(
-            name="Centre Lyon Croix-Rousse",
-            street_number=42,
-            street="Boulevard de la Croix-Rousse",
-            city="Lyon",
-            postal_code="69004",
-            telephone="04 72 00 22 33",
-            email="croixrousse@restosducoeur.org",
-            status=CenterStatus.OPEN,
-            description="Centre situé sur les pentes de la Croix-Rousse.",
-            activities="Restauration sur place, traiteur",
-        ),
-        Center(
-            name="Centre Villeurbanne",
-            street_number=8,
-            street="Avenue Henri Barbusse",
-            city="Villeurbanne",
-            postal_code="69100",
-            telephone="04 72 00 33 44",
-            email="villeurbanne@restosducoeur.org",
-            status=CenterStatus.TEMPORARY_CLOSE,
-            description="Centre fermé temporairement pour travaux.",
-            activities="Restauration rapide",
-        ),
-        Center(
-            name="Centre Bron",
-            street_number=23,
-            street="Avenue Franklin Roosevelt",
-            city="Bron",
-            postal_code="69500",
-            telephone="04 72 00 44 55",
-            email="bron@restosducoeur.org",
-            status=CenterStatus.OPEN,
-            description="Centre desservant le secteur est de l'agglomération.",
-            activities="Livraison, traiteur événementiel",
-        ),
-        Center(
-            name="Centre Vénissieux",
-            street_number=5,
-            street="Rue Marcel Cachin",
-            city="Vénissieux",
-            postal_code="69200",
-            telephone="04 72 00 55 66",
-            email="venissieux@restosducoeur.org",
-            status=CenterStatus.CLOSE,
-            description="Centre actuellement fermé.",
-            activities="Restauration rapide",
-        ),
-        Center(
-            name="Entrepôt Vaulx-en-Velin",
-            street_number=15,
-            street="Avenue de la République",
-            city="Vaulx-en-Velin",
-            postal_code="69800",
-            status=CenterStatus.OPEN,
-            description="Entrepôt situé dans le quartier de la République.",
-            activities="Stockage, livraison",
-            is_warehouse=True
-        )
-    ]
+    equipments_parser = CsvParser()
+    CSV_PATH_EQUIPMENTS = Path(__file__).parent / 'Equipments.csv'
+    stocks = equipments_parser.getEquipmentsFromCSV(str(CSV_PATH_EQUIPMENTS))
+    
+    center_parser = CsvParser()
+    CSV_PATH_CENTER = Path(__file__).parent / 'Centers.csv'
+    centers = center_parser.getCentersFromCSV(str(CSV_PATH_CENTER))
 
     center_schedules = [
         # Centre 1
@@ -323,7 +207,7 @@ def seed():
         next_technical_inspection_date=date(2026, 6, 1),
         last_service_date=date(2025, 3, 10),
         next_service_date=date(2025, 9, 10),
-        center_id=2,
+        center_id=1,
         user_id=4
         ),
         Vehicule(
@@ -336,14 +220,14 @@ def seed():
         next_technical_inspection_date=date(2026, 6, 1),
         last_service_date=date(2025, 3, 10),
         next_service_date=date(2025, 9, 10),
-        center_id=2,
+        center_id=1,
         user_id=None
         ),
         Vehicule(
         name="Véhicule 5",
         immatriculation="EE-345-EE",
-        category=VehiculeCategory.FOURGON,
-        status=VehiculeStatus.UNDER_REPAIR,
+        category=VehiculeCategory.CAMION,
+        status=VehiculeStatus.IN_MAINTENANCE,
         nb_km=10000,
         last_technical_inspection_date=date(2025, 6, 1),
         next_technical_inspection_date=date(2026, 6, 1),
