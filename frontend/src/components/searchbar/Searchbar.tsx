@@ -59,7 +59,7 @@ export default function SearchBar({
 
       {((options.length > 1 && selectValue && setSelectValue) ||
         filters.length > 0) && (
-        <div className="flex gap-5">
+        <div className="flex gap-3">
           {options.length > 1 && selectValue && setSelectValue && (
             <Select
               selectValue={selectValue}

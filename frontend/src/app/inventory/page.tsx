@@ -3,15 +3,15 @@
 import { PageLayout } from "@/components/layout/PageLayout";
 import Loading from "@/components/loading/loading";
 import PageError from "@/components/page_error/page_error";
-import SearchBar, { FilterOption } from "@/components/searchbar/Searchbar";
-import { FooterTable } from "@/components/table/FooterTable";
+import { FilterOption } from "@/components/searchbar/SearchbarFilters";
+import { Table } from "@/components/table/Table";
 import TableActions from "@/components/table/TableActions";
 import { InventoryService } from "@/services/inventory.service";
 import { Inventory, InventoryStatus } from "@/types/inventoryStatus";
 import { renderInventoryStatus } from "@/utils/inventoryStatus";
 import { Eye, PenBox, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 
 const DEFAULT_NUMBER_PER_PAGE = 10;
 
@@ -41,13 +41,6 @@ export default function InventoryPage() {
   const [error, setError] = useState<Error | null>(null);
   const [mustReload, setMustReload] = useState<boolean>(true);
   const inventoryService = new InventoryService();
-
-  const [searchQuery, setSearchQuery] = useState<string>("");
-
-  const [numberPerPage, setNumberPerPage] = useState<number>(
-    DEFAULT_NUMBER_PER_PAGE,
-  );
-  const [pageIndex, setPageIndex] = useState<number>(0);
 
   const labels = [
     "Référence",
@@ -96,43 +89,40 @@ export default function InventoryPage() {
     },
   ]);
 
-  const filteredList = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
-
-    // Search
-    let result = inventories;
-
-    if (query) {
-      result = result.filter((element) =>
-        element.reference.toLowerCase().includes(query),
-      );
-    }
-
-    // Status filters
-    const activeFilters = filters.filter((filter) => filter.isActive);
-
-    if (activeFilters.length > 0) {
-      result = result.filter((element) =>
-        activeFilters.some((filter) => filter.filter(element.status)),
-      );
-    }
-
-    return result;
-  }, [inventories, searchQuery, filters]);
-
-  const numberOfPages = useMemo(() => {
-    return Math.ceil(inventories.length / numberPerPage);
-  }, [inventories.length, numberPerPage]);
-
-  const slicedList = useMemo(() => {
-    const start = pageIndex * numberPerPage;
-
-    return filteredList.slice(start, start + numberPerPage);
-  }, [filteredList, pageIndex, numberPerPage]);
-
-  useEffect(() => {
-    setPageIndex(0);
-  }, [numberPerPage]);
+  const renderRow = (inventory: Inventory) => {
+    return (
+      <>
+        <td className="py-3 px-3 font-semibold">
+          {inventory.reference}
+          <div className="text-xs font-medium text-gray-400">
+            {inventory.center}
+          </div>
+        </td>
+        <td className="py-2 px-3">{inventory.start_date}</td>
+        <td className="py-2 px-3">{inventory.anomalies}</td>
+        <td className="py-2 px-3 w-50">{inventory.comments}</td>
+        {renderInventoryStatus(inventory.status)}
+        <td className="py-2 pl-3 pr-5">
+          <TableActions
+            actions={[
+              {
+                icon: (className) => <Eye className={className} />,
+                onClick: () => router.push("/inventory/" + inventory.reference),
+              },
+              {
+                icon: (className) => <PenBox className={className} />,
+                onClick: () => {},
+              },
+              {
+                icon: (className) => <Trash2 className={className} />,
+                onClick: () => {},
+              },
+            ]}
+          />
+        </td>
+      </>
+    );
+  };
 
   return (
     <PageLayout
@@ -165,83 +155,15 @@ export default function InventoryPage() {
         )}
 
         {!loading && inventories.length > 0 && !error && (
-          <>
-            <SearchBar
-              onSearch={(e) => setSearchQuery(e)}
-              filters={filters}
-              setFilters={setFilters}
-              placeholder="Rechercher par nom, référence..."
-            />
-            <div className="flex flex-col flex-1 overflow-y-auto">
-              <div className="flex-1 border border-b-0 border-slate-200 rounded-t-xl bg-white overflow-x-auto">
-                <table className="w-full overflow-hidden border-b border-slate-200 text-sm">
-                  <thead className="uppercase border-b-1 border-slate-200 text-slate-400 bg-[#F9FAFB]">
-                    <tr>
-                      {labels.map((label) => (
-                        <th
-                          className="py-2 px-3 text-[12px] text-left font-semibold"
-                          key={label}
-                        >
-                          {label}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {slicedList.map((inventory: Inventory) => (
-                      <tr className={`border-t-1`} key={inventory.reference}>
-                        <td className="py-3 px-3 font-semibold">
-                          {inventory.reference}
-                          <div className="text-xs font-medium text-gray-400">
-                            {inventory.center}
-                          </div>
-                        </td>
-                        <td className="py-2 px-3">{inventory.start_date}</td>
-                        <td className="py-2 px-3">{inventory.anomalies}</td>
-                        <td className="py-2 px-3 w-50">{inventory.comments}</td>
-                        {renderInventoryStatus(inventory.status)}
-                        <td className="py-2 pl-3 pr-5">
-                          <TableActions
-                            actions={[
-                              {
-                                icon: (className) => (
-                                  <Eye className={className} />
-                                ),
-                                onClick: () =>
-                                  router.push(
-                                    "/inventory/" + inventory.reference,
-                                  ),
-                              },
-                              {
-                                icon: (className) => (
-                                  <PenBox className={className} />
-                                ),
-                                onClick: () => {},
-                              },
-                              {
-                                icon: (className) => (
-                                  <Trash2 className={className} />
-                                ),
-                                onClick: () => {},
-                              },
-                            ]}
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <FooterTable
-                numberOfPages={numberOfPages}
-                pageIndex={pageIndex}
-                setPageIndex={setPageIndex}
-                listLength={inventories.length}
-                numberPerPage={numberPerPage}
-                setNumberPerPage={setNumberPerPage}
-              />
-            </div>
-          </>
+          <Table
+            data={inventories}
+            defaultNumberPerPage={DEFAULT_NUMBER_PER_PAGE}
+            labels={labels}
+            renderRow={renderRow}
+            searchKeys={["reference"]}
+            filters={filters}
+            setFilters={setFilters}
+          />
         )}
       </div>
     </PageLayout>

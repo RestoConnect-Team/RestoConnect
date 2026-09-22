@@ -9,6 +9,7 @@ interface TableProps {
   defaultNumberPerPage: number;
   labels: string[];
   renderRow: (element: any) => ReactNode;
+  searchKeys: string[];
   filters?: FilterOption[];
   setFilters?: (filters: FilterOption[]) => void;
   options?: SelectOption[];
@@ -19,6 +20,7 @@ export function Table({
   defaultNumberPerPage,
   labels,
   renderRow,
+  searchKeys,
   filters = [],
   setFilters,
   options = [],
@@ -38,15 +40,13 @@ export function Table({
     let result = data;
 
     if (query) {
-      result = result.filter(
-        (element) =>
-          element.name.toLowerCase().includes(query) ||
-          element.reference.toLowerCase().includes(query),
+      result = result.filter((element) =>
+        searchKeys.some((key) => element[key].toLowerCase().includes(query)),
       );
     }
 
     // Category filter
-    if (selectValue.value !== "all") {
+    if (selectValue && selectValue.value !== "all") {
       result = result.filter(
         (element) => element.category === selectValue.value,
       );
@@ -62,7 +62,7 @@ export function Table({
     }
 
     return result;
-  }, [data, searchQuery, selectValue.value, filters]);
+  }, [data, searchQuery, selectValue, filters]);
 
   const numberOfPages = useMemo(() => {
     return Math.ceil(data.length / numberPerPage);
@@ -100,21 +100,24 @@ export function Table({
             </thead>
             <tbody>
               {filteredList.map((element) => (
-                <tr className={`border-t-1`} key={element.id}>
+                <tr
+                  className={`border-t-1`}
+                  key={element.id || element.reference}
+                >
                   {renderRow(element)}
                 </tr>
               ))}
             </tbody>
           </table>
-          <FooterTable
-            numberOfPages={numberOfPages}
-            pageIndex={pageIndex}
-            setPageIndex={setPageIndex}
-            listLength={filteredList.length}
-            numberPerPage={numberPerPage}
-            setNumberPerPage={setNumberPerPage}
-          />
         </div>
+        <FooterTable
+          numberOfPages={numberOfPages}
+          pageIndex={pageIndex}
+          setPageIndex={setPageIndex}
+          listLength={filteredList.length}
+          numberPerPage={numberPerPage}
+          setNumberPerPage={setNumberPerPage}
+        />
       </div>
     </>
   );

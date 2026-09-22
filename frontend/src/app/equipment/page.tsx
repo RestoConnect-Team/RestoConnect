@@ -205,6 +205,7 @@ export default function Equipement() {
             defaultNumberPerPage={DEFAULT_NUMBER_PER_PAGE}
             labels={labels}
             renderRow={renderRow}
+            searchKeys={["name", "reference"]}
             filters={filters}
             setFilters={setFilters}
             options={categoriesOptions}
