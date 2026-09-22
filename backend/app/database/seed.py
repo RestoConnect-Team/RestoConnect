@@ -132,7 +132,7 @@ def seed():
     stocks = equipments_parser.getEquipmentsFromCSV(str(CSV_PATH_EQUIPMENTS))
     
     center_parser = CsvParser()
-    CSV_PATH_CENTER = Path(__file__).parent / 'Centres.csv'
+    CSV_PATH_CENTER = Path(__file__).parent / 'Centers.csv'
     centers = center_parser.getCentersFromCSV(str(CSV_PATH_CENTER))
 
     center_schedules = [
