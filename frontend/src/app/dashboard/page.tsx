@@ -1,6 +1,6 @@
 "use client";
 
-import { CenterDetailView } from "@/components/center_detail/CenterDetailView";
+import { CenterDetailView } from "@/components/centers/center_detail/CenterDetailView";
 import { PageLayout } from "@/components/layout/PageLayout";
 import Loading from "@/components/loading/loading";
 import PageError from "@/components/page_error/page_error";

@@ -1,6 +1,6 @@
 "use client";
 
-import { CenterHeader } from "@/components/center_detail/CenterHeader";
+import { CenterHeader } from "@/components/centers/center_detail/CenterHeader";
 import { PageLayout } from "@/components/layout/PageLayout";
 import { Section } from "@/components/layout/Section";
 import Loading from "@/components/loading/loading";
