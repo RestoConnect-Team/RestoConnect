@@ -1,8 +1,8 @@
 from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 
-from app.database.models import Vehicule, VehiculeDocument
-
+from app.database.models import Vehicule, VehiculeDocument, VehiculeInfos
+from app.domains.vehicule.schemas import VehiculeAlert, VehiculeInfos, VehiculeDocumentInfos, VehiculeDetailResponse
 
 def get_list_vehicules_service(db: Session):
     query = (
